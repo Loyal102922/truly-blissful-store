@@ -19,6 +19,10 @@ const stripe = new Stripe(stripeSecretKey);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.get("/config", (req, res) => {
   res.json({ publishableKey: stripePublishableKey || "" });
 });
@@ -53,12 +57,14 @@ app.post("/create-checkout-session", async (req, res) => {
       };
     });
 
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
       line_items: lineItems,
-      success_url: `http://localhost:${PORT}/success.html`,
-      cancel_url: `http://localhost:${PORT}/cancel.html`,
+      success_url: `${baseUrl}/success.html`,
+      cancel_url: `${baseUrl}/cancel.html`,
       shipping_address_collection: {
         allowed_countries: ["US", "CA"],
       },
@@ -68,7 +74,7 @@ app.post("/create-checkout-session", async (req, res) => {
       },
     });
 
-    res.json({ id: session.id, url: session.url });
+    res.json({ id: session.id });
   } catch (error) {
     console.error("Stripe checkout error:", error);
     res.status(500).json({ error: error.message || "Unable to create checkout session." });
@@ -76,5 +82,5 @@ app.post("/create-checkout-session", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`TRULY BLISSFUL backend running at http://localhost:${PORT}`);
+  console.log(`TRULY BLISSFUL backend running on port ${PORT}`);
 });
