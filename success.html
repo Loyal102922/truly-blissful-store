@@ -2,212 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TRULY BLISSFUL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmed | TRULY BLISSFUL</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body class="bg-black text-white font-sans selection:bg-orange-500 selection:text-black">
-  <div class="bg-orange-500 text-black text-center py-2 text-sm font-bold tracking-widest">
-    OFFICIAL DROP LIVE - LIMITED STOCK AVAILABLE
+<body class="bg-black text-white font-sans min-h-screen flex items-center justify-center px-6">
+  <div class="max-w-2xl w-full text-center bg-neutral-900 border border-white/10 rounded-2xl p-10">
+    <img src="logo.png" alt="TRULY BLISSFUL" class="mx-auto h-24 mb-6" />
+    <h1 class="text-4xl font-black mb-4 text-orange-400">Payment Successful</h1>
+    <p class="text-lg text-gray-300 mb-4">Thank you for your order.</p>
+    <p class="text-gray-400 mb-8">
+      Your TRULY BLISSFUL order has been received. We appreciate your support.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">Back to Store</a>
+      <a href="/" class="border border-white/20 px-6 py-3 rounded-xl font-bold">Continue Shopping</a>
+    </div>
   </div>
 
-  <main class="min-h-screen">
-    <section class="text-center py-20 px-6">
-      <img src="logo.png" alt="TRULY BLISSFUL" class="mx-auto h-40 mb-6" />
-      <h1 class="text-5xl md:text-7xl font-black mb-6">TRULY BLISSFUL</h1>
-      <p class="text-xl text-gray-300 mb-6">Faith-Driven Streetwear That Speaks Power</p>
-      <div id="launch-timer" class="text-3xl font-bold text-orange-400 mb-6"></div>
-      <a href="#products" class="bg-orange-500 px-8 py-4 rounded-2xl text-black font-bold hover:bg-orange-400">SHOP THE DROP</a>
-    </section>
-
-    <section class="px-6 pb-20 text-center">
-      <h2 class="text-3xl font-bold mb-8">Featured Drop</h2>
-      <div class="max-w-xl mx-auto bg-neutral-900 rounded-2xl p-6 border border-white/10">
-        <img src="product1.jpg" alt="We Are Taking Tee" class="mx-auto h-64 object-contain mb-4" />
-        <h3 class="text-2xl font-bold">We Are Taking Tee</h3>
-        <p class="text-gray-400 mb-4">Limited release - bold statement piece</p>
-        <div class="space-y-3 mb-4">
-          <select id="size-tee" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 text-sm">
-            <option>Small</option><option>Medium</option><option>Large</option><option>XL</option>
-          </select>
-          <select id="color-tee" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 text-sm">
-            <option>Black</option><option>Vintage Gold</option><option>White</option>
-          </select>
-        </div>
-        <button onclick="addConfiguredProduct('We Are Taking Tee',25,'size-tee','color-tee')" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">Add to Cart</button>
-      </div>
-    </section>
-
-    <section id="products" class="px-6 pb-20">
-      <h2 class="text-3xl font-bold mb-10 text-center">Shop Collections</h2>
-      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <div class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10">
-          <img src="product1.jpg" alt="Power Collection" class="h-48 mx-auto mb-4 object-contain" />
-          <h3 class="font-bold text-xl">Power Collection</h3>
-          <p class="text-gray-400 text-sm">Bold faith energy</p>
-        </div>
-        <div class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10">
-          <img src="product2.jpg" alt="Brotherhood Collection" class="h-48 mx-auto mb-4 object-contain" />
-          <h3 class="font-bold text-xl">Brotherhood</h3>
-          <p class="text-gray-400 text-sm">Unity and scripture</p>
-        </div>
-        <div class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10">
-          <img src="product3.jpg" alt="Street Collection" class="h-48 mx-auto mb-4 object-contain" />
-          <h3 class="font-bold text-xl">Street</h3>
-          <p class="text-gray-400 text-sm">Urban expression</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="max-w-4xl mx-auto px-6 pb-20">
-      <div class="bg-neutral-900 border border-white/10 rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-bold">Cart</h2>
-          <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
-        </div>
-        <ul id="cart-items" class="space-y-3 mb-6"></ul>
-        <div class="flex items-center justify-between mb-6">
-          <span class="text-gray-400">Total</span>
-          <span id="cart-total" class="text-2xl font-black text-orange-400">$0</span>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3">
-          <button onclick="checkout()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">Checkout</button>
-          <button onclick="clearCart()" class="border border-white/20 px-6 py-3 rounded-xl font-bold">Clear Cart</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="text-center py-16 border-t border-gray-800 px-6">
-      <h2 class="text-3xl font-bold mb-4">Join the Movement</h2>
-      <p class="text-gray-400 mb-6">Get early access to future drops</p>
-      <input type="email" placeholder="Enter email" class="px-4 py-3 rounded-xl bg-black border border-gray-700 mb-4 w-full max-w-md" />
-      <br/>
-      <button class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">Join</button>
-    </section>
-  </main>
-
   <script>
-    let stripe = null;
-    let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
-
-    async function loadStripeConfig() {
-      try {
-        const response = await fetch('/config');
-        const data = await response.json();
-        if (data.publishableKey && window.Stripe) {
-          stripe = Stripe(data.publishableKey);
-        } else {
-          console.error('Stripe publishable key not found.');
-        }
-      } catch (error) {
-        console.error('Unable to load Stripe config:', error);
-      }
-    }
-
-    function formatMoney(value) {
-      return '$' + Number(value).toFixed(2).replace('.00', '');
-    }
-
-    function saveCart() {
-      localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
-    }
-
-    function renderCart() {
-      const list = document.getElementById('cart-items');
-      const count = document.getElementById('cart-count');
-      const total = document.getElementById('cart-total');
-      list.innerHTML = '';
-      let runningTotal = 0;
-
-      if (!cart.length) {
-        list.innerHTML = '<li class="text-gray-400 border border-white/10 rounded-xl p-4">Your cart is empty.</li>';
-      }
-
-      cart.forEach((item, index) => {
-        runningTotal += Number(item.price);
-        const li = document.createElement('li');
-        li.className = 'border border-white/10 rounded-xl p-4 flex items-start justify-between gap-4';
-        li.innerHTML = `
-          <div>
-            <p class="font-bold">${item.name}</p>
-            <p class="text-sm text-gray-400 mt-1">${item.size} - ${item.color}</p>
-            <p class="text-sm text-orange-300 mt-2">${formatMoney(item.price)}</p>
-          </div>
-          <button onclick="removeItem(${index})" class="text-sm text-gray-400 hover:text-orange-300">Remove</button>
-        `;
-        list.appendChild(li);
-      });
-
-      count.textContent = cart.length;
-      total.textContent = formatMoney(runningTotal);
-      saveCart();
-    }
-
-    function addConfiguredProduct(name, price, sizeId, colorId) {
-      const size = document.getElementById(sizeId)?.value || 'Default';
-      const color = document.getElementById(colorId)?.value || 'Default';
-      cart.push({ name, price, size, color });
-      renderCart();
-      alert(name + ' added to cart');
-    }
-
-    function removeItem(index) {
-      cart.splice(index, 1);
-      renderCart();
-    }
-
-    function clearCart() {
-      cart = [];
-      renderCart();
-    }
-
-    async function checkout() {
-      if (!cart.length) {
-        alert('Your cart is empty.');
-        return;
-      }
-
-      if (!stripe) {
-        alert('Stripe is not ready yet. Start the backend and check your keys.');
-        return;
-      }
-
-      try {
-        const response = await fetch('/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cart })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Unable to start checkout.');
-        }
-
-        const result = await stripe.redirectToCheckout({ sessionId: data.id });
-        if (result.error) {
-          alert(result.error.message);
-        }
-      } catch (error) {
-        console.error('Checkout error:', error);
-        alert(error.message || 'Checkout failed.');
-      }
-    }
-
-    const end = new Date().getTime() + (1000 * 60 * 60 * 24);
-    setInterval(() => {
-      const now = new Date().getTime();
-      const diff = Math.max(0, end - now);
-      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-      document.getElementById('launch-timer').innerText = h + 'h ' + m + 'm ' + s + 's';
-    }, 1000);
-
-    loadStripeConfig();
-    renderCart();
+    localStorage.removeItem('trulyBlissfulCart');
   </script>
 </body>
 </html>
