@@ -126,7 +126,10 @@
     const data = await res.json();
     await stripe.redirectToCheckout({ sessionId: data.id });
   }
-
   initStripe();
   renderCart();
 </script>
+
+</body>
+</html>
+ 
