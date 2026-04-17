@@ -4,14 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TRULY BLISSFUL</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body class="bg-black text-white font-sans">
 
-  <!-- HERO -->
   <section class="text-center py-20 px-6">
     <img src="logo.png" class="mx-auto h-32 mb-6"/>
     <h1 class="text-5xl font-black mb-4">TRULY BLISSFUL</h1>
@@ -19,45 +17,45 @@
     <a href="#products" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">SHOP</a>
   </section>
 
-  <!-- PRODUCTS -->
   <section id="products" class="px-6 pb-20 max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
 
-    <!-- Product 1 -->
     <div class="bg-neutral-900 p-6 rounded-xl text-center">
       <img src="product1.jpg" class="h-48 mx-auto mb-4 object-contain"/>
       <h3 class="font-bold">We Are Taking Tee</h3>
       <p class="text-gray-400 text-sm mb-3">$25</p>
-      <button onclick="addToCart('We Are Taking Tee',25)" class="bg-orange-500 px-4 py-2 rounded-lg text-black">Add</button>
+      <button onclick="addToCart('We Are Taking Tee', 25)" class="bg-orange-500 px-4 py-2 rounded-lg text-black font-bold">Add to Cart</button>
     </div>
 
-    <!-- Product 2 -->
     <div class="bg-neutral-900 p-6 rounded-xl text-center">
       <img src="product2.jpg" class="h-48 mx-auto mb-4 object-contain"/>
       <h3 class="font-bold">The Cave Tee</h3>
       <p class="text-gray-400 text-sm mb-3">$25</p>
-      <button onclick="addToCart('The Cave Tee',25)" class="bg-orange-500 px-4 py-2 rounded-lg text-black">Add</button>
+      <button onclick="addToCart('The Cave Tee', 25)" class="bg-orange-500 px-4 py-2 rounded-lg text-black font-bold">Add to Cart</button>
     </div>
 
-    <!-- Product 3 -->
     <div class="bg-neutral-900 p-6 rounded-xl text-center">
       <img src="product3.jpg" class="h-48 mx-auto mb-4 object-contain"/>
       <h3 class="font-bold">Kingdom Come Tee</h3>
       <p class="text-gray-400 text-sm mb-3">$25</p>
-      <button onclick="addToCart('Kingdom Come Tee',25)" class="bg-orange-500 px-4 py-2 rounded-lg text-black">Add</button>
+      <button onclick="addToCart('Kingdom Come Tee', 25)" class="bg-orange-500 px-4 py-2 rounded-lg text-black font-bold">Add to Cart</button>
     </div>
 
   </section>
 
-  <!-- CART -->
   <section class="max-w-3xl mx-auto px-6 pb-20">
     <div class="bg-neutral-900 p-6 rounded-xl">
       <h2 class="text-2xl font-bold mb-4">Cart</h2>
-      <ul id="cart-items" class="mb-4 text-gray-300"></ul>
+      <ul id="cart-items" class="mb-4 text-gray-300 space-y-2"></ul>
       <p class="mb-4">Total: <span id="cart-total">$0</span></p>
 
-      <button onclick="checkout()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold w-full">
-        Checkout
-      </button>
+      <div class="flex gap-3">
+        <button onclick="checkout()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold w-full">
+          Checkout
+        </button>
+        <button onclick="clearCart()" class="border border-white/20 px-6 py-3 rounded-xl font-bold w-full">
+          Clear Cart
+        </button>
+      </div>
     </div>
   </section>
 
@@ -66,13 +64,22 @@
     let cart = [];
 
     async function initStripe() {
-      const res = await fetch('/config');
-      const data = await res.json();
-      stripe = Stripe(data.publishableKey);
+      try {
+        const res = await fetch('/config');
+        const data = await res.json();
+        stripe = Stripe(data.publishableKey);
+      } catch (error) {
+        console.error('Stripe init failed:', error);
+      }
     }
 
     function addToCart(name, price) {
       cart.push({ name, price });
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
       renderCart();
     }
 
@@ -82,6 +89,12 @@
 
       list.innerHTML = '';
       let sum = 0;
+
+      if (cart.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Your cart is empty.';
+        list.appendChild(li);
+      }
 
       cart.forEach(item => {
         sum += item.price;
@@ -94,6 +107,11 @@
     }
 
     async function checkout() {
+      if (cart.length === 0) {
+        alert('Your cart is empty.');
+        return;
+      }
+
       const res = await fetch('/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,10 +119,11 @@
       });
 
       const data = await res.json();
-      stripe.redirectToCheckout({ sessionId: data.id });
+      await stripe.redirectToCheckout({ sessionId: data.id });
     }
 
     initStripe();
+    renderCart();
   </script>
 
 </body>
