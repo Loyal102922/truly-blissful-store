@@ -58,73 +58,75 @@
       </div>
     </div>
   </section>
+<script>
+  let stripe = null;
+  let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
 
-  <script>
-    let stripe = null;
-    let cart = [];
-
-    async function initStripe() {
-      try {
-        const res = await fetch('/config');
-        const data = await res.json();
-        stripe = Stripe(data.publishableKey);
-      } catch (error) {
-        console.error('Stripe init failed:', error);
-      }
-    }
-
-    function addToCart(name, price) {
-      cart.push({ name, price });
-      renderCart();
-    }
-
-    function clearCart() {
-      cart = [];
-      renderCart();
-    }
-
-    function renderCart() {
-      const list = document.getElementById('cart-items');
-      const total = document.getElementById('cart-total');
-
-      list.innerHTML = '';
-      let sum = 0;
-
-      if (cart.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'Your cart is empty.';
-        list.appendChild(li);
-      }
-
-      cart.forEach(item => {
-        sum += item.price;
-        const li = document.createElement('li');
-        li.textContent = `${item.name} - $${item.price}`;
-        list.appendChild(li);
-      });
-
-      total.textContent = '$' + sum;
-    }
-
-    async function checkout() {
-      if (cart.length === 0) {
-        alert('Your cart is empty.');
-        return;
-      }
-
-      const res = await fetch('/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart })
-      });
-
+  async function initStripe() {
+    try {
+      const res = await fetch('/config');
       const data = await res.json();
-      await stripe.redirectToCheckout({ sessionId: data.id });
+      stripe = Stripe(data.publishableKey);
+    } catch (error) {
+      console.error('Stripe init failed:', error);
+    }
+  }
+
+  function saveCart() {
+    localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
+  }
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    saveCart();
+    renderCart();
+  }
+
+  function clearCart() {
+    cart = [];
+    saveCart();
+    renderCart();
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cart-items');
+    const total = document.getElementById('cart-total');
+
+    list.innerHTML = '';
+    let sum = 0;
+
+    if (cart.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'Your cart is empty.';
+      list.appendChild(li);
     }
 
-    initStripe();
-    renderCart();
-  </script>
+    cart.forEach(item => {
+      sum += item.price;
+      const li = document.createElement('li');
+      li.textContent = `${item.name} - $${item.price}`;
+      list.appendChild(li);
+    });
 
-</body>
-</html>
+    total.textContent = '$' + sum;
+  }
+
+  async function checkout() {
+    if (cart.length === 0) {
+      alert('Your cart is empty.');
+      return;
+    }
+
+    const res = await fetch('/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cart })
+    });
+
+    const data = await res.json();
+    await stripe.redirectToCheckout({ sessionId: data.id });
+  }
+
+  initStripe();
+  renderCart();
+</script>
