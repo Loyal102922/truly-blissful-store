@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRULY BLISSFUL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- HEADER -->
+  <header class="border-b border-white/10 sticky top-0 bg-black/95 backdrop-blur z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="logo.png" class="h-12"/>
+        <h1 class="font-black text-lg">TRULY BLISSFUL</h1>
+      </div>
+      <a href="#products" class="bg-orange-500 px-4 py-2 rounded-xl text-black font-bold">Shop</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="text-center py-20 px-6">
+    <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
+    <h2 class="text-5xl font-black mt-4">Wear the Message</h2>
+    <p class="text-gray-400 mt-4">Faith-driven streetwear built with purpose.</p>
+    <a href="#products" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold inline-block mt-6">Shop Now</a>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" class="px-6 pb-20 max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
+
+      <!-- TEE 1 -->
+      <div class="bg-neutral-900 p-6 rounded-xl text-center">
+        <img src="product1.jpg" class="h-48 mx-auto mb-4"/>
+        <h3 class="font-bold">We Are Taking Tee</h3>
+        <p class="text-gray-400">$25</p>
+        <button onclick="addToCart('We Are Taking Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">Add</button>
+      </div>
+
+      <!-- TEE 2 -->
+      <div class="bg-neutral-900 p-6 rounded-xl text-center">
+        <img src="product2.jpg" class="h-48 mx-auto mb-4"/>
+        <h3 class="font-bold">The Cave Tee</h3>
+        <p class="text-gray-400">$25</p>
+        <button onclick="addToCart('The Cave Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">Add</button>
+      </div>
+
+      <!-- TEE 3 -->
+      <div class="bg-neutral-900 p-6 rounded-xl text-center">
+        <img src="product3.jpg" class="h-48 mx-auto mb-4"/>
+        <h3 class="font-bold">Kingdom Come Tee</h3>
+        <p class="text-gray-400">$25</p>
+        <button onclick="addToCart('Kingdom Come Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">Add</button>
+      </div>
+
+      <!-- HAT -->
+      <div class="bg-neutral-900 p-6 rounded-xl text-center">
+        <img src="hat1.jpg" class="h-48 mx-auto mb-4"/>
+        <h3 class="font-bold">TRULY BLISSFUL Hat</h3>
+        <p class="text-gray-400">$20</p>
+        <button onclick="addToCart('TRULY BLISSFUL Hat',20)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">Add</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CART -->
+  <section class="max-w-3xl mx-auto px-6 pb-20">
+    <div class="bg-neutral-900 p-6 rounded-xl">
+      <h2 class="text-xl font-bold mb-4">Cart</h2>
+      <ul id="cart-items"></ul>
+      <p class="mt-4">Total: <span id="total">$0</span></p>
+
+      <button onclick="checkout()" class="bg-orange-500 w-full mt-4 py-3 rounded-xl text-black font-bold">
+        Checkout
+      </button>
+    </div>
+  </section>
+
+<script>
+let cart = [];
+let stripe;
+
+async function initStripe() {
+  const res = await fetch('/config');
+  const data = await res.json();
+  stripe = Stripe(data.publishableKey);
+}
+
+function addToCart(name, price) {
+  cart.push({ name, price });
+  renderCart();
+}
+
+function renderCart() {
+  const list = document.getElementById('cart-items');
+  const total = document.getElementById('total');
+  list.innerHTML = '';
+  let sum = 0;
+
+  cart.forEach(item => {
+    sum += item.price;
+    const li = document.createElement('li');
+    li.textContent = `${item.name} - $${item.price}`;
+    list.appendChild(li);
+  });
+
+  total.textContent = '$' + sum;
+}
+
+async function checkout() {
+  const res = await fetch('/create-checkout-session', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ cart })
+  });
+
+  const data = await res.json();
+  stripe.redirectToCheckout({ sessionId: data.id });
+}
+
+initStripe();
+</script>
+
+</body>
+</html>
