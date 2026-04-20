@@ -57,17 +57,48 @@
       </div>
 
       <!-- HAT -->
-      <div class="bg-neutral-900 p-6 rounded-xl text-center">
-        <img src="hat1.jpg" class="h-48 mx-auto mb-4"/>
-        <h3 class="font-bold">TRULY BLISSFUL Hat</h3>
-        <p class="text-gray-400">$20</p>
-        <button onclick="addToCart('TRULY BLISSFUL Hat',20)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">Add</button>
-      </div>
+<!-- HAT -->
+<!-- HAT -->
+<div class="bg-neutral-900 p-6 rounded-xl text-center">
+  <img src="hat1.jpg" class="h-48 mx-auto mb-4"/>
+  <h3 class="font-bold">TRULY BLISSFUL Hat</h3>
+
+  <div class="space-y-3 mb-4">
+    <select id="size-hat" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+      <option>One Size</option>
+    </select>
+
+    <select id="color-hat" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+      <option>Black/Orange</option>
+      <option>Black/White</option>
+    </select>
+  </div>
+
+  <p class="text-gray-400">$20</p>
+  <button onclick="addConfiguredProduct('TRULY BLISSFUL Hat',20,'size-hat','color-hat')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">Add</button>
+</div>
 <div class="bg-neutral-900 p-6 rounded-xl text-center">
   <img src="hoodie1.jpg" alt="TRULY BLISSFUL Hoodie" class="h-56 mx-auto mb-4 object-contain"/>
   <h3 class="font-bold">TRULY BLISSFUL Hoodie</h3>
+
+  <div class="space-y-3 mb-4">
+    <select id="size-hoodie" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+      <option>Small</option>
+      <option>Medium</option>
+      <option>Large</option>
+      <option>XL</option>
+      <option>2XL</option>
+    </select>
+
+    <select id="color-hoodie" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+      <option>Black</option>
+      <option>White</option>
+      <option>Gray</option>
+    </select>
+  </div>
+
   <p class="text-gray-400">$45</p>
-  <button onclick="addToCart('TRULY BLISSFUL Hoodie',45)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">
+  <button onclick="addConfiguredProduct('TRULY BLISSFUL Hoodie',45,'size-hoodie','color-hoodie')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full">
     Add
   </button>
 </div>
@@ -101,7 +132,13 @@ function addToCart(name, price) {
   cart.push({ name, price });
   renderCart();
 }
+function addConfiguredProduct(name, price, sizeId, colorId) {
+  const size = document.getElementById(sizeId).value;
+  const color = document.getElementById(colorId).value;
 
+  cart.push({ name, price, size, color });
+  renderCart();
+}
 function renderCart() {
   const list = document.getElementById('cart-items');
   const total = document.getElementById('total');
@@ -111,7 +148,7 @@ function renderCart() {
   cart.forEach(item => {
     sum += item.price;
     const li = document.createElement('li');
-    li.textContent = `${item.name} - $${item.price}`;
+   li.textContent = `${item.name} (${item.size || 'Standard'} / ${item.color || 'Standard'}) - $${item.price}`;
     list.appendChild(li);
   });
 
