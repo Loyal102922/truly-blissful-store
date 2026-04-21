@@ -9,16 +9,23 @@
 </head>
 <body class="bg-black text-white font-sans">
 
+  <!-- HEADER -->
   <header class="border-b border-white/10 sticky top-0 bg-black/95 backdrop-blur z-50">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <img src="/logo.png" class="h-12 w-auto bg-white p-1 rounded"/>
-        <h1 class="font-black text-lg">TRULY BLISSFUL</h1>
+        <div>
+          <h1 class="font-black text-lg tracking-wide">TRULY BLISSFUL</h1>
+          <p class="text-xs text-gray-400 uppercase tracking-[0.25em]">Faith-Driven Streetwear</p>
+        </div>
       </div>
-      <a href="#products" class="bg-orange-500 px-4 py-2 rounded-xl text-black font-bold">Shop</a>
+      <a href="#products" class="bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+        Shop
+      </a>
     </div>
   </header>
 
+  <!-- HERO -->
   <section class="text-center py-16 md:py-24 px-4 sm:px-6">
     <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
 
@@ -26,17 +33,23 @@
       Wear the Message
     </h2>
 
-    <p class="text-gray-400 mt-4 text-base sm:text-lg max-w-xl mx-auto">
-      Faith-driven streetwear built with purpose.
+    <p class="text-gray-400 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+      Faith-driven streetwear built with purpose, identity, and bold presence.
     </p>
 
     <p class="text-orange-400 mt-3 font-semibold">Limited quantities available</p>
 
-    <a href="#products" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold inline-block mt-6">
-      Shop Now
-    </a>
+    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#products" class="bg-orange-500 hover:bg-orange-400 transition px-6 py-3 rounded-xl text-black font-bold inline-block">
+        Shop Now
+      </a>
+      <a href="#cart" class="border border-white/20 hover:border-white/40 transition px-6 py-3 rounded-xl font-bold inline-block">
+        View Cart
+      </a>
+    </div>
   </section>
 
+  <!-- COLLECTION TABS -->
   <section class="px-6 pb-8 max-w-6xl mx-auto">
     <div class="flex flex-wrap gap-3 justify-center">
       <a href="#tees" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
@@ -51,52 +64,63 @@
     </div>
   </section>
 
+  <!-- PRODUCTS -->
   <section id="products" class="px-6 pb-20 max-w-6xl mx-auto">
 
+    <!-- TEES -->
     <div id="tees" class="mb-16">
       <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Tees</h2>
       <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-        <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300">
+        <div onclick="openModal('The Cave Tee', 25, 'product1.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer">
           <img src="product1.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">The Cave Tee</h3>
           <p class="text-gray-400">$25</p>
-          <button onclick="addToCart('The Cave Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">Add</button>
+          <button onclick="event.stopPropagation(); addToCart('The Cave Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+            Add
+          </button>
         </div>
 
-        <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300">
+        <div onclick="openModal('Kingdom Come Tee', 25, 'product2.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer">
           <img src="product2.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">Kingdom Come Tee</h3>
           <p class="text-gray-400">$25</p>
-          <button onclick="addToCart('Kingdom Come Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">Add</button>
+          <button onclick="event.stopPropagation(); addToCart('Kingdom Come Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+            Add
+          </button>
         </div>
 
-        <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300">
+        <div onclick="openModal('We Are Taking Tee', 25, 'product3.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer">
           <img src="product3.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">We Are Taking Tee</h3>
           <p class="text-gray-400">$25</p>
-          <button onclick="addToCart('We Are Taking Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">Add</button>
+          <button onclick="event.stopPropagation(); addToCart('We Are Taking Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+            Add
+          </button>
         </div>
 
-        <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300">
-          <img src="product4.jpg" class="w-full h-64 object-contain rounded-lg mb-4"/>
+        <div onclick="openModal('Didn’t Ask Tee', 25, 'product4.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer">
+          <img src="product4.jpg" class="w-full h-64 object-contain rounded-lg mb-4 transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">Didn’t Ask Tee</h3>
           <p class="text-gray-400">$25</p>
-          <button onclick="addToCart('Didn’t Ask Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">Add</button>
+          <button onclick="event.stopPropagation(); addToCart('Didn’t Ask Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+            Add
+          </button>
         </div>
 
       </div>
     </div>
 
+    <!-- HOODIES -->
     <div id="hoodies" class="mb-16">
       <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Hoodies</h2>
       <p class="text-gray-400 mb-6">Heavyweight layers for bold faith expression.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
 
-        <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300">
+        <div onclick="openModal('TRULY BLISSFUL Hoodie', 45, 'hoodie1.jpg', true, 'hoodie')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer">
           <img src="hoodie1.jpg" class="w-full h-56 object-contain rounded-lg mb-4 transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">TRULY BLISSFUL Hoodie</h3>
 
@@ -116,19 +140,22 @@
           </div>
 
           <p class="text-gray-400">$45</p>
-          <button onclick="addConfiguredProduct('TRULY BLISSFUL Hoodie',45,'size-hoodie','color-hoodie')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">Add</button>
+          <button onclick="event.stopPropagation(); addConfiguredProduct('TRULY BLISSFUL Hoodie',45,'size-hoodie','color-hoodie')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+            Add
+          </button>
         </div>
 
       </div>
     </div>
 
+    <!-- HEADWEAR -->
     <div id="headwear" class="mb-16">
       <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Headwear</h2>
       <p class="text-gray-400 mb-6">Clean finishing pieces for the full look.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
 
-        <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300">
+        <div onclick="openModal('TRULY BLISSFUL Hat', 20, 'hat1.jpg', true, 'hat')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer">
           <img src="hat1.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">TRULY BLISSFUL Hat</h3>
 
@@ -143,7 +170,9 @@
           </div>
 
           <p class="text-gray-400">$20</p>
-          <button onclick="addConfiguredProduct('TRULY BLISSFUL Hat',20,'size-hat','color-hat')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">Add</button>
+          <button onclick="event.stopPropagation(); addConfiguredProduct('TRULY BLISSFUL Hat',20,'size-hat','color-hat')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+            Add
+          </button>
         </div>
 
       </div>
@@ -151,25 +180,27 @@
 
   </section>
 
+  <!-- TRUST SECTION -->
   <section class="max-w-5xl mx-auto px-6 pb-16">
     <div class="grid md:grid-cols-3 gap-6 text-center">
-      <div>
+      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
         <h4 class="font-bold text-lg mb-2">Secure Checkout</h4>
         <p class="text-gray-400 text-sm">Payments are processed securely through Stripe.</p>
       </div>
-      <div>
+      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
         <h4 class="font-bold text-lg mb-2">Fast Fulfillment</h4>
         <p class="text-gray-400 text-sm">Orders are packed and processed as quickly as possible.</p>
       </div>
-      <div>
+      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
         <h4 class="font-bold text-lg mb-2">Purpose Driven</h4>
         <p class="text-gray-400 text-sm">Every piece represents faith, identity, and movement.</p>
       </div>
     </div>
   </section>
 
-  <section class="max-w-3xl mx-auto px-6 pb-20">
-    <div class="bg-neutral-900 p-4 sm:p-6 rounded-xl border border-white/10">
+  <!-- CART -->
+  <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
+    <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">Cart</h2>
         <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
@@ -179,23 +210,45 @@
       <p class="mt-4">Total: <span id="total">$0</span></p>
 
       <div class="grid sm:grid-cols-2 gap-3 mt-4">
-        <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold">
+        <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
           Checkout
         </button>
-        <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold">
+        <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold hover:border-white/40 transition">
           Clear Cart
         </button>
       </div>
     </div>
   </section>
 
+  <!-- EMAIL -->
   <section class="text-center py-16 border-t border-white/10 px-6">
     <h3 class="text-3xl font-black mb-4">Join the Movement</h3>
     <p class="text-gray-400 mb-6">Get early access to future drops</p>
     <input type="email" placeholder="Enter email" class="px-4 py-3 rounded-xl bg-black border border-gray-700 mb-4 w-full max-w-md" />
     <br/>
-    <button class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">Join</button>
+    <button class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">Join</button>
   </section>
+
+  <!-- POPUP MODAL -->
+  <div id="product-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 px-4">
+    <div class="bg-neutral-900 p-6 rounded-2xl max-w-md w-full relative border border-white/10">
+      <button onclick="closeModal()" class="absolute top-3 right-3 text-white text-2xl leading-none">✕</button>
+
+      <img id="modal-img" class="w-full h-64 object-contain mb-4 rounded-lg"/>
+
+      <h3 id="modal-title" class="text-2xl font-bold mb-2"></h3>
+      <p id="modal-price" class="text-gray-400 mb-4"></p>
+
+      <div id="modal-variant-wrap" class="space-y-3 mb-4 hidden">
+        <select id="modal-size" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2"></select>
+        <select id="modal-color" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2"></select>
+      </div>
+
+      <button id="modal-add" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
+        Add to Cart
+      </button>
+    </div>
+  </div>
 
 <script>
 let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
@@ -290,6 +343,76 @@ function renderCart() {
 
   total.textContent = '$' + sum;
   count.textContent = itemCount;
+}
+
+function openModal(name, price, image, hasVariants = false, productType = '') {
+  document.getElementById('modal-img').src = image;
+  document.getElementById('modal-title').textContent = name;
+  document.getElementById('modal-price').textContent = '$' + price;
+
+  const variantWrap = document.getElementById('modal-variant-wrap');
+  const sizeSelect = document.getElementById('modal-size');
+  const colorSelect = document.getElementById('modal-color');
+
+  variantWrap.classList.add('hidden');
+  sizeSelect.innerHTML = '';
+  colorSelect.innerHTML = '';
+
+  if (hasVariants) {
+    variantWrap.classList.remove('hidden');
+
+    if (productType === 'hoodie') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>White</option>
+        <option>Gray</option>
+      `;
+    }
+
+    if (productType === 'hat') {
+      sizeSelect.innerHTML = `<option>One Size</option>`;
+      colorSelect.innerHTML = `
+        <option>Black/Orange</option>
+        <option>Black/White</option>
+      `;
+    }
+
+    document.getElementById('modal-add').onclick = function() {
+      const size = sizeSelect.value;
+      const color = colorSelect.value;
+      const existing = cart.find(item => item.name === name && item.size === size && item.color === color);
+
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ name, price, size, color, qty: 1 });
+      }
+
+      saveCart();
+      renderCart();
+      closeModal();
+    };
+  } else {
+    document.getElementById('modal-add').onclick = function() {
+      addToCart(name, price);
+      closeModal();
+    };
+  }
+
+  document.getElementById('product-modal').classList.remove('hidden');
+  document.getElementById('product-modal').classList.add('flex');
+}
+
+function closeModal() {
+  document.getElementById('product-modal').classList.add('hidden');
+  document.getElementById('product-modal').classList.remove('flex');
 }
 
 async function checkout() {
