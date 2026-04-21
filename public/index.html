@@ -74,38 +74,102 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-        <div onclick="openModal('The Cave Tee', 25, 'product1.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
+        <div onclick="openModal('The Cave Tee', 25, 'product1.jpg', true, 'tee-cave')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
           <img src="product1.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">The Cave Tee</h3>
+
+          <div class="space-y-3 mb-4">
+            <select id="size-tee-1" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+              <option>XL</option>
+              <option>2XL</option>
+            </select>
+            <select id="color-tee-1" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Black</option>
+              <option>Stone</option>
+              <option>Forest Green</option>
+            </select>
+          </div>
+
           <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('The Cave Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+          <button onclick="event.stopPropagation(); addConfiguredProduct('The Cave Tee',25,'size-tee-1','color-tee-1')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
             Add
           </button>
         </div>
 
-        <div onclick="openModal('Kingdom Come Tee', 25, 'product2.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
+        <div onclick="openModal('Kingdom Come Tee', 25, 'product2.jpg', true, 'tee-kingdom')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
           <img src="product2.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">Kingdom Come Tee</h3>
+
+          <div class="space-y-3 mb-4">
+            <select id="size-tee-2" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+              <option>XL</option>
+              <option>2XL</option>
+            </select>
+            <select id="color-tee-2" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>White</option>
+              <option>Black</option>
+              <option>Cream</option>
+            </select>
+          </div>
+
           <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('Kingdom Come Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+          <button onclick="event.stopPropagation(); addConfiguredProduct('Kingdom Come Tee',25,'size-tee-2','color-tee-2')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
             Add
           </button>
         </div>
 
-        <div onclick="openModal('We Are Taking Tee', 25, 'product3.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
+        <div onclick="openModal('We Are Taking Tee', 25, 'product3.jpg', true, 'tee-taking')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
           <img src="product3.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">We Are Taking Tee</h3>
+
+          <div class="space-y-3 mb-4">
+            <select id="size-tee-3" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+              <option>XL</option>
+              <option>2XL</option>
+            </select>
+            <select id="color-tee-3" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Black</option>
+              <option>Vintage Black</option>
+              <option>Sand</option>
+            </select>
+          </div>
+
           <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('We Are Taking Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+          <button onclick="event.stopPropagation(); addConfiguredProduct('We Are Taking Tee',25,'size-tee-3','color-tee-3')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
             Add
           </button>
         </div>
 
-        <div onclick="openModal('Didn’t Ask Tee', 25, 'product4.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
+        <div onclick="openModal('Didn’t Ask Tee', 25, 'product4.jpg', true, 'tee-didntask')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
           <img src="product4.jpg" class="w-full h-64 object-contain rounded-lg mb-4 transition duration-300 hover:scale-105"/>
           <h3 class="font-bold">Didn’t Ask Tee</h3>
+
+          <div class="space-y-3 mb-4">
+            <select id="size-tee-4" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+              <option>XL</option>
+              <option>2XL</option>
+            </select>
+            <select id="color-tee-4" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+              <option>Black</option>
+              <option>Charcoal</option>
+              <option>White</option>
+            </select>
+          </div>
+
           <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('Didn’t Ask Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
+          <button onclick="event.stopPropagation(); addConfiguredProduct('Didn’t Ask Tee',25,'size-tee-4','color-tee-4')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
             Add
           </button>
         </div>
@@ -125,14 +189,14 @@
           <h3 class="font-bold">TRULY BLISSFUL Hoodie</h3>
 
           <div class="space-y-3 mb-4">
-            <select id="size-hoodie" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+            <select id="size-hoodie" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
               <option>Small</option>
               <option>Medium</option>
               <option>Large</option>
               <option>XL</option>
               <option>2XL</option>
             </select>
-            <select id="color-hoodie" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+            <select id="color-hoodie" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
               <option>Black</option>
               <option>White</option>
               <option>Gray</option>
@@ -160,12 +224,15 @@
           <h3 class="font-bold">TRULY BLISSFUL Hat</h3>
 
           <div class="space-y-3 mb-4">
-            <select id="size-hat" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+            <select id="size-hat" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
               <option>One Size</option>
             </select>
-            <select id="color-hat" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
+            <select id="color-hat" onclick="event.stopPropagation()" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
               <option>Black/Orange</option>
               <option>Black/White</option>
+              <option>All Black</option>
+              <option>Cream/Black</option>
+              <option>Gray/Black</option>
             </select>
           </div>
 
@@ -384,6 +451,66 @@ function openModal(name, price, image, hasVariants = false, productType = '') {
   if (hasVariants) {
     variantWrap.classList.remove('hidden');
 
+    if (productType === 'tee-cave') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>Stone</option>
+        <option>Forest Green</option>
+      `;
+    }
+
+    if (productType === 'tee-kingdom') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>White</option>
+        <option>Black</option>
+        <option>Cream</option>
+      `;
+    }
+
+    if (productType === 'tee-taking') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>Vintage Black</option>
+        <option>Sand</option>
+      `;
+    }
+
+    if (productType === 'tee-didntask') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>Charcoal</option>
+        <option>White</option>
+      `;
+    }
+
     if (productType === 'hoodie') {
       sizeSelect.innerHTML = `
         <option>Small</option>
@@ -404,6 +531,9 @@ function openModal(name, price, image, hasVariants = false, productType = '') {
       colorSelect.innerHTML = `
         <option>Black/Orange</option>
         <option>Black/White</option>
+        <option>All Black</option>
+        <option>Cream/Black</option>
+        <option>Gray/Black</option>
       `;
     }
 
