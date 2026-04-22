@@ -9,7 +9,6 @@
 </head>
 <body class="bg-black text-white font-sans">
 
-  <!-- HEADER -->
   <header class="border-b border-white/10 sticky top-0 bg-black/95 backdrop-blur z-50">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -25,7 +24,6 @@
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="text-center py-16 md:py-24 px-4 sm:px-6">
     <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
 
@@ -49,7 +47,6 @@
     </div>
   </section>
 
-  <!-- COLLECTION TABS -->
   <section class="px-6 pb-8 max-w-6xl mx-auto">
     <div class="flex flex-wrap gap-3 justify-center">
       <a href="#tees" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
@@ -64,10 +61,8 @@
     </div>
   </section>
 
-  <!-- PRODUCTS -->
   <section id="products" class="px-6 pb-20 max-w-6xl mx-auto">
 
-    <!-- TEES -->
     <div id="tees" class="mb-16">
       <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Tees</h2>
       <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
@@ -177,7 +172,6 @@
       </div>
     </div>
 
-    <!-- HOODIES -->
     <div id="hoodies" class="mb-16">
       <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Hoodies</h2>
       <p class="text-gray-400 mb-6">Heavyweight layers for bold faith expression.</p>
@@ -212,7 +206,6 @@
       </div>
     </div>
 
-    <!-- HEADWEAR -->
     <div id="headwear" class="mb-16">
       <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Headwear</h2>
       <p class="text-gray-400 mb-6">Clean finishing pieces for the full look.</p>
@@ -247,7 +240,6 @@
 
   </section>
 
-  <!-- TRUST SECTION -->
   <section class="max-w-5xl mx-auto px-6 pb-16">
     <div class="grid md:grid-cols-3 gap-6 text-center">
       <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
@@ -265,7 +257,6 @@
     </div>
   </section>
 
-  <!-- CART -->
   <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
     <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
       <div class="flex items-center justify-between mb-4">
@@ -287,7 +278,6 @@
     </div>
   </section>
 
-  <!-- REVIEWS -->
   <section class="max-w-6xl mx-auto px-6 pb-20">
     <div class="flex items-center justify-between gap-4 flex-wrap mb-8">
       <h2 class="text-3xl font-black border-l-4 border-orange-500 pl-3">Customer Reviews</h2>
@@ -296,31 +286,7 @@
       </button>
     </div>
 
-    <div id="reviews-list" class="grid md:grid-cols-3 gap-6 mb-10">
-      <div class="bg-neutral-900 p-6 rounded-2xl border border-white/10">
-        <p class="text-orange-400 mb-2">★★★★★</p>
-        <p class="text-gray-300 text-sm mb-4">
-          "Quality is crazy. Shirt fits perfect and message hits different."
-        </p>
-        <p class="text-xs text-gray-500">— Verified Customer</p>
-      </div>
-
-      <div class="bg-neutral-900 p-6 rounded-2xl border border-white/10">
-        <p class="text-orange-400 mb-2">★★★★★</p>
-        <p class="text-gray-300 text-sm mb-4">
-          "Fast shipping and premium feel. Definitely ordering again."
-        </p>
-        <p class="text-xs text-gray-500">— Verified Customer</p>
-      </div>
-
-      <div class="bg-neutral-900 p-6 rounded-2xl border border-white/10">
-        <p class="text-orange-400 mb-2">★★★★★</p>
-        <p class="text-gray-300 text-sm mb-4">
-          "This brand stands for something real. Respect."
-        </p>
-        <p class="text-xs text-gray-500">— Verified Customer</p>
-      </div>
-    </div>
+    <div id="reviews-list" class="grid md:grid-cols-3 gap-6 mb-10"></div>
 
     <div id="review-form-wrap" class="bg-neutral-900 p-6 sm:p-8 rounded-2xl border border-white/10">
       <h3 class="text-2xl font-black mb-4">Leave a Review</h3>
@@ -344,7 +310,6 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section class="max-w-4xl mx-auto px-6 pb-20">
     <div class="bg-neutral-900 p-6 sm:p-8 rounded-2xl border border-white/10">
       <h2 class="text-2xl font-black mb-3">Contact Us</h2>
@@ -364,18 +329,15 @@
           trulyblissful7@gmail.com
         </a>
 
-        <button onclick="sendContactEmail()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
+        <button onclick="sendContactMessage()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
           Send Message
         </button>
       </div>
 
-      <p class="text-gray-500 text-sm mt-4">
-        This opens your email app and sends directly to TRULY BLISSFUL.
-      </p>
+      <p id="contact-status" class="text-sm text-gray-500 mt-4"></p>
     </div>
   </section>
 
-  <!-- EMAIL -->
   <section class="text-center py-16 border-t border-white/10 px-6">
     <h3 class="text-3xl font-black mb-4">Join the Movement</h3>
     <p class="text-gray-400 mb-6">Get early access to future drops</p>
@@ -384,7 +346,6 @@
     <button class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">Join</button>
   </section>
 
-  <!-- BOLD STREETWEAR POPUP -->
   <div id="product-modal" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 px-4">
     <div class="bg-neutral-950 border border-orange-500/30 shadow-2xl shadow-orange-900/20 p-6 sm:p-8 rounded-3xl max-w-lg w-full relative overflow-hidden">
       <div class="absolute inset-x-0 top-0 h-1 bg-orange-500"></div>
@@ -421,33 +382,17 @@
 
 <script>
 let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
-let stripe;
-
-const defaultReviews = [
-  {
-    name: 'Verified Customer',
-    rating: 5,
-    text: 'Quality is crazy. Shirt fits perfect and message hits different.'
-  },
-  {
-    name: 'Verified Customer',
-    rating: 5,
-    text: 'Fast shipping and premium feel. Definitely ordering again.'
-  },
-  {
-    name: 'Verified Customer',
-    rating: 5,
-    text: 'This brand stands for something real. Respect.'
-  }
-];
-
-let savedReviews = JSON.parse(localStorage.getItem('trulyBlissfulReviews')) || [];
-let reviews = [...defaultReviews, ...savedReviews];
+let stripe = null;
+let reviews = [];
 
 async function initStripe() {
-  const res = await fetch('/config');
-  const data = await res.json();
-  if (data.publishableKey) stripe = Stripe(data.publishableKey);
+  try {
+    const res = await fetch('/config');
+    const data = await res.json();
+    if (data.publishableKey) stripe = Stripe(data.publishableKey);
+  } catch (error) {
+    console.error('Stripe init failed:', error);
+  }
 }
 
 function saveCart() {
@@ -535,6 +480,17 @@ function renderCart() {
   count.textContent = itemCount;
 }
 
+async function loadReviews() {
+  try {
+    const res = await fetch('/reviews');
+    const data = await res.json();
+    reviews = Array.isArray(data) ? data : [];
+    renderReviews();
+  } catch (error) {
+    console.error('Load reviews failed:', error);
+  }
+}
+
 function renderReviews() {
   const wrap = document.getElementById('reviews-list');
   wrap.innerHTML = '';
@@ -556,7 +512,7 @@ function scrollToReviewForm() {
   document.getElementById('review-form-wrap').scrollIntoView({ behavior: 'smooth' });
 }
 
-function submitReview() {
+async function submitReview() {
   const name = document.getElementById('review-name').value.trim();
   const rating = parseInt(document.getElementById('review-rating').value, 10);
   const text = document.getElementById('review-text').value.trim();
@@ -566,35 +522,62 @@ function submitReview() {
     return;
   }
 
-  const newReview = { name, rating, text };
-  savedReviews.push(newReview);
-  localStorage.setItem('trulyBlissfulReviews', JSON.stringify(savedReviews));
+  const res = await fetch('/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, rating, text })
+  });
 
-  reviews = [...defaultReviews, ...savedReviews];
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || 'Failed to submit review.');
+    return;
+  }
+
+  reviews = data.reviews;
   renderReviews();
 
   document.getElementById('review-name').value = '';
   document.getElementById('review-rating').value = '5';
   document.getElementById('review-text').value = '';
 
-  alert('Review added!');
+  alert('Review submitted!');
 }
 
-function sendContactEmail() {
+async function sendContactMessage() {
   const name = document.getElementById('contact-name').value.trim();
   const email = document.getElementById('contact-email').value.trim();
   const subject = document.getElementById('contact-subject').value.trim();
   const message = document.getElementById('contact-message').value.trim();
+  const status = document.getElementById('contact-status');
 
-  const finalSubject = encodeURIComponent(subject || 'TRULY BLISSFUL Inquiry');
-  const finalBody = encodeURIComponent(
-`Name: ${name}
-Email: ${email}
+  status.textContent = '';
 
-${message}`
-  );
+  if (!name || !email || !message) {
+    status.textContent = 'Please fill out your name, email, and message.';
+    return;
+  }
 
-  window.location.href = `mailto:trulyblissful7@gmail.com?subject=${finalSubject}&body=${finalBody}`;
+  const res = await fetch('/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, subject, message })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    status.textContent = data.error || 'Failed to send message.';
+    return;
+  }
+
+  status.textContent = 'Message sent successfully!';
+
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-subject').value = '';
+  document.getElementById('contact-message').value = '';
 }
 
 function openModal(name, price, image, hasVariants = false, productType = '') {
@@ -763,7 +746,7 @@ async function checkout() {
 
 initStripe();
 renderCart();
-renderReviews();
+loadReviews();
 </script>
 
 </body>
