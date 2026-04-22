@@ -5,464 +5,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TRULY BLISSFUL</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="bg-black text-white font-sans">
 
-  <!-- HEADER -->
-  <header class="border-b border-white/10 sticky top-0 bg-black/95 backdrop-blur z-50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="/logo.png" class="h-12 w-auto bg-white p-1 rounded"/>
-        <div>
-          <h1 class="font-black text-lg tracking-wide">TRULY BLISSFUL</h1>
-          <p class="text-xs text-gray-400 uppercase tracking-[0.25em]">Faith-Driven Streetwear</p>
-        </div>
-      </div>
-      <a href="#products" class="bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
-        Shop
-      </a>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="text-center py-16 md:py-24 px-4 sm:px-6">
-    <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
-
-    <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mt-4 leading-tight">
-      Wear the Message
-    </h2>
-
-    <p class="text-gray-400 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
-      Faith-driven streetwear built with purpose, identity, and bold presence.
-    </p>
-
-    <p class="text-orange-400 mt-3 font-semibold">Limited quantities available</p>
-
-    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#products" class="bg-orange-500 hover:bg-orange-400 transition px-6 py-3 rounded-xl text-black font-bold inline-block">
-        Shop Now
-      </a>
-      <a href="#cart" class="border border-white/20 hover:border-white/40 transition px-6 py-3 rounded-xl font-bold inline-block">
-        View Cart
-      </a>
-    </div>
-  </section>
-
-  <!-- COLLECTION TABS -->
-  <section class="px-6 pb-8 max-w-6xl mx-auto">
-    <div class="flex flex-wrap gap-3 justify-center">
-      <a href="#tees" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
-        Tees
-      </a>
-      <a href="#hoodies" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
-        Hoodies
-      </a>
-      <a href="#headwear" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
-        Headwear
-      </a>
-    </div>
-  </section>
-
-  <!-- PRODUCTS -->
-  <section id="products" class="px-6 pb-20 max-w-6xl mx-auto">
-
-    <!-- TEES -->
-    <div id="tees" class="mb-16">
-      <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Tees</h2>
-      <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-
-        <div onclick="openModal('The Cave Tee', 25, 'product1.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
-          <img src="product1.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
-          <h3 class="font-bold">The Cave Tee</h3>
-          <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('The Cave Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
-            Add
-          </button>
-        </div>
-
-        <div onclick="openModal('Kingdom Come Tee', 25, 'product2.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
-          <img src="product2.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
-          <h3 class="font-bold">Kingdom Come Tee</h3>
-          <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('Kingdom Come Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
-            Add
-          </button>
-        </div>
-
-        <div onclick="openModal('We Are Taking Tee', 25, 'product3.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
-          <img src="product3.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
-          <h3 class="font-bold">We Are Taking Tee</h3>
-          <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('We Are Taking Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
-            Add
-          </button>
-        </div>
-
-        <div onclick="openModal('Didn’t Ask Tee', 25, 'product4.jpg', false)" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
-          <img src="product4.jpg" class="w-full h-64 object-contain rounded-lg mb-4 transition duration-300 hover:scale-105"/>
-          <h3 class="font-bold">Didn’t Ask Tee</h3>
-          <p class="text-gray-400">$25</p>
-          <button onclick="event.stopPropagation(); addToCart('Didn’t Ask Tee',25)" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
-            Add
-          </button>
-        </div>
-
+<!-- HEADER -->
+<header class="border-b border-white/10 sticky top-0 bg-black/95 backdrop-blur z-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img src="/logo.png" class="h-12 w-auto bg-white p-1 rounded"/>
+      <div>
+        <h1 class="font-black text-lg tracking-wide">TRULY BLISSFUL</h1>
+        <p class="text-xs text-gray-400 uppercase tracking-[0.25em]">Faith-Driven Streetwear</p>
       </div>
     </div>
+    <a href="#products" class="bg-orange-500 px-4 py-2 rounded-xl text-black font-bold">
+      Shop
+    </a>
+  </div>
+</header>
 
-    <!-- HOODIES -->
-    <div id="hoodies" class="mb-16">
-      <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Hoodies</h2>
-      <p class="text-gray-400 mb-6">Heavyweight layers for bold faith expression.</p>
+<!-- HERO -->
+<section class="text-center py-16 px-6">
+  <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+  <h2 class="text-5xl md:text-7xl font-black mt-4">
+    Wear the Message
+  </h2>
 
-        <div onclick="openModal('TRULY BLISSFUL Hoodie', 45, 'hoodie1.jpg', true, 'hoodie')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
-          <img src="hoodie1.jpg" class="w-full h-56 object-contain rounded-lg mb-4 transition duration-300 hover:scale-105"/>
-          <h3 class="font-bold">TRULY BLISSFUL Hoodie</h3>
+  <p class="text-gray-400 mt-4 max-w-xl mx-auto">
+    Faith-driven streetwear built with purpose.
+  </p>
 
-          <div class="space-y-3 mb-4">
-            <select id="size-hoodie" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
-              <option>Small</option>
-              <option>Medium</option>
-              <option>Large</option>
-              <option>XL</option>
-              <option>2XL</option>
-            </select>
-            <select id="color-hoodie" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
-              <option>Black</option>
-              <option>White</option>
-              <option>Gray</option>
-            </select>
-          </div>
+  <a href="#products" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold inline-block mt-6">
+    Shop Now
+  </a>
+</section>
 
-          <p class="text-gray-400">$45</p>
-          <button onclick="event.stopPropagation(); addConfiguredProduct('TRULY BLISSFUL Hoodie',45,'size-hoodie','color-hoodie')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
-            Add
-          </button>
-        </div>
+<!-- PRODUCTS -->
+<section id="products" class="px-6 pb-20 max-w-6xl mx-auto">
 
-      </div>
+  <h2 class="text-3xl font-black mb-6 border-l-4 border-orange-500 pl-3">Tees</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+
+    <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10">
+      <img src="product1.jpg" class="h-48 mx-auto mb-4 object-contain"/>
+      <h3 class="font-bold">The Cave Tee</h3>
+      <p class="text-gray-400">$25</p>
     </div>
 
-    <!-- HEADWEAR -->
-    <div id="headwear" class="mb-16">
-      <h2 class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">Headwear</h2>
-      <p class="text-gray-400 mb-6">Clean finishing pieces for the full look.</p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-
-        <div onclick="openModal('TRULY BLISSFUL Hat', 20, 'hat1.jpg', true, 'hat')" class="bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 flex flex-col justify-between hover:border-orange-400/40 hover:-translate-y-1 transition duration-300 cursor-pointer shadow-lg shadow-black/30">
-          <img src="hat1.jpg" class="h-48 mx-auto mb-4 object-contain transition duration-300 hover:scale-105"/>
-          <h3 class="font-bold">TRULY BLISSFUL Hat</h3>
-
-          <div class="space-y-3 mb-4">
-            <select id="size-hat" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
-              <option>One Size</option>
-            </select>
-            <select id="color-hat" class="w-full rounded-xl bg-black border border-white/10 px-3 py-2">
-              <option>Black/Orange</option>
-              <option>Black/White</option>
-            </select>
-          </div>
-
-          <p class="text-gray-400">$20</p>
-          <button onclick="event.stopPropagation(); addConfiguredProduct('TRULY BLISSFUL Hat',20,'size-hat','color-hat')" class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold hover:bg-orange-400 transition">
-            Add
-          </button>
-        </div>
-
-      </div>
+    <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10">
+      <img src="product2.jpg" class="h-48 mx-auto mb-4 object-contain"/>
+      <h3 class="font-bold">Kingdom Come Tee</h3>
+      <p class="text-gray-400">$25</p>
     </div>
 
-  </section>
-
-  <!-- TRUST SECTION -->
-  <section class="max-w-5xl mx-auto px-6 pb-16">
-    <div class="grid md:grid-cols-3 gap-6 text-center">
-      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
-        <h4 class="font-bold text-lg mb-2">Secure Checkout</h4>
-        <p class="text-gray-400 text-sm">Payments are processed securely through Stripe.</p>
-      </div>
-      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
-        <h4 class="font-bold text-lg mb-2">Fast Fulfillment</h4>
-        <p class="text-gray-400 text-sm">Orders are packed and processed as quickly as possible.</p>
-      </div>
-      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10">
-        <h4 class="font-bold text-lg mb-2">Purpose Driven</h4>
-        <p class="text-gray-400 text-sm">Every piece represents faith, identity, and movement.</p>
-      </div>
+    <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10">
+      <img src="product3.jpg" class="h-48 mx-auto mb-4 object-contain"/>
+      <h3 class="font-bold">We Are Taking Tee</h3>
+      <p class="text-gray-400">$25</p>
     </div>
-  </section>
 
-  <!-- CART -->
-  <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
-    <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Cart</h2>
-        <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
-      </div>
-
-      <ul id="cart-items" class="space-y-3"></ul>
-      <p class="mt-4">Total: <span id="total">$0</span></p>
-
-      <div class="grid sm:grid-cols-2 gap-3 mt-4">
-        <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
-          Checkout
-        </button>
-        <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold hover:border-white/40 transition">
-          Clear Cart
-        </button>
-      </div>
+    <div class="bg-neutral-900 p-6 rounded-xl text-center border border-white/10">
+      <img src="product4.jpg" class="h-48 mx-auto mb-4 object-contain"/>
+      <h3 class="font-bold">Didn’t Ask Tee</h3>
+      <p class="text-gray-400">$25</p>
     </div>
-  </section>
 
-  <!-- EMAIL -->
-  <section class="text-center py-16 border-t border-white/10 px-6">
-    <h3 class="text-3xl font-black mb-4">Join the Movement</h3>
-    <p class="text-gray-400 mb-6">Get early access to future drops</p>
-    <input type="email" placeholder="Enter email" class="px-4 py-3 rounded-xl bg-black border border-gray-700 mb-4 w-full max-w-md" />
-    <br/>
-    <button class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">Join</button>
-  </section>
-
-  <!-- BOLD STREETWEAR POPUP -->
-  <div id="product-modal" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 px-4">
-    <div class="bg-neutral-950 border border-orange-500/30 shadow-2xl shadow-orange-900/20 p-6 sm:p-8 rounded-3xl max-w-lg w-full relative overflow-hidden">
-      <div class="absolute inset-x-0 top-0 h-1 bg-orange-500"></div>
-
-      <button onclick="closeModal()" class="absolute top-3 right-4 text-white text-2xl leading-none hover:text-orange-400 transition">
-        ✕
-      </button>
-
-      <div class="mb-3">
-        <span class="inline-block text-[10px] uppercase tracking-[0.25em] text-orange-400 border border-orange-500/30 rounded-full px-3 py-1">
-          Limited Drop
-        </span>
-      </div>
-
-      <img id="modal-img" class="w-full h-72 object-contain mb-5 rounded-2xl bg-white/5"/>
-
-      <h3 id="modal-title" class="text-3xl font-black mb-2 uppercase tracking-wide"></h3>
-      <p id="modal-price" class="text-gray-300 mb-4 text-lg"></p>
-
-      <p id="modal-copy" class="text-sm text-gray-400 mb-5">
-        Bold faith expression built for everyday movement.
-      </p>
-
-      <div id="modal-variant-wrap" class="space-y-3 mb-5 hidden">
-        <select id="modal-size" class="w-full rounded-xl bg-black border border-white/10 px-3 py-3"></select>
-        <select id="modal-color" class="w-full rounded-xl bg-black border border-white/10 px-3 py-3"></select>
-      </div>
-
-      <button id="modal-add" class="bg-orange-500 w-full py-4 rounded-2xl text-black font-black uppercase tracking-wide hover:bg-orange-400 transition">
-        Add to Cart
-      </button>
-    </div>
   </div>
 
-<script>
-let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
-let stripe;
+</section>
 
-async function initStripe() {
-  const res = await fetch('/config');
-  const data = await res.json();
-  if (data.publishableKey) stripe = Stripe(data.publishableKey);
-}
+<!-- REVIEWS -->
+<section class="max-w-6xl mx-auto px-6 pb-20">
+  <h2 class="text-3xl font-black mb-8 border-l-4 border-orange-500 pl-3">
+    Customer Reviews
+  </h2>
 
-function saveCart() {
-  localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
-}
+  <div class="grid md:grid-cols-3 gap-6">
 
-function addToCart(name, price) {
-  const existing = cart.find(item => item.name === name && !item.size && !item.color);
-  if (existing) {
-    existing.qty = (existing.qty || 1) + 1;
-  } else {
-    cart.push({ name, price, qty: 1 });
-  }
-  saveCart();
-  renderCart();
-}
+    <div class="bg-neutral-900 p-6 rounded-2xl border border-white/10">
+      <p class="text-orange-400 mb-2">★★★★★</p>
+      <p class="text-gray-300 text-sm mb-4">
+        "Quality is crazy. Shirt fits perfect and message hits different."
+      </p>
+      <p class="text-xs text-gray-500">— Verified Customer</p>
+    </div>
 
-function addConfiguredProduct(name, price, sizeId, colorId) {
-  const size = document.getElementById(sizeId).value;
-  const color = document.getElementById(colorId).value;
-  const existing = cart.find(item => item.name === name && item.size === size && item.color === color);
+    <div class="bg-neutral-900 p-6 rounded-2xl border border-white/10">
+      <p class="text-orange-400 mb-2">★★★★★</p>
+      <p class="text-gray-300 text-sm mb-4">
+        "Fast shipping and premium feel. Definitely ordering again."
+      </p>
+      <p class="text-xs text-gray-500">— Verified Customer</p>
+    </div>
 
-  if (existing) {
-    existing.qty = (existing.qty || 1) + 1;
-  } else {
-    cart.push({ name, price, size, color, qty: 1 });
-  }
+    <div class="bg-neutral-900 p-6 rounded-2xl border border-white/10">
+      <p class="text-orange-400 mb-2">★★★★★</p>
+      <p class="text-gray-300 text-sm mb-4">
+        "This brand stands for something real. Respect."
+      </p>
+      <p class="text-xs text-gray-500">— Verified Customer</p>
+    </div>
 
-  saveCart();
-  renderCart();
-}
+  </div>
+</section>
 
-function changeQty(index, delta) {
-  if (!cart[index]) return;
-  cart[index].qty = (cart[index].qty || 1) + delta;
-  if (cart[index].qty <= 0) cart.splice(index, 1);
-  saveCart();
-  renderCart();
-}
+<!-- CONTACT -->
+<section class="max-w-4xl mx-auto px-6 pb-20">
+  <div class="bg-neutral-900 p-8 rounded-2xl border border-white/10 text-center">
+    
+    <h2 class="text-2xl font-black mb-3">Contact Us</h2>
 
-function clearCart() {
-  cart = [];
-  saveCart();
-  renderCart();
-}
+    <p class="text-gray-400 mb-4">
+      For support, orders, or business inquiries:
+    </p>
 
-function renderCart() {
-  const list = document.getElementById('cart-items');
-  const total = document.getElementById('total');
-  const count = document.getElementById('cart-count');
-  list.innerHTML = '';
-  let sum = 0;
-  let itemCount = 0;
+    <a href="mailto:trulyblissful7@gmail.com" class="text-orange-400 font-bold text-lg hover:underline">
+      trulyblissful7@gmail.com
+    </a>
 
-  if (cart.length === 0) {
-    const li = document.createElement('li');
-    li.textContent = 'Your cart is empty.';
-    li.className = 'text-gray-400';
-    list.appendChild(li);
-  }
+    <p class="text-gray-500 text-sm mt-4">
+      We usually respond within 24 hours.
+    </p>
 
-  cart.forEach((item, index) => {
-    const qty = item.qty || 1;
-    itemCount += qty;
-    sum += item.price * qty;
+  </div>
+</section>
 
-    const li = document.createElement('li');
-    li.className = 'border border-white/10 rounded-xl p-4';
-
-    li.innerHTML = `
-      <div class="font-bold">${item.name}</div>
-      <div class="text-sm text-gray-400 mt-1">${item.size || 'Standard'} / ${item.color || 'Standard'}</div>
-      <div class="text-sm text-orange-300 mt-2">$${item.price} each</div>
-      <div class="flex items-center gap-3 mt-3">
-        <button onclick="changeQty(${index}, -1)" class="border border-white/20 px-3 py-1 rounded-lg">-</button>
-        <span>${qty}</span>
-        <button onclick="changeQty(${index}, 1)" class="border border-white/20 px-3 py-1 rounded-lg">+</button>
-      </div>
-    `;
-
-    list.appendChild(li);
-  });
-
-  total.textContent = '$' + sum;
-  count.textContent = itemCount;
-}
-
-function openModal(name, price, image, hasVariants = false, productType = '') {
-  document.getElementById('modal-img').src = image;
-  document.getElementById('modal-title').textContent = name;
-  document.getElementById('modal-price').textContent = '$' + price;
-
-  const variantWrap = document.getElementById('modal-variant-wrap');
-  const sizeSelect = document.getElementById('modal-size');
-  const colorSelect = document.getElementById('modal-color');
-  const modalCopy = document.getElementById('modal-copy');
-
-  variantWrap.classList.add('hidden');
-  sizeSelect.innerHTML = '';
-  colorSelect.innerHTML = '';
-
-  if (name.includes('Hoodie')) {
-    modalCopy.textContent = 'Heavyweight streetwear layer built for bold faith expression.';
-  } else if (name.includes('Hat')) {
-    modalCopy.textContent = 'Clean finishing piece built to complete the look.';
-  } else {
-    modalCopy.textContent = 'Statement piece built with message, movement, and purpose.';
-  }
-
-  if (hasVariants) {
-    variantWrap.classList.remove('hidden');
-
-    if (productType === 'hoodie') {
-      sizeSelect.innerHTML = `
-        <option>Small</option>
-        <option>Medium</option>
-        <option>Large</option>
-        <option>XL</option>
-        <option>2XL</option>
-      `;
-      colorSelect.innerHTML = `
-        <option>Black</option>
-        <option>White</option>
-        <option>Gray</option>
-      `;
-    }
-
-    if (productType === 'hat') {
-      sizeSelect.innerHTML = `<option>One Size</option>`;
-      colorSelect.innerHTML = `
-        <option>Black/Orange</option>
-        <option>Black/White</option>
-      `;
-    }
-
-    document.getElementById('modal-add').onclick = function() {
-      const size = sizeSelect.value;
-      const color = colorSelect.value;
-      const existing = cart.find(item => item.name === name && item.size === size && item.color === color);
-
-      if (existing) {
-        existing.qty = (existing.qty || 1) + 1;
-      } else {
-        cart.push({ name, price, size, color, qty: 1 });
-      }
-
-      saveCart();
-      renderCart();
-      closeModal();
-    };
-  } else {
-    document.getElementById('modal-add').onclick = function() {
-      addToCart(name, price);
-      closeModal();
-    };
-  }
-
-  document.getElementById('product-modal').classList.remove('hidden');
-  document.getElementById('product-modal').classList.add('flex');
-}
-
-function closeModal() {
-  document.getElementById('product-modal').classList.add('hidden');
-  document.getElementById('product-modal').classList.remove('flex');
-}
-
-async function checkout() {
-  if (!cart.length) {
-    alert('Your cart is empty.');
-    return;
-  }
-
-  const res = await fetch('/create-checkout-session', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ cart })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(data.error || 'Checkout failed.');
-    return;
-  }
-
-  stripe.redirectToCheckout({ sessionId: data.id });
-}
-
-initStripe();
-renderCart();
-</script>
+<!-- FOOTER -->
+<section class="text-center py-10 border-t border-white/10">
+  <p class="text-gray-500 text-sm">© TRULY BLISSFUL</p>
+</section>
 
 </body>
 </html>
