@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Order Confirmed | TRULY BLISSFUL</title>
+  <title>Payment Successful | TRULY BLISSFUL</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white font-sans min-h-screen flex items-center justify-center px-6">
-  <div class="max-w-2xl w-full text-center bg-neutral-900 border border-white/10 rounded-2xl p-10">
-    <img src="logo.png" alt="TRULY BLISSFUL" class="mx-auto h-24 mb-6" />
-    <h1 class="text-4xl font-black mb-4 text-orange-400">Payment Successful</h1>
-    <p class="text-lg text-gray-300 mb-4">Thank you for your order.</p>
-    <p class="text-gray-400 mb-8">
-      Your TRULY BLISSFUL order has been received. We appreciate your support.
+<body class="bg-black text-white min-h-screen flex items-center justify-center px-6">
+  <div class="max-w-xl w-full text-center bg-neutral-900 border border-white/10 rounded-2xl p-8">
+    <p class="text-orange-400 uppercase tracking-[0.25em] text-sm mb-3">Order Confirmed</p>
+    <h1 class="text-4xl font-black mb-4">Thank You.</h1>
+    <p class="text-gray-300 mb-8">
+      Your payment was successful and your order has been received.
     </p>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold">Back to Store</a>
-      <a href="/" class="border border-white/20 px-6 py-3 rounded-xl font-bold">Continue Shopping</a>
+      <a href="/" class="bg-orange-500 hover:bg-orange-400 transition px-6 py-3 rounded-xl text-black font-bold">
+        Back to Store
+      </a>
+      <a href="/#products" class="border border-white/20 hover:border-white/40 transition px-6 py-3 rounded-xl font-bold">
+        Keep Shopping
+      </a>
     </div>
   </div>
-
-  <script>
-    localStorage.removeItem('trulyBlissfulCart');
-  </script>
 </body>
 </html>
