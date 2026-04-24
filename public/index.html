@@ -789,6 +789,47 @@ async function checkout() {
   }
 
   stripe.redirectToCheckout({ sessionId: data.id });
+  async function sendContactMessage() {
+  const name = document.getElementById('contact-name').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  const subject = document.getElementById('contact-subject').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+  const status = document.getElementById('contact-status');
+  const recaptchaToken = grecaptcha.getResponse(1);
+
+  status.textContent = '';
+
+  if (!name || !email || !message) {
+    status.textContent = 'Please fill out your name, email, and message.';
+    return;
+  }
+
+  if (!recaptchaToken) {
+    status.textContent = 'Please complete the reCAPTCHA.';
+    return;
+  }
+
+  const res = await fetch('/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, subject, message, recaptchaToken })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    status.textContent = data.error || 'Failed to send message.';
+    return;
+  }
+
+  status.textContent = 'Message sent successfully!';
+
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-subject').value = '';
+  document.getElementById('contact-message').value = '';
+  grecaptcha.reset(1);
+}
 }
 
 initStripe();
