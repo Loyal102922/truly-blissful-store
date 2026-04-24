@@ -11,13 +11,89 @@ const PORT = process.env.PORT || 10000;
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
-const DATA_DIR = __dirname;
-const REVIEWS_FILE = path.join(DATA_DIR, 'reviews.json');
+const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+function getEmailTransporter() {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD
+    }
+  });
+}
+
+async function sendOrderNotification(session) {
+  const transporter = getEmailTransporter();
+
+  if (!transporter) {
+    console.log('Email transporter not configured.');
+    return;
+  }
+
+  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+    limit: 100
+  });
+
+  const itemsText = lineItems.data.map((item) => {
+    return `- ${item.description} x ${item.quantity} — $${(item.amount_total / 100).toFixed(2)}`;
+  }).join('\n');
+
+  const customerEmail =
+    session.customer_details?.email ||
+    session.customer_email ||
+    'No customer email found';
+
+  const customerName =
+    session.customer_details?.name ||
+    'No customer name found';
+
+  const shipping = session.customer_details?.address;
+  const addressText = shipping
+    ? `${shipping.line1 || ''} ${shipping.line2 || ''}
+${shipping.city || ''}, ${shipping.state || ''} ${shipping.postal_code || ''}
+${shipping.country || ''}`
+    : 'No address collected';
+
+  await transporter.sendMail({
+    from: process.env.GMAIL_USER,
+    to: 'trulyblissful7@gmail.com',
+    subject: 'NEW TRULY BLISSFUL ORDER',
+    text:
+`NEW ORDER RECEIVED
+
+Order ID:
+${session.id}
+
+Customer:
+${customerName}
+
+Customer Email:
+${customerEmail}
+
+Order Total:
+$${(session.amount_total / 100).toFixed(2)}
+
+Items:
+${itemsText}
+
+Customer Address:
+${addressText}
+
+Stripe Payment Status:
+${session.payment_status}
+
+Open Stripe Dashboard to view full order details.`
+  });
+}
 
 function ensureReviewsFile() {
   if (!fs.existsSync(REVIEWS_FILE)) {
@@ -38,6 +114,7 @@ function ensureReviewsFile() {
         text: 'This brand stands for something real. Respect.'
       }
     ];
+
     fs.writeFileSync(REVIEWS_FILE, JSON.stringify(defaultReviews, null, 2));
   }
 }
@@ -51,6 +128,46 @@ function readReviews() {
 function writeReviews(reviews) {
   fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
 }
+
+/*
+  IMPORTANT:
+  Stripe webhook must use express.raw BEFORE express.json.
+*/
+app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  if (!stripe || !stripeWebhookSecret) {
+    return res.status(500).send('Stripe webhook is not configured.');
+  }
+
+  const signature = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, signature, stripeWebhookSecret);
+  } catch (error) {
+    console.error('Webhook signature verification failed:', error.message);
+    return res.status(400).send(`Webhook Error: ${error.message}`);
+  }
+
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+
+      if (session.payment_status === 'paid') {
+        await sendOrderNotification(session);
+        console.log(`Order notification sent for session ${session.id}`);
+      }
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Webhook handling error:', error);
+    res.status(500).send('Webhook handler failed.');
+  }
+});
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -81,11 +198,13 @@ app.post('/reviews', (req, res) => {
     }
 
     const parsedRating = Number(rating);
+
     if (!Number.isInteger(parsedRating) || parsedRating < 1 || parsedRating > 5) {
       return res.status(400).json({ error: 'Rating must be between 1 and 5.' });
     }
 
     const reviews = readReviews();
+
     const newReview = {
       name: String(name).trim(),
       rating: parsedRating,
@@ -107,20 +226,18 @@ app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body;
 
     if (!name || !email || !message) {
-      return res.status(400).json({ error: 'Name, email, and message are required.' });
+      return res.status(400).json({
+        error: 'Name, email, and message are required.'
+      });
     }
 
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      return res.status(500).json({ error: 'Email service is not configured yet.' });
-    }
+    const transporter = getEmailTransporter();
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD
-      }
-    });
+    if (!transporter) {
+      return res.status(500).json({
+        error: 'Email service is not configured yet.'
+      });
+    }
 
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
@@ -181,7 +298,11 @@ app.post('/create-checkout-session', async (req, res) => {
       payment_method_types: ['card'],
       line_items: lineItems,
       success_url: `${baseUrl}/success.html`,
-      cancel_url: `${baseUrl}/cancel.html`
+      cancel_url: `${baseUrl}/cancel.html`,
+      billing_address_collection: 'auto',
+      shipping_address_collection: {
+        allowed_countries: ['US']
+      }
     });
 
     res.json({ id: session.id });
