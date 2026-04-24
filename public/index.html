@@ -599,45 +599,33 @@ async function submitReview() {
   alert('Review submitted!');
 }
 
-async function sendContactMessage() {
-  const name = document.getElementById('contact-name').value.trim();
-  const email = document.getElementById('contact-email').value.trim();
-  const subject = document.getElementById('contact-subject').value.trim();
-  const message = document.getElementById('contact-message').value.trim();
-  const status = document.getElementById('contact-status');
+async function sendContactMessage(){
+  const name = document.getElementById('contact-name').value;
+  const email = document.getElementById('contact-email').value;
+  const subject = document.getElementById('contact-subject').value;
+  const message = document.getElementById('contact-message').value;
+
   const recaptchaToken = grecaptcha.getResponse(1);
 
-  status.textContent = '';
-
-  if (!name || !email || !message) {
-    status.textContent = 'Please fill out your name, email, and message.';
+  if(!recaptchaToken){
+    alert('Complete captcha');
     return;
   }
 
-  if (!recaptchaToken) {
-    status.textContent = 'Please complete the reCAPTCHA.';
-    return;
-  }
-
-  const contactRes = await fetch('/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, subject, message, recaptchaToken })
+  const res = await fetch('/contact',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name,email,subject,message,recaptchaToken})
   });
 
-  const contactData = await contactRes.json();
+  const data = await res.json();
 
-  if (!contactRes.ok) {
-    status.textContent = contactData.error || 'Failed to send message.';
+  if(!res.ok){
+    alert(data.error || 'Message failed');
     return;
   }
 
-  status.textContent = 'Message sent successfully!';
-
-  document.getElementById('contact-name').value = '';
-  document.getElementById('contact-email').value = '';
-  document.getElementById('contact-subject').value = '';
-  document.getElementById('contact-message').value = '';
+  alert('Message sent');
   grecaptcha.reset(1);
 }
 
