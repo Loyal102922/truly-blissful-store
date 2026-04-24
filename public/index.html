@@ -563,16 +563,22 @@ async function submitReview() {
   const name = document.getElementById('review-name').value.trim();
   const rating = parseInt(document.getElementById('review-rating').value, 10);
   const text = document.getElementById('review-text').value.trim();
+  const recaptchaToken = grecaptcha.getResponse(0);
 
   if (!name || !text) {
     alert('Please add your name and review.');
     return;
   }
 
+  if (!recaptchaToken) {
+    alert('Please complete the reCAPTCHA.');
+    return;
+  }
+
   const res = await fetch('/reviews', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, rating, text })
+    body: JSON.stringify({ name, rating, text, recaptchaToken })
   });
 
   const data = await res.json();
@@ -588,6 +594,7 @@ async function submitReview() {
   document.getElementById('review-name').value = '';
   document.getElementById('review-rating').value = '5';
   document.getElementById('review-text').value = '';
+  grecaptcha.reset(0);
 
   alert('Review submitted!');
 }
@@ -598,6 +605,7 @@ async function sendContactMessage() {
   const subject = document.getElementById('contact-subject').value.trim();
   const message = document.getElementById('contact-message').value.trim();
   const status = document.getElementById('contact-status');
+  const recaptchaToken = grecaptcha.getResponse(1);
 
   status.textContent = '';
 
@@ -606,16 +614,21 @@ async function sendContactMessage() {
     return;
   }
 
-  const res = await fetch('/contact', {
+  if (!recaptchaToken) {
+    status.textContent = 'Please complete the reCAPTCHA.';
+    return;
+  }
+
+  const contactRes = await fetch('/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, subject, message })
+    body: JSON.stringify({ name, email, subject, message, recaptchaToken })
   });
 
-  const data = await res.json();
+  const contactData = await contactRes.json();
 
-  if (!res.ok) {
-    status.textContent = data.error || 'Failed to send message.';
+  if (!contactRes.ok) {
+    status.textContent = contactData.error || 'Failed to send message.';
     return;
   }
 
@@ -625,6 +638,7 @@ async function sendContactMessage() {
   document.getElementById('contact-email').value = '';
   document.getElementById('contact-subject').value = '';
   document.getElementById('contact-message').value = '';
+  grecaptcha.reset(1);
 }
 
 function openModal(name, price, image, hasVariants = false, productType = '') {
