@@ -189,7 +189,7 @@ app.get('/reviews', (req, res) => {
   }
 });
 
-app.post('/reviews', (req, res) => {
+app.post('/reviews', async (req, res) => {
   try {
     const { name, rating, text } = req.body;
 
@@ -214,7 +214,26 @@ app.post('/reviews', (req, res) => {
     reviews.unshift(newReview);
     writeReviews(reviews);
 
+    // 🔥 SEND EMAIL NOTIFICATION
+    try {
+      await transporter.sendMail({
+        from: `"TRULY BLISSFUL" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_TO,
+        subject: 'NEW REVIEW RECEIVED',
+        text: `
+NEW REVIEW RECEIVED
+
+Name: ${newReview.name}
+Rating: ${newReview.rating}
+Review: ${newReview.text}
+        `
+      });
+    } catch (emailError) {
+      console.error('Review email error:', emailError);
+    }
+
     res.json({ success: true, reviews });
+
   } catch (error) {
     console.error('Save review error:', error);
     res.status(500).json({ error: 'Failed to save review.' });
