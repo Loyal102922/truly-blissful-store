@@ -258,21 +258,18 @@ app.post('/contact', async (req, res) => {
       });
     }
 
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: 'trulyblissful7@gmail.com',
-      replyTo: email,
-      subject: subject || 'TRULY BLISSFUL Contact Form',
-      text:
-`New contact form submission
+   await transporter.sendMail({
+  from: process.env.GMAIL_USER,
+  to: 'trulyblissful7@gmail.com',
+  subject: 'NEW REVIEW RECEIVED',
+  text: `
+NEW REVIEW RECEIVED
 
-Name: ${name}
-Email: ${email}
-Subject: ${subject || 'No subject'}
-
-Message:
-${message}`
-    });
+Name: ${newReview.name}
+Rating: ${newReview.rating}
+Review: ${newReview.text}
+  `
+});
 
     res.json({ success: true });
   } catch (error) {
