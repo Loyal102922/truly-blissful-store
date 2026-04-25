@@ -214,23 +214,27 @@ app.post('/reviews', async (req, res) => {
     reviews.unshift(newReview);
     writeReviews(reviews);
 
-    // 🔥 SEND EMAIL NOTIFICATION
-    try {
-      await transporter.sendMail({
-        from: `"TRULY BLISSFUL" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_TO,
-        subject: 'NEW REVIEW RECEIVED',
-        text: `
+// 🔥 SEND EMAIL NOTIFICATION
+const transporter = getEmailTransporter();
+
+if (transporter) {
+  try {
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: 'trulyblissful7@gmail.com',
+      subject: 'NEW REVIEW RECEIVED',
+      text: `
 NEW REVIEW RECEIVED
 
 Name: ${newReview.name}
 Rating: ${newReview.rating}
 Review: ${newReview.text}
-        `
-      });
-    } catch (emailError) {
-      console.error('Review email error:', emailError);
-    }
+      `
+    });
+  } catch (emailError) {
+    console.error('Review email error:', emailError);
+  }
+}
 
     res.json({ success: true, reviews });
 
