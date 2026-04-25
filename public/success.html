@@ -25,9 +25,16 @@
   </div>
 
   <!-- 🔥 THIS IS THE FIX -->
-  <script>
-    localStorage.removeItem('trulyBlissfulCart');
-  </script>
+  <localStorage.removeItem('trulyBlissfulCart');
+</script>
+
+<!-- Google Analytics Purchase Event -->
+<script>
+  gtag('event', 'purchase', {
+    value: 1,
+    currency: 'USD'
+  });
+</script>
 
 </body>
 </html>
