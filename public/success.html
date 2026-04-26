@@ -35,18 +35,21 @@
     </div>
   </div>
 
-  <script>
-    // Clear cart
-    localStorage.removeItem('trulyBlissfulCart');
+<script>
+  // Clear cart
+  localStorage.removeItem('trulyBlissfulCart');
 
-    // Fire purchase event after delay
-    setTimeout(function () {
-      gtag('event', 'purchase', {
-        value: 1,
-        currency: 'USD'
-      });
-    }, 1500);
-  </script>
-
-</body>
-</html>
+  // Fire purchase event after delay
+  setTimeout(function () {
+    gtag('event', 'purchase', {
+      transaction_id: 'order_' + Date.now(),
+      value: 25,
+      currency: 'USD',
+      items: [{
+        item_name: 'Didn’t Ask Tee',
+        price: 25,
+        quantity: 1
+      }]
+    });
+  }, 1500);
+</script>
