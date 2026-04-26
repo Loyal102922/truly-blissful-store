@@ -5,7 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Payment Successful | TRULY BLISSFUL</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WTM5EP175"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3WTM5EP175');
+  </script>
 </head>
+
 <body class="bg-black text-white min-h-screen flex items-center justify-center px-6">
   <div class="max-w-xl w-full text-center bg-neutral-900 border border-white/10 rounded-2xl p-8">
     <p class="text-orange-400 uppercase tracking-[0.25em] text-sm mb-3">Order Confirmed</p>
@@ -25,19 +36,17 @@
   </div>
 
   <script>
-  // Clear cart
-  localStorage.removeItem('trulyBlissfulCart');
-</script>
+    // Clear cart
+    localStorage.removeItem('trulyBlissfulCart');
 
-<!-- Google Analytics Purchase Event -->
-<script>
-  window.addEventListener('load', function () {
-    gtag('event', 'purchase', {
-      value: 1,
-      currency: 'USD'
-    });
-  });
-</script>
+    // Fire purchase event after delay
+    setTimeout(function () {
+      gtag('event', 'purchase', {
+        value: 1,
+        currency: 'USD'
+      });
+    }, 1500);
+  </script>
 
 </body>
 </html>
