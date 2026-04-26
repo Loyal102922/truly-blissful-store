@@ -39,17 +39,25 @@
   // Clear cart
   localStorage.removeItem('trulyBlissfulCart');
 
-  // Fire purchase event after delay
-  setTimeout(function () {
-    gtag('event', 'purchase', {
-      transaction_id: 'order_' + Date.now(),
-      value: 25,
-      currency: 'USD',
-      items: [{
-        item_name: 'Didn’t Ask Tee',
-        price: 25,
-        quantity: 1
-      }]
-    });
-  }, 1500);
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  const transactionId = sessionId || 'manual_' + Date.now();
+  const firedKey = 'purchase_fired_' + transactionId;
+
+  if (!sessionStorage.getItem(firedKey)) {
+    sessionStorage.setItem(firedKey, 'true');
+
+    setTimeout(function () {
+      gtag('event', 'purchase', {
+        transaction_id: transactionId,
+        value: 25,
+        currency: 'USD',
+        items: [{
+          item_name: 'Didn’t Ask Tee',
+          price: 25,
+          quantity: 1
+        }]
+      });
+    }, 1500);
+  }
 </script>
