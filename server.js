@@ -16,6 +16,7 @@ const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
 const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
+const PRODUCTS_FILE = path.join(__dirname, 'products.json');
 
 function getEmailTransporter() {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
@@ -31,11 +32,68 @@ function getEmailTransporter() {
   });
 }
 
+function ensureReviewsFile() {
+  if (!fs.existsSync(REVIEWS_FILE)) {
+    const defaultReviews = [
+      {
+        name: 'Verified Customer',
+        rating: 5,
+        text: 'Quality is crazy. Shirt fits perfect and message hits different.'
+      },
+      {
+        name: 'Verified Customer',
+        rating: 5,
+        text: 'Fast shipping and premium feel. Definitely ordering again.'
+      },
+      {
+        name: 'Verified Customer',
+        rating: 5,
+        text: 'This brand stands for something real. Respect.'
+      }
+    ];
+
+    fs.writeFileSync(REVIEWS_FILE, JSON.stringify(defaultReviews, null, 2));
+  }
+}
+
+function readReviews() {
+  ensureReviewsFile();
+  return JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8'));
+}
+
+function writeReviews(reviews) {
+  fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
+}
+
+function ensureProductsFile() {
+  if (!fs.existsSync(PRODUCTS_FILE)) {
+    const defaultProducts = [
+      {
+        name: 'The Cave Tee',
+        price: 25,
+        image: 'product1.jpg'
+      },
+      {
+        name: 'TRULY BLISSFUL Hat',
+        price: 20,
+        image: 'hat1.jpg'
+      }
+    ];
+
+    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(defaultProducts, null, 2));
+  }
+}
+
+function readProducts() {
+  ensureProductsFile();
+  return JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf8'));
+}
+
 async function sendOrderNotification(session) {
   const transporter = getEmailTransporter();
 
-  if (!transporter) {
-    console.log('Email transporter not configured.');
+  if (!transporter || !stripe) {
+    console.log('Email transporter or Stripe not configured.');
     return;
   }
 
@@ -95,40 +153,6 @@ Open Stripe Dashboard to view full order details.`
   });
 }
 
-function ensureReviewsFile() {
-  if (!fs.existsSync(REVIEWS_FILE)) {
-    const defaultReviews = [
-      {
-        name: 'Verified Customer',
-        rating: 5,
-        text: 'Quality is crazy. Shirt fits perfect and message hits different.'
-      },
-      {
-        name: 'Verified Customer',
-        rating: 5,
-        text: 'Fast shipping and premium feel. Definitely ordering again.'
-      },
-      {
-        name: 'Verified Customer',
-        rating: 5,
-        text: 'This brand stands for something real. Respect.'
-      }
-    ];
-
-    fs.writeFileSync(REVIEWS_FILE, JSON.stringify(defaultReviews, null, 2));
-  }
-}
-
-function readReviews() {
-  ensureReviewsFile();
-  const raw = fs.readFileSync(REVIEWS_FILE, 'utf8');
-  return JSON.parse(raw);
-}
-
-function writeReviews(reviews) {
-  fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
-}
-
 /*
   IMPORTANT:
   Stripe webhook must use express.raw BEFORE express.json.
@@ -178,10 +202,17 @@ app.get('/config', (req, res) => {
     publishableKey: stripePublishableKey || ''
   });
 });
+
 app.get('/products', (req, res) => {
-  const products = JSON.parse(fs.readFileSync('./products.json'));
-  res.json(products);
+  try {
+    const products = readProducts();
+    res.json(products);
+  } catch (error) {
+    console.error('Load products error:', error);
+    res.status(500).json({ error: 'Failed to load products.' });
+  }
 });
+
 app.get('/reviews', (req, res) => {
   try {
     const reviews = readReviews();
@@ -217,30 +248,27 @@ app.post('/reviews', async (req, res) => {
     reviews.unshift(newReview);
     writeReviews(reviews);
 
-// 🔥 SEND EMAIL NOTIFICATION
-const transporter = getEmailTransporter();
+    const transporter = getEmailTransporter();
 
-if (transporter) {
-  try {
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: 'trulyblissful7@gmail.com',
-      subject: 'NEW REVIEW RECEIVED',
-      text: `
-NEW REVIEW RECEIVED
+    if (transporter) {
+      try {
+        await transporter.sendMail({
+          from: process.env.GMAIL_USER,
+          to: 'trulyblissful7@gmail.com',
+          subject: 'NEW REVIEW RECEIVED',
+          text:
+`NEW REVIEW RECEIVED
 
 Name: ${newReview.name}
 Rating: ${newReview.rating}
-Review: ${newReview.text}
-      `
-    });
-  } catch (emailError) {
-    console.error('Review email error:', emailError);
-  }
-}
+Review: ${newReview.text}`
+        });
+      } catch (emailError) {
+        console.error('Review email error:', emailError);
+      }
+    }
 
     res.json({ success: true, reviews });
-
   } catch (error) {
     console.error('Save review error:', error);
     res.status(500).json({ error: 'Failed to save review.' });
@@ -265,18 +293,21 @@ app.post('/contact', async (req, res) => {
       });
     }
 
-   await transporter.sendMail({
-  from: process.env.GMAIL_USER,
-  to: 'trulyblissful7@gmail.com',
-  subject: 'NEW REVIEW RECEIVED',
-  text: `
-NEW REVIEW RECEIVED
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: 'trulyblissful7@gmail.com',
+      replyTo: email,
+      subject: subject || 'TRULY BLISSFUL Contact Form',
+      text:
+`New contact form submission
 
-Name: ${newReview.name}
-Rating: ${newReview.rating}
-Review: ${newReview.text}
-  `
-});
+Name: ${name}
+Email: ${email}
+Subject: ${subject || 'No subject'}
+
+Message:
+${message}`
+    });
 
     res.json({ success: true });
   } catch (error) {
@@ -320,7 +351,7 @@ app.post('/create-checkout-session', async (req, res) => {
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: lineItems,
-     success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel.html`,
       billing_address_collection: 'auto',
       shipping_address_collection: {
@@ -337,5 +368,6 @@ app.post('/create-checkout-session', async (req, res) => {
 
 app.listen(PORT, () => {
   ensureReviewsFile();
+  ensureProductsFile();
   console.log(`Server running on port ${PORT}`);
 });
