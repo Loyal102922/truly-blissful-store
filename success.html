@@ -35,26 +35,18 @@
     </div>
   </div>
 
-  <!-- Clear cart after successful checkout -->
-  <script>
-    localStorage.removeItem('trulyBlissfulCart');
-  </script>
+ <script>
+  // Clear cart
+  localStorage.removeItem('trulyBlissfulCart');
 
-  <!-- Google Analytics Purchase Event -->
-  <script>
-
-  window.addEventListener('load', function () {
-
+  // Fire purchase event after delay
+  setTimeout(function () {
     gtag('event', 'purchase', {
-
       value: 1,
-
       currency: 'USD'
-
     });
-
-  });
-
+  }, 1500);
 </script>
+
 </body>
 </html>
