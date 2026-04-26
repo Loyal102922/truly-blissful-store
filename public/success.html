@@ -24,15 +24,18 @@
     </div>
   </div>
 
-  <!-- 🔥 THIS IS THE FIX -->
-  <localStorage.removeItem('trulyBlissfulCart');
+  <script>
+  // Clear cart
+  localStorage.removeItem('trulyBlissfulCart');
 </script>
 
 <!-- Google Analytics Purchase Event -->
 <script>
-  gtag('event', 'purchase', {
-    value: 1,
-    currency: 'USD'
+  window.addEventListener('load', function () {
+    gtag('event', 'purchase', {
+      value: 1,
+      currency: 'USD'
+    });
   });
 </script>
 
