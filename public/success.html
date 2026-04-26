@@ -36,20 +36,22 @@
   </div>
 
 <script>
-  // Clear cart
   localStorage.removeItem('trulyBlissfulCart');
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session_id');
-  const transactionId = sessionId || 'manual_' + Date.now();
-  const firedKey = 'purchase_fired_' + transactionId;
+
+  // 🚫 If no real checkout session → DO NOTHING
+  if (!sessionId) return;
+
+  const firedKey = 'purchase_' + sessionId;
 
   if (!sessionStorage.getItem(firedKey)) {
     sessionStorage.setItem(firedKey, 'true');
 
     setTimeout(function () {
       gtag('event', 'purchase', {
-        transaction_id: transactionId,
+        transaction_id: sessionId,
         value: 25,
         currency: 'USD',
         items: [{
