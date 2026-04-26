@@ -178,7 +178,10 @@ app.get('/config', (req, res) => {
     publishableKey: stripePublishableKey || ''
   });
 });
-
+app.get('/products', (req, res) => {
+  const products = JSON.parse(fs.readFileSync('./products.json'));
+  res.json(products);
+});
 app.get('/reviews', (req, res) => {
   try {
     const reviews = readReviews();
