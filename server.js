@@ -32,23 +32,38 @@ function getEmailTransporter() {
   });
 }
 
+/* ---------------- PRODUCTS FIX ---------------- */
+
+app.get('/products', (req, res) => {
+  try {
+    if (!fs.existsSync(PRODUCTS_FILE)) {
+      return res.json([]); // don’t crash
+    }
+
+    const raw = fs.readFileSync(PRODUCTS_FILE, 'utf8');
+
+    if (!raw) {
+      return res.json([]);
+    }
+
+    const products = JSON.parse(raw);
+    res.json(products);
+
+  } catch (error) {
+    console.error('PRODUCT LOAD ERROR:', error);
+    res.status(500).json({ error: 'Failed to load products.' });
+  }
+});
+
+/* ---------------- REVIEWS ---------------- */
+
 function ensureReviewsFile() {
   if (!fs.existsSync(REVIEWS_FILE)) {
     const defaultReviews = [
       {
         name: 'Verified Customer',
         rating: 5,
-        text: 'Quality is crazy. Shirt fits perfect and message hits different.'
-      },
-      {
-        name: 'Verified Customer',
-        rating: 5,
-        text: 'Fast shipping and premium feel. Definitely ordering again.'
-      },
-      {
-        name: 'Verified Customer',
-        rating: 5,
-        text: 'This brand stands for something real. Respect.'
+        text: 'Quality is crazy. Shirt fits perfect.'
       }
     ];
 
@@ -65,130 +80,16 @@ function writeReviews(reviews) {
   fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
 }
 
-function ensureProductsFile() {
-  if (!fs.existsSync(PRODUCTS_FILE)) {
-    const defaultProducts = [
-      {
-        name: 'The Cave Tee',
-        price: 25,
-        image: 'product1.jpg'
-      },
-      {
-        name: 'TRULY BLISSFUL Hat',
-        price: 20,
-        image: 'hat1.jpg'
-      }
-    ];
-
-    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(defaultProducts, null, 2));
-  }
-}
-
-function readProducts() {
-  ensureProductsFile();
-  return JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf8'));
-}
-
-async function sendOrderNotification(session) {
-  const transporter = getEmailTransporter();
-
-  if (!transporter || !stripe) {
-    console.log('Email transporter or Stripe not configured.');
-    return;
-  }
-
-  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
-    limit: 100
-  });
-
-  const itemsText = lineItems.data.map((item) => {
-    return `- ${item.description} x ${item.quantity} — $${(item.amount_total / 100).toFixed(2)}`;
-  }).join('\n');
-
-  const customerEmail =
-    session.customer_details?.email ||
-    session.customer_email ||
-    'No customer email found';
-
-  const customerName =
-    session.customer_details?.name ||
-    'No customer name found';
-
-  const shipping = session.customer_details?.address;
-  const addressText = shipping
-    ? `${shipping.line1 || ''} ${shipping.line2 || ''}
-${shipping.city || ''}, ${shipping.state || ''} ${shipping.postal_code || ''}
-${shipping.country || ''}`
-    : 'No address collected';
-
-  await transporter.sendMail({
-    from: process.env.GMAIL_USER,
-    to: 'trulyblissful7@gmail.com',
-    subject: 'NEW TRULY BLISSFUL ORDER',
-    text:
-`NEW ORDER RECEIVED
-
-Order ID:
-${session.id}
-
-Customer:
-${customerName}
-
-Customer Email:
-${customerEmail}
-
-Order Total:
-$${(session.amount_total / 100).toFixed(2)}
-
-Items:
-${itemsText}
-
-Customer Address:
-${addressText}
-
-Stripe Payment Status:
-${session.payment_status}
-
-Open Stripe Dashboard to view full order details.`
-  });
-}
-
-/*
-  IMPORTANT:
-  Stripe webhook must use express.raw BEFORE express.json.
-*/
-app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  if (!stripe || !stripeWebhookSecret) {
-    return res.status(500).send('Stripe webhook is not configured.');
-  }
-
-  const signature = req.headers['stripe-signature'];
-
-  let event;
-
+app.get('/reviews', (req, res) => {
   try {
-    event = stripe.webhooks.constructEvent(req.body, signature, stripeWebhookSecret);
+    const reviews = readReviews();
+    res.json(reviews);
   } catch (error) {
-    console.error('Webhook signature verification failed:', error.message);
-    return res.status(400).send(`Webhook Error: ${error.message}`);
-  }
-
-  try {
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-
-      if (session.payment_status === 'paid') {
-        await sendOrderNotification(session);
-        console.log(`Order notification sent for session ${session.id}`);
-      }
-    }
-
-    res.json({ received: true });
-  } catch (error) {
-    console.error('Webhook handling error:', error);
-    res.status(500).send('Webhook handler failed.');
+    res.status(500).json({ error: 'Failed to load reviews.' });
   }
 });
+
+/* ---------------- BASIC ROUTES ---------------- */
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -203,177 +104,46 @@ app.get('/config', (req, res) => {
   });
 });
 
-app.get('/products', (req, res) => {
-  try {
-    const filePath = path.join(__dirname, 'products.json');
-    const products = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    res.json(products);
-  } catch (error) {
-    console.error('PRODUCT LOAD ERROR:', error);
-    res.status(500).json({ error: 'Failed to load products.' });
-  }
-});
-  } catch (error) {
-    console.error('Load products error:', error);
-    res.status(500).json({ error: 'Failed to load products.' });
-  }
-});
-
-app.get('/reviews', (req, res) => {
-  try {
-    const reviews = readReviews();
-    res.json(reviews);
-  } catch (error) {
-    console.error('Read reviews error:', error);
-    res.status(500).json({ error: 'Failed to load reviews.' });
-  }
-});
-
-app.post('/reviews', async (req, res) => {
-  try {
-    const { name, rating, text } = req.body;
-
-    if (!name || !text) {
-      return res.status(400).json({ error: 'Name and review are required.' });
-    }
-
-    const parsedRating = Number(rating);
-
-    if (!Number.isInteger(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-      return res.status(400).json({ error: 'Rating must be between 1 and 5.' });
-    }
-
-    const reviews = readReviews();
-
-    const newReview = {
-      name: String(name).trim(),
-      rating: parsedRating,
-      text: String(text).trim()
-    };
-
-    reviews.unshift(newReview);
-    writeReviews(reviews);
-
-    const transporter = getEmailTransporter();
-
-    if (transporter) {
-      try {
-        await transporter.sendMail({
-          from: process.env.GMAIL_USER,
-          to: 'trulyblissful7@gmail.com',
-          subject: 'NEW REVIEW RECEIVED',
-          text:
-`NEW REVIEW RECEIVED
-
-Name: ${newReview.name}
-Rating: ${newReview.rating}
-Review: ${newReview.text}`
-        });
-      } catch (emailError) {
-        console.error('Review email error:', emailError);
-      }
-    }
-
-    res.json({ success: true, reviews });
-  } catch (error) {
-    console.error('Save review error:', error);
-    res.status(500).json({ error: 'Failed to save review.' });
-  }
-});
-
-app.post('/contact', async (req, res) => {
-  try {
-    const { name, email, subject, message } = req.body;
-
-    if (!name || !email || !message) {
-      return res.status(400).json({
-        error: 'Name, email, and message are required.'
-      });
-    }
-
-    const transporter = getEmailTransporter();
-
-    if (!transporter) {
-      return res.status(500).json({
-        error: 'Email service is not configured yet.'
-      });
-    }
-
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: 'trulyblissful7@gmail.com',
-      replyTo: email,
-      subject: subject || 'TRULY BLISSFUL Contact Form',
-      text:
-`New contact form submission
-
-Name: ${name}
-Email: ${email}
-Subject: ${subject || 'No subject'}
-
-Message:
-${message}`
-    });
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Contact form error:', error);
-    res.status(500).json({ error: 'Failed to send message.' });
-  }
-});
+/* ---------------- STRIPE ---------------- */
 
 app.post('/create-checkout-session', async (req, res) => {
   try {
     if (!stripe) {
-      return res.status(500).json({ error: 'Stripe is not configured.' });
+      return res.status(500).json({ error: 'Stripe not configured' });
     }
 
     const { cart } = req.body;
 
-    if (!Array.isArray(cart) || cart.length === 0) {
-      return res.status(400).json({ error: 'Cart is empty.' });
-    }
-
-    const lineItems = cart.map((item) => {
-      const unitAmount = Math.round(Number(item.price) * 100);
-      const qty = Math.max(1, Number(item.qty) || 1);
-
-      return {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.name,
-            description: `${item.size || 'Standard'} / ${item.color || 'Standard'}`
-          },
-          unit_amount: unitAmount
+    const lineItems = cart.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.name
         },
-        quantity: qty
-      };
-    });
-
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+        unit_amount: Math.round(item.price * 100)
+      },
+      quantity: item.qty || 1
+    }));
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: lineItems,
-      success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/cancel.html`,
-      billing_address_collection: 'auto',
-      shipping_address_collection: {
-        allowed_countries: ['US']
-      }
+      success_url: `${req.protocol}://${req.get('host')}/success.html`,
+      cancel_url: `${req.protocol}://${req.get('host')}/cancel.html`
     });
 
     res.json({ id: session.id });
+
   } catch (error) {
-    console.error('Stripe checkout error:', error);
-    res.status(500).json({ error: error.message || 'Checkout failed.' });
+    console.error(error);
+    res.status(500).json({ error: 'Checkout failed' });
   }
 });
 
+/* ---------------- START SERVER ---------------- */
+
 app.listen(PORT, () => {
   ensureReviewsFile();
-  ensureProductsFile();
   console.log(`Server running on port ${PORT}`);
 });
