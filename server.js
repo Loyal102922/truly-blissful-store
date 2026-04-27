@@ -205,8 +205,14 @@ app.get('/config', (req, res) => {
 
 app.get('/products', (req, res) => {
   try {
-    const products = readProducts();
+    const filePath = path.join(__dirname, 'products.json');
+    const products = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     res.json(products);
+  } catch (error) {
+    console.error('PRODUCT LOAD ERROR:', error);
+    res.status(500).json({ error: 'Failed to load products.' });
+  }
+});
   } catch (error) {
     console.error('Load products error:', error);
     res.status(500).json({ error: 'Failed to load products.' });
