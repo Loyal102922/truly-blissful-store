@@ -142,7 +142,18 @@ app.post('/create-checkout-session', async (req, res) => {
 });
 
 /* ---------------- START SERVER ---------------- */
+app.post('/add-product', (req, res) => {
+  const { name, price, image } = req.body;
 
+  const filePath = path.join(__dirname, 'products.json');
+  const products = JSON.parse(fs.readFileSync(filePath));
+
+  products.push({ name, price: Number(price), image });
+
+  fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
+
+  res.json({ success: true });
+});
 app.listen(PORT, () => {
   ensureReviewsFile();
   console.log(`Server running on port ${PORT}`);
