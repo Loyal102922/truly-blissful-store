@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Truly Blissful</title>
+</head>
+<body style="background:black;color:white;font-family:sans-serif;padding:20px;">
+
+  <h1>Admin Panel</h1>
+
+  <input id="name" placeholder="Product Name"><br><br>
+  <input id="price" placeholder="Price"><br><br>
+  <input id="image" placeholder="Image filename (ex: hat1.jpg)"><br><br>
+
+  <button onclick="addProduct()">Add Product</button>
+
+  <script>
+    async function addProduct() {
+      const name = document.getElementById('name').value;
+      const price = document.getElementById('price').value;
+      const image = document.getElementById('image').value;
+
+      await fetch('/add-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, price, image })
+      });
+
+      alert('Product added');
+    }
+  </script>
+
+</body>
+</html>
