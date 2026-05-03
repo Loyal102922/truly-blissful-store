@@ -175,6 +175,22 @@ app.post('/add-product', requireAdmin, (req, res) => {
 app.get('/admin', requireAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
+app.delete('/delete-product/:index', requireAdmin, (req, res) => {
+  const index = Number(req.params.index);
+
+  const filePath = path.join(__dirname, 'products.json');
+  const products = JSON.parse(fs.readFileSync(filePath));
+
+  if (index < 0 || index >= products.length) {
+    return res.status(400).json({ error: 'Invalid index' });
+  }
+
+  products.splice(index, 1);
+
+  fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
+
+  res.json({ success: true });
+});
 app.listen(PORT, () => {
   ensureReviewsFile();
   console.log(`Server running on port ${PORT}`);
