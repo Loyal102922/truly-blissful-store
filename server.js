@@ -1,4 +1,4 @@
-require('dotenv').config();
+ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
@@ -171,6 +171,9 @@ app.post('/add-product', requireAdmin, (req, res) => {
   fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
 
   res.json({ success: true });
+});
+app.get('/admin', requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 app.listen(PORT, () => {
   ensureReviewsFile();
