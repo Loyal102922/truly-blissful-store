@@ -146,7 +146,8 @@ function requireAdmin(req, res, next) {
   res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
   return res.status(401).send('Access denied');
 }
-/* ---------------- START SERVER ---------------- */
+/* --------------- START SERVER --------------- */
+
 app.post('/add-product', requireAdmin, async (req, res) => {
   try {
     const { name, price, image } = req.body;
@@ -162,7 +163,12 @@ app.post('/add-product', requireAdmin, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Failed to add product' });
   }
-  });
+});
+
+app.get('/admin', requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
   try {
     await productsCollection.deleteOne({
@@ -175,6 +181,7 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete product' });
   }
 });
+
 app.listen(PORT, () => {
   ensureReviewsFile();
   console.log(`Server running on port ${PORT}`);
