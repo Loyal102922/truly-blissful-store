@@ -160,7 +160,7 @@ function requireAdmin(req, res, next) {
   return res.status(401).send('Access denied');
 }
 /* ---------------- START SERVER ---------------- */
-app.post('/add-product', (req, res) => {
+app.post('/add-product', requireAdmin, (req, res) => {
   const { name, price, image } = req.body;
 
   const filePath = path.join(__dirname, 'products.json');
