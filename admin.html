@@ -27,11 +27,16 @@ if (password !== "blissful123") {
       const price = document.getElementById('price').value;
       const image = document.getElementById('image').value;
 
-      await fetch('/add-product', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, price, image })
-      });
+      const auth = btoa('admin:' + prompt("Re-enter admin password:"));
+
+await fetch('/add-product', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic ' + auth
+  },
+  body: JSON.stringify({ name, price, image })
+});
 
       alert('Product added');
     }
