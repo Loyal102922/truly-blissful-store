@@ -147,6 +147,7 @@ function requireAdmin(req, res, next) {
   return res.status(401).send('Access denied');
 }
 /* --------------- START SERVER --------------- */
+/* --------------- START SERVER --------------- */
 
 app.post('/add-product', requireAdmin, async (req, res) => {
   try {
