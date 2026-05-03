@@ -174,11 +174,6 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete product' });
   }
 });
-
-  fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
-
-  res.json({ success: true });
-});
 app.listen(PORT, () => {
   ensureReviewsFile();
   console.log(`Server running on port ${PORT}`);
