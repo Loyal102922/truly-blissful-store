@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 const Stripe = require('stripe');
-
+const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
@@ -17,41 +17,28 @@ const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
 const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
 const PRODUCTS_FILE = path.join(__dirname, 'products.json');
+const mongoClient = new MongoClient(process.env.MONGO_URI);
+let productsCollection;
 
+async function connectMongo() {
+  await mongoClient.connect();
+  const database = mongoClient.db('store');
+  productsCollection = database.collection('products');
+  console.log('MongoDB connected');
+}
+
+connectMongo();
 function getEmailTransporter() {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     return null;
   }
-
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD
-    }
-  });
-}
-
-/* ---------------- PRODUCTS FIX ---------------- */
-
-app.get('/products', (req, res) => {
+app.get('/products', async (req, res) => {
   try {
-    if (!fs.existsSync(PRODUCTS_FILE)) {
-      return res.json([]); // don’t crash
-    }
-
-    const raw = fs.readFileSync(PRODUCTS_FILE, 'utf8');
-
-    if (!raw) {
-      return res.json([]);
-    }
-
-    const products = JSON.parse(raw);
+    const products = await productsCollection.find().toArray();
     res.json(products);
-
-  } catch (error) {
-    console.error('PRODUCT LOAD ERROR:', error);
-    res.status(500).json({ error: 'Failed to load products.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to load products' });
   }
 });
 
