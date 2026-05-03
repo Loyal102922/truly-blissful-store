@@ -162,6 +162,7 @@ app.post('/add-product', requireAdmin, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Failed to add product' });
   }
+  });
 app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
   try {
     await productsCollection.deleteOne({
