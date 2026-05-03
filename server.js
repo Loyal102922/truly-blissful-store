@@ -147,32 +147,33 @@ function requireAdmin(req, res, next) {
   return res.status(401).send('Access denied');
 }
 /* ---------------- START SERVER ---------------- */
-app.post('/add-product', requireAdmin, (req, res) => {
-  const { name, price, image } = req.body;
+app.post('/add-product', requireAdmin, async (req, res) => {
+  try {
+    const { name, price, image } = req.body;
 
-  const filePath = path.join(__dirname, 'products.json');
-  const products = JSON.parse(fs.readFileSync(filePath));
+    await productsCollection.insertOne({
+      name,
+      price: Number(price),
+      image
+    });
 
-  products.push({ name, price: Number(price), image });
-
-  fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
-
-  res.json({ success: true });
-});
-app.get('/admin', requireAdmin, (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
-});
-app.delete('/delete-product/:index', requireAdmin, (req, res) => {
-  const index = Number(req.params.index);
-
-  const filePath = path.join(__dirname, 'products.json');
-  const products = JSON.parse(fs.readFileSync(filePath));
-
-  if (index < 0 || index >= products.length) {
-    return res.status(400).json({ error: 'Invalid index' });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add product' });
   }
+app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
+  try {
+    await productsCollection.deleteOne({
+      _id: new ObjectId(req.params.id)
+    });
 
-  products.splice(index, 1);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
 
   fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
 
