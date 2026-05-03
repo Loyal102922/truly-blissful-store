@@ -140,7 +140,25 @@ app.post('/create-checkout-session', async (req, res) => {
     res.status(500).json({ error: 'Checkout failed' });
   }
 });
+function requireAdmin(req, res, next) {
+  const auth = req.headers.authorization;
 
+  if (!auth) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
+    return res.status(401).send('Login required');
+  }
+
+  const encoded = auth.split(' ')[1];
+  const decoded = Buffer.from(encoded, 'base64').toString();
+  const [username, password] = decoded.split(':');
+
+  if (username === 'admin' && password === process.env.ADMIN_PASSWORD) {
+    return next();
+  }
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
+  return res.status(401).send('Access denied');
+}
 /* ---------------- START SERVER ---------------- */
 app.post('/add-product', (req, res) => {
   const { name, price, image } = req.body;
