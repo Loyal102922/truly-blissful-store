@@ -9,7 +9,16 @@ const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 10000;
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
 
+const upload = multer({ storage });
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
