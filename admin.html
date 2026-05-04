@@ -1,37 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin - Truly Blissful</title>
+  <title>Admin - Truly Blissful</title>
 </head>
 <body style="background:black;color:white;font-family:sans-serif;padding:20px;">
 
   <h1>Admin Panel</h1>
 
-  <input id="name" placeholder="Product Name"><br><br>
-  <input id="price" placeholder="Price"><br><br>
-  <input id="image" placeholder="Image filename (ex: hat1.jpg)"><br><br>
-
-  <button onclick="addProduct()">Add Product</button>
+  <form id="productForm">
+    <input name="name" placeholder="Product Name" required><br><br>
+    <input name="price" placeholder="Price" required><br><br>
+    <input type="file" name="image" accept="image/*" required><br><br>
+    <button type="submit">Add Product</button>
+  </form>
 
   <script>
-    async function addProduct() {
-      const name = document.getElementById('name').value;
-      const price = document.getElementById('price').value;
-      const image = document.getElementById('image').value;
+    document.getElementById('productForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-      const auth = btoa('admin:' + prompt("Re-enter admin password:"));
+      const password = prompt("Re-enter admin password:");
+      const auth = btoa('admin:' + password);
 
-await fetch('/add-product', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Basic ' + auth
-  },
-  body: JSON.stringify({ name, price, image })
-});
+      const formData = new FormData(this);
 
-      alert('Product added');
-    }
+      const res = await fetch('/add-product', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + auth
+        },
+        body: formData
+      });
+
+      if (res.ok) {
+        alert('Product added');
+        this.reset();
+      } else {
+        alert('Failed to add product');
+      }
+    });
   </script>
 
 </body>
