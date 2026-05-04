@@ -149,15 +149,25 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
-app.post('/add-product', requireAdmin, async (req, res) => {
+app.post('/add-product', requireAdmin, upload.single('image'), async (req, res) => {
   try {
-    const { name, price, image } = req.body;
+    const { name, price } = req.body;
+
+    const imagePath = '/uploads/' + req.file.filename;
 
     await productsCollection.insertOne({
       name,
       price: Number(price),
-      image
+      image: imagePath
     });
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add product' });
+  }
+});
 
     res.json({ success: true });
   } catch (err) {
