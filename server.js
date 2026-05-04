@@ -6,7 +6,7 @@ const fs = require('fs');
 const nodemailer = require('nodemailer');
 const Stripe = require('stripe');
 const { MongoClient, ObjectId } = require('mongodb');
-
+const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
