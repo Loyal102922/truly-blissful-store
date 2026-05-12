@@ -56,8 +56,16 @@
       $${product.price}<br><br>
 
       <button onclick="deleteProduct('${product._id}')">
-        Delete
-      </button>
+  Delete
+</button>
+
+<button onclick="editProduct(
+  '${product._id}',
+  '${product.name}',
+  '${product.price}'
+)">
+  Edit
+</button>
     `;
 
     container.appendChild(div);
