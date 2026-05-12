@@ -125,7 +125,7 @@ if (image === 'YES') {
 
 await sendEdit();
 
-async function sendEdit() {
+async function sendEdit() { 
   const res = await fetch('/edit-product/' + id, {
     method: 'PUT',
     headers: {
