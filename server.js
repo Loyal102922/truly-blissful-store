@@ -163,6 +163,31 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
   }
 });
 
+app.put('/edit-product/:id', upload.single('image'), async (req, res) => {
+  try {
+    const { name, price } = req.body;
+
+    const updateData = {
+      name,
+      price: Number(price)
+    };
+
+    if (req.file) {
+      updateData.image = '/uploads/' + req.file.filename;
+    }
+
+    await productsCollection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: updateData }
+    );
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to edit product' });
+  }
+});
 // ───── START SERVER ─────
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
