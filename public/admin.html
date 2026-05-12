@@ -39,6 +39,53 @@
         alert('Failed to add product');
       }
     });
+    async function loadProducts() {
+  const res = await fetch('/products');
+  const products = await res.json();
+
+  const container = document.createElement('div');
+  container.id = 'productsContainer';
+
+  products.forEach(product => {
+    const div = document.createElement('div');
+
+    div.innerHTML = `
+      <hr>
+      <img src="${product.image}" width="120"><br>
+      <strong>${product.name}</strong><br>
+      $${product.price}<br><br>
+
+      <button onclick="deleteProduct('${product._id}')">
+        Delete
+      </button>
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.body.appendChild(container);
+}
+
+async function deleteProduct(id) {
+  const password = prompt('Enter admin password');
+  const auth = btoa('admin:' + password);
+
+  const res = await fetch('/delete-product/' + id, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Basic ' + auth
+    }
+  });
+
+  if (res.ok) {
+    alert('Product deleted');
+    location.reload();
+  } else {
+    alert('Delete failed');
+  }
+}
+
+loadProducts();
   </script>
 
 </body>
