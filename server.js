@@ -58,7 +58,19 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ error: 'Failed to load products' });
   }
 });
+app.delete('/delete-product/:id', async (req, res) => {
+  try {
+    await productsCollection.deleteOne({
+      _id: new ObjectId(req.params.id)
+    });
 
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
 // Home
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
