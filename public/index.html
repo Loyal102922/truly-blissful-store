@@ -281,7 +281,8 @@
 let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
 let stripe = null;
 let reviews = [];
-
+let allProducts = [];
+let currentCategory = 'All';
 async function initStripe() {
   try {
     const res = await fetch('/config');
