@@ -685,6 +685,7 @@ div.innerHTML = `
 </div>
 </div>
       <h3 class="font-bold">${p.name}</h3>
+      <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
       <p class="text-gray-400">$${p.price}</p>
 
       <button onclick="addToCart('${p.name}', ${p.price})"
