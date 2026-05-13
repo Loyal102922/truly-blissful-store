@@ -138,7 +138,7 @@ app.post('/add-product', requireAdmin, upload.array('images', 5), async (req, re
     await productsCollection.insertOne({
       name,
       price: Number(price),
-      image: imagePath
+      images: imagePaths
     });
 
     res.json({ success: true });
