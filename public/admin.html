@@ -52,7 +52,11 @@ loadProducts();
 
     div.innerHTML = `
       <hr>
-      <img src="${product.images?.[0] || product.image || '/placeholder.png'}" width="120"><br>
+      <div>
+  ${(product.images || [product.image]).map(img => `
+    <img src="${img}" width="120"><br>
+  `).join('')}
+</div>
       <strong>${product.name}</strong><br>
       $${product.price}<br><br>
 
