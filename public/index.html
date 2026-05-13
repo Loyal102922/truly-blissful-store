@@ -58,17 +58,23 @@
   </section>
 
   <section class="px-6 pb-8 max-w-6xl mx-auto">
-    <div class="flex flex-wrap gap-3 justify-center">
-      <a href="#tees" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
-        Tees
-      </a>
-      <a href="#hoodies" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
-        Hoodies
-      </a>
-      <a href="#headwear" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
-        Headwear
-      </a>
-    </div>
+<div class="flex flex-wrap gap-3 justify-center">
+  <button onclick="filterProducts('All')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+    All
+  </button>
+
+  <button onclick="filterProducts('Shirts')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+    Shirts
+  </button>
+
+  <button onclick="filterProducts('Hoodies')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+    Hoodies
+  </button>
+
+  <button onclick="filterProducts('Headwear')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+    Headwear
+  </button>
+</div>
   </section>
 
   <section id="products" class="px-6 pb-20 max-w-6xl mx-auto">
