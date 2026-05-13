@@ -58,7 +58,7 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ error: 'Failed to load products' });
   }
 });
-app.delete('/delete-product/:id', async (req, res) => {
+app.delete('/products/:id', requireAdmin, async (req, res) => {
   try {
     await productsCollection.deleteOne({
       _id: new ObjectId(req.params.id)
