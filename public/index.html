@@ -674,19 +674,15 @@ div.innerHTML = `
    class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10"
   />
 
-  <div class="flex gap-2 justify-center flex-wrap">
-    ${(p.images || [p.image]).map(img => `
-      <img 
-        src="${img}" 
-      <img
-  src="${img}"
-  onclick="document.getElementById('main-img-${p.name.replace(/\s+/g, '-')}').src='${img}'; openImageModal('${img}')"
-  class="h-14 w-14 md:h-16 md:w-16 object-cover border border-white/10 rounded-lg cursor-pointer hover:opacity-80"
-/>
-       class="h-14 w-14 md:h-16 md:w-16 object-cover border border-white/10 rounded-lg cursor-pointer hover:opacity-80"
-      />
-    `).join('')}
-  </div>
+<div class="flex gap-2 justify-center flex-wrap">
+  ${(p.images || [p.image]).map(img => `
+    <img
+      src="${img}"
+      onclick="document.getElementById('main-img-${p.name.replace(/\s+/g, '-')}').src='${img}'; openImageModal('${img}')"
+      class="h-14 w-14 md:h-16 md:w-16 object-cover border border-white/10 rounded-lg cursor-pointer hover:opacity-80"
+    />
+  `).join('')}
+</div>
 </div>
       <h3 class="font-bold">${p.name}</h3>
       <p class="text-gray-400">$${p.price}</p>
