@@ -666,6 +666,7 @@ loadReviews();
     div.className =
       "bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 transition";
 
+div.innerHTML = `
     <div class="flex gap-2 justify-center mb-4 flex-wrap">
   ${(p.images || [p.image]).map(img => `
     <img src="${img}" class="h-32 object-contain border border-white/10 rounded"/>
