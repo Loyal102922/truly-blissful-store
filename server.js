@@ -129,7 +129,7 @@ function requireAdmin(req, res, next) {
 }
 
 // ───── ADD PRODUCT (FIXED) ─────
-app.post('/add-product', requireAdmin, upload.single('image'), async (req, res) => {
+app.post('/add-product', requireAdmin, upload.array('images', 5), async (req, res) => {
   try {
     const { name, price } = req.body;
 
