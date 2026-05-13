@@ -8,11 +8,16 @@
 
   <h1>Admin Panel</h1>
 
-  <form id="productForm">
-    <input name="name" placeholder="Product Name" required><br><br>
-    <input name="price" placeholder="Price" required><br><br>
-    <input type="file" name="images" accept="image/*" multiple>
-    <button type="submit">Add Product</button>
+<form id="productForm" class="flex flex-col gap-4 max-w-md">
+   <input name="name" placeholder="Product Name" required>
+<input name="price" placeholder="Price" required>
+<input type="file" name="images" accept="image/*" multiple>
+  <button 
+  type="submit"
+  class="bg-orange-500 py-3 rounded-xl text-black font-bold w-full"
+>
+  Add Product
+</button>
   </form>
 
   <script>
