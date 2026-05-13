@@ -662,12 +662,20 @@ renderCart();
 loadReviews();
   async function loadProducts() {
   const res = await fetch('/products');
-  const products = await res.json();
+const products = await res.json();
 
+allProducts = products;
+
+const filteredProducts =
+  currentCategory === 'All'
+    ? products
+    : products.filter(
+        p => (p.category || '').toLowerCase() === currentCategory.toLowerCase()
+      );
   const container = document.getElementById('products-container');
   container.innerHTML = '';
 
-  products.forEach(p => {
+ filteredProducts.forEach(p => {
     const div = document.createElement('div');
 
   div.className =
