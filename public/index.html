@@ -663,15 +663,15 @@ loadReviews();
   products.forEach(p => {
     const div = document.createElement('div');
 
-    div.className =
-      "bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 transition";
+  div.className =
+  "bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 transition max-w-sm md:max-w-lg mx-auto";
 
 div.innerHTML = `
 <div class="mb-4">
   <img 
     id="main-img-${p.name.replace(/\s+/g, '-')}"
     src="${(p.images || [p.image])[0]}" 
-    class="h-56 w-full object-cover rounded-xl mb-3 border border-white/10"
+   class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10"
   />
 
   <div class="flex gap-2 justify-center flex-wrap">
@@ -679,7 +679,7 @@ div.innerHTML = `
       <img 
         src="${img}" 
         onclick="document.getElementById('main-img-${p.name.replace(/\s+/g, '-')}').src='${img}'"
-        class="h-14 w-14 object-cover border border-white/10 rounded-lg cursor-pointer hover:opacity-80"
+       class="h-14 w-14 md:h-16 md:w-16 object-cover border border-white/10 rounded-lg cursor-pointer hover:opacity-80"
       />
     `).join('')}
   </div>
