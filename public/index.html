@@ -678,7 +678,7 @@ div.innerHTML = `
     ${(p.images || [p.image]).map(img => `
       <img 
         src="${img}" 
-        onclick="document.getElementById('main-img-${p.name.replace(/\s+/g, '-')}').src='${img}'"
+      onclick="openImageModal('${img}')"
        class="h-14 w-14 md:h-16 md:w-16 object-cover border border-white/10 rounded-lg cursor-pointer hover:opacity-80"
       />
     `).join('')}
