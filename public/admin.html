@@ -8,11 +8,18 @@
 
   <h1>Admin Panel</h1>
 
-<form id="productForm" class="flex flex-col gap-4 max-w-md">
-   <input name="name" placeholder="Product Name" required>
-<input name="price" placeholder="Price" required>
-<input type="file" name="images" accept="image/*" multiple>
+<form id="productForm" style="display: flex; flex-direction: column; gap: 12px; max-width: 350px;">
+  <input name="name" placeholder="Product Name" required style="padding: 10px;">
+  <input name="price" placeholder="Price" required style="padding: 10px;">
+  <input type="file" name="images" accept="image/*" multiple style="color: white;">
+
   <button 
+    type="submit"
+    style="background: orange; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;"
+  >
+    Add Product
+  </button>
+</form>
   type="submit"
   class="bg-orange-500 py-3 rounded-xl text-black font-bold w-full"
 >
