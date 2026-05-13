@@ -670,7 +670,7 @@ const filteredProducts =
   currentCategory === 'All'
     ? products
     : products.filter(
-        p => (p.category || '').toLowerCase() === currentCategory.toLowerCase()
+      p => (p.category || '').trim().toLowerCase() === currentCategory.trim().toLowerCase()
       );
   const container = document.getElementById('products-container');
   container.innerHTML = '';
