@@ -24,7 +24,9 @@
     <p class="text-gray-300 mb-8">
       Your payment was successful and your order has been received.
     </p>
-
+<div id="order-summary" class="mt-6 text-left bg-black/40 border border-white/10 rounded-xl p-4">
+  <h2 class="font-bold text-lg mb-3">Order Summary</h2>
+</div>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a href="/" class="bg-orange-500 hover:bg-orange-400 transition px-6 py-3 rounded-xl text-black font-bold">
         Back to Store
@@ -33,33 +35,43 @@
         Keep Shopping
       </a>
     </div>
-  </div>
-
 <script>
-  localStorage.removeItem('trulyBlissfulCart');
+const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
 
-  const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session_id');
+const summary = document.getElementById('order-summary');
 
-  // 🚫 If no real checkout session → DO NOTHING
-  if (!sessionId) return;
+let total = 0;
 
-  const firedKey = 'purchase_' + sessionId;
+cart.forEach(item => {
+  total += item.price * (item.qty || 1);
 
-  if (!sessionStorage.getItem(firedKey)) {
-    sessionStorage.setItem(firedKey, 'true');
+  const div = document.createElement('div');
 
-    setTimeout(function () {
-      gtag('event', 'purchase', {
-        transaction_id: sessionId,
-        value: 25,
-        currency: 'USD',
-        items: [{
-          item_name: 'Didn’t Ask Tee',
-          price: 25,
-          quantity: 1
-        }]
-      });
-    }, 1500);
-  }
+  div.className = "border-b border-white/10 py-3";
+
+  div.innerHTML = `
+    <div class="font-bold">${item.name}</div>
+    <div class="text-sm text-gray-400">
+      ${item.size || 'Standard'} / ${item.color || 'Standard'}
+    </div>
+    <div class="text-orange-400">
+      $${item.price} × ${item.qty || 1}
+    </div>
+  `;
+
+  summary.appendChild(div);
+});
+
+const totalDiv = document.createElement('div');
+
+totalDiv.className = "pt-4 font-bold text-xl";
+
+totalDiv.innerHTML = `Total: $${total}`;
+
+summary.appendChild(totalDiv);
+
+localStorage.removeItem('trulyBlissfulCart');
 </script>
+  </div>
+</body>
+</html>
