@@ -732,6 +732,7 @@ function openImageGallery(images, startIndex = 0) {
 
         <img
           src="${images[currentIndex]}"
+          onclick="event.stopPropagation();"
           class="max-h-[85vh] w-full object-contain rounded-2xl border border-white/10"
         />
 
