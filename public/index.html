@@ -705,10 +705,10 @@ ${(p.images || [p.image]).map((img, index) => `
       <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
       <p class="text-gray-400">$${p.price}</p>
 
-      <button onclick="addToCart('${p.name}', ${p.price})"
-        class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">
-        Add to Cart
-      </button>
+      <button onclick="openCartOptions('${p.name}', ${p.price})"
+  class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">
+  Add to Cart
+</button>
     `;
 
     container.appendChild(div);
