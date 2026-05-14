@@ -757,6 +757,32 @@ function openCartOptions(name, price) {
 
   document.body.appendChild(modal);
 }
+function confirmCartOptions(name, price, button) {
+  const modal = button.closest('.fixed');
+  const size = modal.querySelector('#cart-size').value;
+  const color = modal.querySelector('#cart-color').value;
+
+  if (!size || !color) {
+    alert('Please select a size and color.');
+    return;
+  }
+
+  const existing = cart.find(item =>
+    item.name === name &&
+    item.size === size &&
+    item.color === color
+  );
+
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({ name, price, size, color, qty: 1 });
+  }
+
+  saveCart();
+  renderCart();
+  modal.remove();
+}
 function openImageGallery(images, startIndex = 0) {
   let currentIndex = startIndex;
 
