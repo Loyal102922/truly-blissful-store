@@ -330,7 +330,11 @@ function changeQty(index, delta) {
   saveCart();
   renderCart();
 }
-
+function removeCartItem(index) {
+  cart.splice(index, 1);
+  saveCart();
+  renderCart();
+}
 function clearCart() {
   cart = [];
   saveCart();
