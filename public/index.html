@@ -716,7 +716,7 @@ ${(p.images || [p.image]).map((img, index) => `
       <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
       <p class="text-gray-400">$${p.price}</p>
 
-      <button onclick="openCartOptions('${p.name}', ${p.price})"
+<button onclick='openCartOptions(${JSON.stringify(p)})'
   class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">
   Add to Cart
 </button>
@@ -725,7 +725,7 @@ ${(p.images || [p.image]).map((img, index) => `
     container.appendChild(div);
   });
 }
-function openCartOptions(name, price) {
+function openCartOptions(product) {
   const modal = document.createElement('div');
   modal.className = "fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4";
 
@@ -737,16 +737,14 @@ function openCartOptions(name, price) {
         ×
       </button>
 
-      <h2 class="text-2xl font-black mb-2">${name}</h2>
-      <p class="text-gray-400 mb-5">$${price}</p>
-
+    <h2 class="text-2xl font-black mb-2">${product.name}</h2>
+<p class="text-gray-400 mb-5">$${product.price}</p>
       <label class="block text-sm text-gray-400 mb-2">Size</label>
       <select id="cart-size" class="w-full mb-4 p-3 rounded-xl bg-black border border-white/10 text-white">
         <option value="">Select Size</option>
-        <option>Medium</option>
-        <option>Large</option>
-        <option>XL</option>
-        <option>XXL</option>
+       ${(product.sizes || []).map(size => `
+  <option>${size}</option>
+`).join('')}
       </select>
 
       <label class="block text-sm text-gray-400 mb-2">Color</label>
