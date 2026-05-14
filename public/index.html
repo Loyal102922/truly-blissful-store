@@ -685,8 +685,9 @@ div.innerHTML = `
 <div class="mb-4">
   <img 
     id="main-img-${p.name.replace(/\s+/g, '-')}"
-    src="${(p.images || [p.image])[0]}" 
-   class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10"
+    src="${(p.images || [p.image])[0]}"
+    onclick="openImageModal(this.src)"
+  class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10 cursor-pointer"
   />
 
 <div class="flex gap-2 justify-center flex-wrap">
