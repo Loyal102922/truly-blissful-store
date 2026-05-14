@@ -686,7 +686,7 @@ div.innerHTML = `
   <img 
     id="main-img-${p.name.replace(/\s+/g, '-')}"
     src="${(p.images || [p.image])[0]}"
-    onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, 0)'
+    onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, Number(this.dataset.index || 0))'
   class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10 cursor-pointer"
   />
 
