@@ -131,14 +131,20 @@ function requireAdmin(req, res, next) {
 // ───── ADD PRODUCT (FIXED) ─────
 app.post('/add-product', requireAdmin, upload.array('images', 5), async (req, res) => {
   try {
-   const { name, price, category } = req.body;
+  const { name, price, category, sizes, colors } = req.body;
 
     const imagePaths = req.files.map(file => '/uploads/' + file.filename);
 
-   await productsCollection.insertOne({
+ await productsCollection.insertOne({
   name,
   price: Number(price),
   category,
+  sizes: sizes
+    ? sizes.split(',').map(s => s.trim())
+    : [],
+  colors: colors
+    ? colors.split(',').map(c => c.trim())
+    : [],
   images: imagePaths
 });
     res.json({ success: true });
