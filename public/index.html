@@ -124,7 +124,20 @@
       </div>
     </div>
   </section>
+<button
+  id="floating-cart-btn"
+  onclick="document.getElementById('cart').scrollIntoView({ behavior: 'smooth' })"
+  class="fixed bottom-5 right-5 z-50 bg-orange-500 hover:bg-orange-400 transition text-black rounded-full shadow-2xl w-16 h-16 flex items-center justify-center font-black text-lg border border-orange-300"
+>
+  🛒
 
+  <span
+    id="floating-cart-count"
+    class="absolute -top-2 -right-2 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center"
+  >
+    0
+  </span>
+</button>
   <section class="max-w-6xl mx-auto px-6 pb-20">
     <div class="flex items-center justify-between gap-4 flex-wrap mb-8">
       <h2 class="text-3xl font-black border-l-4 border-orange-500 pl-3">Customer Reviews</h2>
@@ -385,9 +398,16 @@ function renderCart() {
     list.appendChild(li);
   });
 
-  total.textContent = '$' + sum;
-  count.textContent = itemCount;
+ total.textContent = '$' + sum;
+count.textContent = itemCount;
+document.getElementById('floating-cart-count').textContent = itemCount;
 }
+
+ 
+
+
+
+
 
 async function loadReviews() {
   try {
