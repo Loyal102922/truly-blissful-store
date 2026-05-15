@@ -171,12 +171,19 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
 
 app.put('/edit-product/:id', upload.single('image'), async (req, res) => {
   try {
-    const { name, price } = req.body;
+    const { name, price, category, sizes, colors } = req.body;
 
-    const updateData = {
-      name,
-      price: Number(price)
-    };
+const updateData = {
+  name,
+  price: Number(price),
+  category,
+  sizes,
+  colors
+};
+
+  
+    
+   
 
     if (req.file) {
       updateData.image = '/uploads/' + req.file.filename;
