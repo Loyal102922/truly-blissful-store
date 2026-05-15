@@ -750,10 +750,9 @@ function openCartOptions(product) {
       <label class="block text-sm text-gray-400 mb-2">Color</label>
       <select id="cart-color" class="w-full mb-5 p-3 rounded-xl bg-black border border-white/10 text-white">
         <option value="">Select Color</option>
-        <option>Black</option>
-        <option>White</option>
-        <option>Cream</option>
-        <option>Gray</option>
+       ${(product.colors || []).map(color => `
+  <option>${color}</option>
+`).join('')}
       </select>
 
       <button
