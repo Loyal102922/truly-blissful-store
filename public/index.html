@@ -756,7 +756,7 @@ function openCartOptions(product) {
       </select>
 
       <button
-       onclick="confirmCartOptions(product.name, product.price, this)"
+      onclick="confirmCartOptions('${product.name}', ${product.price}, this)"
         class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold">
         Add to Cart
       </button>
