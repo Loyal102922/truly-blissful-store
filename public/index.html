@@ -28,9 +28,18 @@
           <p class="text-xs text-gray-400 uppercase tracking-[0.25em]">Faith-Driven Streetwear</p>
         </div>
       </div>
-      <a href="#products" class="bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
-        Shop
-      </a>
+     <div class="flex items-center gap-2">
+  <a href="#products" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+    Shop
+  </a>
+
+  <button
+    onclick="openMobileMenu()"
+    class="sm:hidden border border-white/20 rounded-xl px-4 py-2 font-black text-white"
+  >
+    ☰
+  </button>
+</div>
     </div>
   </header>
 
@@ -58,7 +67,7 @@
   </section>
 
   <section class="px-6 pb-8 max-w-6xl mx-auto">
-<div class="flex flex-wrap gap-3 justify-center">
+<div class="flex flex-wrap gap-2 justify-center sm:gap-3 px-2"></div>
   <button onclick="filterProducts('All')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
     All
   </button>
@@ -82,7 +91,7 @@
     <div id="tees" class="mb-16">
       <h2 id="category-title" class="text-3xl font-black mb-2 border-l-4 border-orange-500 pl-3">All Products</h2>
       <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
-<div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+<div id="products-container" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"></div>
 
 </div>
 </section>
