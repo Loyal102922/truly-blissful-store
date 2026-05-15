@@ -912,6 +912,26 @@ function filterProducts(category) {
   loadProducts();
 }
 loadProducts();
+/* Fade-in section observer */
+const fadeSections = document.querySelectorAll('section');
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  },
+  {
+    threshold: 0.12
+  }
+);
+
+fadeSections.forEach(section => {
+  section.classList.add('fade-in-section');
+  observer.observe(section);
+});
 </script>
 
 <style>
@@ -1351,6 +1371,17 @@ textarea {
     font-size: clamp(1.6rem, 9vw, 2.4rem);
     line-height: 1.05;
   }
+}
+/* Premium scroll fade-in animation */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in-section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
 </body>
