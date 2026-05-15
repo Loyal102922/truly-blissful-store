@@ -61,7 +61,26 @@
 </div>
     </div>
   </header>
+<div
+  id="mobile-menu"
+  class="fixed inset-0 bg-black/90 backdrop-blur z-[999] hidden"
+>
+  <div class="absolute right-0 top-0 h-full w-72 max-w-[85%] bg-neutral-950 border-l border-orange-500/30 p-6 shadow-2xl">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-xl font-black">TRULY BLISSFUL</h2>
+      <button onclick="closeMobileMenu()" class="text-3xl font-black text-white hover:text-orange-400">
+        ×
+      </button>
+    </div>
 
+    <nav class="flex flex-col gap-4 text-lg font-bold">
+      <a onclick="closeMobileMenu()" href="#products" class="border-b border-white/10 pb-3 hover:text-orange-400">Shop</a>
+      <a onclick="closeMobileMenu()" href="#cart" class="border-b border-white/10 pb-3 hover:text-orange-400">Cart</a>
+      <a onclick="closeMobileMenu()" href="#review-form-wrap" class="border-b border-white/10 pb-3 hover:text-orange-400">Reviews</a>
+      <a onclick="closeMobileMenu()" href="mailto:trulyblissful7@gmail.com" class="border-b border-white/10 pb-3 hover:text-orange-400">Contact</a>
+    </nav>
+  </div>
+</div>
   <section class="text-center py-16 md:py-24 px-4 sm:px-6">
     <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
 
@@ -932,6 +951,13 @@ fadeSections.forEach(section => {
   section.classList.add('fade-in-section');
   observer.observe(section);
 });
+function openMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('hidden');
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.add('hidden');
+}
 </script>
 
 <style>
