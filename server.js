@@ -101,6 +101,37 @@ app.post('/newsletter', async (req, res) => {
     res.status(500).json({ error: 'Failed to join newsletter' });
   }
 });
+app.post('/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        error: 'Missing required fields'
+      });
+    }
+
+    console.log('CONTACT FORM MESSAGE');
+    console.log({
+      name,
+      email,
+      subject,
+      message
+    });
+
+    res.json({
+      success: true,
+      message: 'Message sent successfully'
+    });
+
+  } catch (err) {
+    console.error('Contact form error:', err);
+
+    res.status(500).json({
+      error: 'Failed to send message'
+    });
+  }
+});
 // ───── CHECKOUT ─────
 app.post('/create-checkout-session', async (req, res) => {
   try {
