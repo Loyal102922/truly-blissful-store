@@ -277,13 +277,31 @@
     </div>
   </section>
 
-  <section class="text-center py-16 border-t border-white/10 px-6">
+ <section class="text-center py-16 border-t border-white/10 px-6">
+  <div class="max-w-xl mx-auto bg-neutral-900/60 border border-white/10 rounded-3xl p-6 sm:p-8">
+    <p class="text-orange-400 text-sm uppercase tracking-widest mb-3">Early Access</p>
     <h3 class="text-3xl font-black mb-4">Join the Movement</h3>
-    <p class="text-gray-400 mb-6">Get early access to future drops</p>
-    <input type="email" placeholder="Enter email" class="px-4 py-3 rounded-xl bg-black border border-gray-700 mb-4 w-full max-w-md" />
-    <br/>
-    <button class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">Join</button>
-  </section>
+    <p class="text-gray-400 mb-6">Get early access to future drops, restocks, and exclusive TRULY BLISSFUL updates.</p>
+
+    <div class="flex flex-col sm:flex-row gap-3">
+      <input
+        id="newsletter-email"
+        type="email"
+        placeholder="Enter your email"
+        class="px-4 py-3 rounded-xl bg-black border border-gray-700 w-full"
+      />
+
+      <button
+        onclick="joinNewsletter()"
+        class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition whitespace-nowrap"
+      >
+        Join
+      </button>
+    </div>
+
+    <p id="newsletter-status" class="text-sm text-gray-500 mt-4"></p>
+  </div>
+</section>
 
   <footer class="border-t border-white/10 py-8 px-6">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
@@ -957,6 +975,18 @@ function openMobileMenu() {
 
 function closeMobileMenu() {
   document.getElementById('mobile-menu').classList.add('hidden');
+}
+function joinNewsletter() {
+  const email = document.getElementById('newsletter-email').value.trim();
+  const status = document.getElementById('newsletter-status');
+
+  if (!email) {
+    status.textContent = 'Please enter an email address.';
+    return;
+  }
+
+  status.textContent = 'You are officially part of the movement.';
+  document.getElementById('newsletter-email').value = '';
 }
 </script>
 
