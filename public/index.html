@@ -746,7 +746,7 @@ div.innerHTML = `
     src="${(p.images || [p.image])[0]}"
     data-index="0"
     onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, Number(this.dataset.index || 0))'
-  class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10 cursor-pointer"
+  class="h-56 md:h-72 w-full object-cover rounded-xl mb-3 border border-white/10 cursor-pointer transition duration-300 hover:scale-[1.03]"
   />
 
 <div class="flex gap-2 justify-center flex-wrap">
