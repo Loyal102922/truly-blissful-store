@@ -82,7 +82,25 @@ app.get('/config', (req, res) => {
     publishableKey: stripePublishableKey || ''
   });
 });
+app.post('/newsletter', async (req, res) => {
+  try {
+    const { email } = req.body;
 
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
+    console.log('Newsletter signup:', email);
+
+    res.json({
+      success: true,
+      message: 'Successfully joined newsletter'
+    });
+  } catch (err) {
+    console.error('Newsletter error:', err);
+    res.status(500).json({ error: 'Failed to join newsletter' });
+  }
+});
 // ───── CHECKOUT ─────
 app.post('/create-checkout-session', async (req, res) => {
   try {
