@@ -99,12 +99,21 @@ app.post('/newsletter', async (req, res) => {
       return res.status(400).json({ error: 'Email is required' });
     }
 
-    console.log('Newsletter signup:', email);
+   await transporter.sendMail({
+  from: process.env.EMAIL_USER,
+  to: process.env.EMAIL_USER,
+  subject: 'New TRULY BLISSFUL Newsletter Signup',
+  text: `
+New newsletter signup:
 
-    res.json({
-      success: true,
-      message: 'Successfully joined newsletter'
-    });
+Email: ${email}
+  `
+});
+
+res.json({
+  success: true,
+  message: 'Successfully joined newsletter'
+});
   } catch (err) {
     console.error('Newsletter error:', err);
     res.status(500).json({ error: 'Failed to join newsletter' });
