@@ -976,8 +976,7 @@ function openMobileMenu() {
 function closeMobileMenu() {
   document.getElementById('mobile-menu').classList.add('hidden');
 }
-function joinNewsletter() {
-  
+async function joinNewsletter() {
   const email = document.getElementById('newsletter-email').value.trim();
   const status = document.getElementById('newsletter-status');
 
@@ -985,6 +984,29 @@ function joinNewsletter() {
     status.textContent = 'Please enter an email address.';
     return;
   }
+
+  try {
+    const res = await fetch('/newsletter', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      status.textContent = data.error || 'Failed to join newsletter.';
+      return;
+    }
+
+    status.textContent = 'You are officially part of the movement.';
+    document.getElementById('newsletter-email').value = '';
+  } catch (err) {
+    status.textContent = 'Server connection failed.';
+  }
+}
 
   status.textContent = 'You are officially part of the movement.';
   document.getElementById('newsletter-email').value = '';
