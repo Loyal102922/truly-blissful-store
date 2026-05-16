@@ -189,7 +189,7 @@ const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1))
   {
     shipping_rate_data: {
       type: 'fixed_amount',
-      automatic_tax: { enabled: true },
+      
       fixed_amount: {
         amount: subtotal >= 75 ? 0 : 699,
         currency: 'usd'
