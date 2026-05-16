@@ -73,7 +73,7 @@ app.delete('/products/:id', requireAdmin, async (req, res) => {
       _id: new ObjectId(req.params.id)
     });
 
-    res.json({ success: true });
+    res.json({ success: true, reviews });
 
   } catch (err) {
     console.error(err);
