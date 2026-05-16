@@ -84,7 +84,46 @@ app.delete('/products/:id', requireAdmin, async (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+app.get('/reviews', (req, res) => {
+  try {
+    const reviews = JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8'));
+    res.json(reviews);
+  } catch (err) {
+    res.json([]);
+  }
+});
 
+app.post('/reviews', (req, res) => {
+  try {
+    const { name, rating, text } = req.body;
+
+    if (!name || !rating || !text) {
+      return res.status(400).json({ error: 'Missing review fields' });
+    }
+
+    let reviews = [];
+
+    try {
+      reviews = JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8'));
+    } catch (err) {
+      reviews = [];
+    }
+
+    reviews.unshift({
+      name,
+      rating,
+      text,
+      date: new Date().toISOString()
+    });
+
+    fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Review error:', err);
+    res.status(500).json({ error: 'Failed to submit review' });
+  }
+});
 // Config
 app.get('/config', (req, res) => {
   res.json({
