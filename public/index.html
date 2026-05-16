@@ -106,19 +106,19 @@
 
   <section class="px-6 pb-8 max-w-6xl mx-auto">
 <div class="flex flex-wrap gap-2 justify-center sm:gap-3 px-2"></div>
-  <button onclick="filterProducts('All')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+ <button onclick="filterProducts('All')" data-category="All" class="category-btn border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full"></button>
     All
   </button>
 
- <button onclick="filterProducts('Shirts')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+ <button onclick="filterProducts('Shirts')" data-category="Shirts" class="category-btn border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full"></button>
     Shirts
   </button>
 
-  <button onclick="filterProducts('Hoodies')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+<button onclick="filterProducts('Hoodies')" data-category="Hoodies" class="category-btn border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full"></button>
     Hoodies
   </button>
 
-  <button onclick="filterProducts('Headwear')" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full text-sm font-bold">
+<button onclick="filterProducts('Headwear')" data-category="Headwear" class="category-btn border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-2 rounded-full"></button>
     Headwear
   </button>
 </div>
@@ -536,7 +536,7 @@ async function submitReview() {
   }
 
  await loadReviews();
- 
+
   document.getElementById('review-name').value = '';
   document.getElementById('review-rating').value = '5';
   document.getElementById('review-text').value = '';
@@ -939,10 +939,19 @@ function filterProducts(category) {
 
   if (category === 'All') {
     title.textContent = 'All Products';
-  } else if (category === 'Headwear') {
-    title.textContent = 'Hats';
   } else {
     title.textContent = category;
+  }
+
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.remove('bg-orange-500', 'text-black', 'border-orange-500');
+    btn.classList.add('border-white/20', 'text-white');
+  });
+
+  const activeBtn = document.querySelector(`[data-category="${category}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('bg-orange-500', 'text-black', 'border-orange-500');
+    activeBtn.classList.remove('border-white/20', 'text-white');
   }
 
   loadProducts();
