@@ -9,7 +9,16 @@ const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
 
 const app = express();
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 const PORT = process.env.PORT || 10000;
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 // ───── MULTER (UPLOADS) ─────
 const storage = multer.diskStorage({
@@ -111,18 +120,26 @@ app.post('/contact', async (req, res) => {
       });
     }
 
-    console.log('CONTACT FORM MESSAGE');
-    console.log({
-      name,
-      email,
-      subject,
-      message
-    });
+   await transporter.sendMail({
+  from: process.env.EMAIL_USER,
+  to: process.env.EMAIL_USER,
+  subject: `TRULY BLISSFUL Contact: ${subject || 'New Message'}`,
+  text: `
+Name: ${name}
 
-    res.json({
-      success: true,
-      message: 'Message sent successfully'
-    });
+Email: ${email}
+
+Subject: ${subject}
+
+Message:
+${message}
+`
+});
+
+res.json({
+  success: true,
+  message: 'Message sent successfully'
+});
 
   } catch (err) {
     console.error('Contact form error:', err);
