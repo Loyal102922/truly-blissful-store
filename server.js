@@ -182,6 +182,9 @@ const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1))
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      shipping_address_collection: {
+  allowed_countries: ['US', 'CA']
+},
       payment_method_types: ['card'],
       automatic_tax: { enabled: true },
       line_items: lineItems,
