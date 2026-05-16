@@ -535,9 +535,8 @@ async function submitReview() {
     return;
   }
 
-  reviews = data.reviews;
-  renderReviews();
-
+ await loadReviews();
+ 
   document.getElementById('review-name').value = '';
   document.getElementById('review-rating').value = '5';
   document.getElementById('review-text').value = '';
