@@ -986,6 +986,7 @@ async function joinNewsletter() {
   }
 
   try {
+    status.textContent = 'Joining...';
     const res = await fetch('/newsletter', {
       method: 'POST',
       headers: {
