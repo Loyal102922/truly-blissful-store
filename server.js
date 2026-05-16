@@ -183,11 +183,13 @@ const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1))
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
+      automatic_tax: { enabled: true },
       line_items: lineItems,
       shipping_options: [
   {
     shipping_rate_data: {
       type: 'fixed_amount',
+      automatic_tax: { enabled: true },
       fixed_amount: {
         amount: subtotal >= 75 ? 0 : 699,
         currency: 'usd'
