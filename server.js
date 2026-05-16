@@ -170,7 +170,7 @@ app.post('/create-checkout-session', async (req, res) => {
     if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
 
     const { cart } = req.body;
-
+const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
     const lineItems = cart.map(item => ({
       price_data: {
         currency: 'usd',
@@ -184,6 +184,21 @@ app.post('/create-checkout-session', async (req, res) => {
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: lineItems,
+      shipping_options: [
+  {
+    shipping_rate_data: {
+      type: 'fixed_amount',
+      fixed_amount: {
+        amount: subtotal >= 75 ? 0 : 699,
+        currency: 'usd'
+      },
+      display_name:
+        subtotal >= 75
+          ? 'Free Shipping'
+          : 'Standard Shipping'
+    }
+  }
+],
       success_url: `${req.protocol}://${req.get('host')}/success.html`,
       cancel_url: `${req.protocol}://${req.get('host')}/cancel.html`
     });
