@@ -236,39 +236,45 @@ order.total = subtotal;
     }));
 const orderResult = await ordersCollection.insertOne(order);
 
-      const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      mode: 'payment',
-customer_creation: 'always',
-billing_address_collection: 'required',
-phone_number_collection: {
-  enabled: true
-},
-      shipping_address_collection: {
-  allowed_countries: ['US', 'CA']
-},
-      payment_method_types: ['card'],
-      automatic_tax: { enabled: true },
-      line_items: lineItems,
-      shipping_options: [
-  {
-    shipping_rate_data: {
-      type: 'fixed_amount',
-      
-      fixed_amount: {
-        amount: subtotal >= 75 ? 0 : 699,
-        currency: 'usd'
-      },
-      display_name:
-        subtotal >= 75
-          ? 'Free Shipping'
-          : 'Standard Shipping'
+     const session = await stripe.checkout.sessions.create({
+  mode: 'payment',
+  payment_method_types: ['card'],
+
+  customer_creation: 'always',
+  billing_address_collection: 'required',
+  phone_number_collection: {
+    enabled: true
+  },
+
+  shipping_address_collection: {
+    allowed_countries: ['US']
+  },
+
+  automatic_tax: { enabled: true },
+  line_items: lineItems,
+
+  metadata: {
+    orderId: orderResult.insertedId.toString()
+  },
+
+  shipping_options: [
+    {
+      shipping_rate_data: {
+        type: 'fixed_amount',
+        fixed_amount: { amount: 500, currency: 'usd' },
+        display_name: 'Standard Shipping',
+        delivery_estimate: {
+          minimum: { unit: 'business_day', value: 3 },
+          maximum: { unit: 'business_day', value: 7 }
+        }
+      }
     }
-  }
-],
-      success_url: `${req.protocol}://${req.get('host')}/success.html`,
-      cancel_url: `${req.protocol}://${req.get('host')}/cancel.html`
-    });
+  ],
+
+  success_url: 'https://truly-blissful-store.onrender.com/success.html',
+  cancel_url: 'https://truly-blissful-store.onrender.com/cancel.html'
+});
+
 
     res.json({ id: session.id });
 
