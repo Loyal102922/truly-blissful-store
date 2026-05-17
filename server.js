@@ -241,7 +241,31 @@ order.total = subtotal;
     });
 
     const orderId = session.metadata?.orderId;
+const order = await ordersCollection.findOne({
+  _id: new ObjectId(orderId)
+});
 
+if (
+  order &&
+  session.payment_status === 'paid' &&
+  !order.stockUpdated
+) {
+  for (const item of order.cart) {
+    await productsCollection.updateOne(
+      { _id: new ObjectId(item._id) },
+      { $inc: { stock: -(item.qty || 1) } }
+    );
+  }
+
+  await ordersCollection.updateOne(
+    { _id: new ObjectId(orderId) },
+    {
+      $set: {
+        stockUpdated: true
+      }
+    }
+  );
+}
     if (orderId) {
       await ordersCollection.updateOne(
         { _id: new ObjectId(orderId) },
