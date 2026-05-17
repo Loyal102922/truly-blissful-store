@@ -776,7 +776,8 @@ const filteredProducts =
 
  div.className =
  div.className =
-"bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 max-w-sm md:max-w-none flex flex-col h-full"
+div.className =
+"bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 max-w-sm md:max-w-none flex flex-col h-full opacity-0 animate-fadeIn"
 div.innerHTML = `
 <div class="mb-4 overflow-hidden rounded-xl">
 <img
@@ -1475,6 +1476,21 @@ textarea {
 .fade-in-section.visible {
   opacity: 1;
   transform: translateY(0);
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
 }
 </style>
 </body>
