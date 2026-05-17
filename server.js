@@ -234,10 +234,16 @@ order.total = subtotal;
       },
       quantity: item.qty || 1
     }));
-await ordersCollection.insertOne(order);
+const orderResult = await ordersCollection.insertOne(order);
 
       const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      mode: 'payment',
+customer_creation: 'always',
+billing_address_collection: 'required',
+phone_number_collection: {
+  enabled: true
+},
       shipping_address_collection: {
   allowed_countries: ['US', 'CA']
 },
