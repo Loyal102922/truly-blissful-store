@@ -274,13 +274,14 @@ function requireAdmin(req, res, next) {
 // ───── ADD PRODUCT (FIXED) ─────
 app.post('/add-product', requireAdmin, upload.array('images', 5), async (req, res) => {
   try {
-  const { name, price, category, sizes, colors } = req.body;
+const { name, price, category, sizes, colors, stock } = req.body;
 
     const imagePaths = req.files.map(file => '/uploads/' + file.filename);
 
  await productsCollection.insertOne({
   name,
   price: Number(price),
+  stock: Number(stock) || 0,
   category,
   sizes: sizes
     ? sizes.split(',').map(s => s.trim())
@@ -314,14 +315,15 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
 
 app.put('/edit-product/:id', upload.single('image'), async (req, res) => {
   try {
-    const { name, price, category, sizes, colors } = req.body;
+   const { name, price, category, sizes, colors, stock } = req.body;
 
 const updateData = {
   name,
   price: Number(price),
   category,
   sizes,
-  colors
+  colors,
+  stock: Number(stock) || 0,
 };
 
   
