@@ -778,13 +778,13 @@ const filteredProducts =
  div.className =
 "bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 max-w-sm md:max-w-none flex flex-col h-full"
 div.innerHTML = `
-<div class="mb-4">
+<div class="mb-4 overflow-hidden rounded-xl">
 <img
   id="main-img-${p.name.replace(/\s/g, '-')}"
   src="${(p.images || [p.image])[0]}"
   data-index="0"
   onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, Number(this.dataset.index || 0))'
-  class="w-full h-64 object-cover rounded-xl"
+ class="w-full h-64 object-cover rounded-xl hover:scale-105 transition duration-300"
   loading="lazy"
   onerror="this.src='/images/fallback.jpg'"
 />
@@ -805,7 +805,7 @@ ${(p.images || [p.image]).map((img, index) => `
 
 <div class="mt-auto pt-4">
   <button onclick='openCartOptions(${JSON.stringify(p)})'
-    class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">
+   class="bg-orange-500 hover:bg-orange-400 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold transition duration-300 active:scale-95"
     Add to Cart
   </button>
 </div>
