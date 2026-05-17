@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Details</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black text-white min-h-screen">
+
+  <div class="max-w-6xl mx-auto px-6 py-10" id="productContainer">
+    <p class="text-center text-xl">Loading product...</p>
+  </div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const productId = params.get('id');
+
+async function loadProduct() {
+
+  try {
+
+    const res = await fetch(`/product/${productId}`);
+    const product = await res.json();
+
+    const image =
+      product.images?.[0] ||
+      product.image ||
+      '';
+
+    document.getElementById('productContainer').innerHTML = `
+    
+      <div class="grid md:grid-cols-2 gap-10 items-start">
+
+        <div>
+          <img
+            src="${image}"
+            class="w-full rounded-2xl object-cover"
+          />
+        </div>
+
+        <div>
+
+          <h1 class="text-4xl font-bold mb-4">
+            ${product.name}
+          </h1>
+
+          <p class="text-2xl mb-6">
+            $${product.price}
+          </p>
+
+          <p class="mb-6 text-gray-300">
+            ${product.category || ''}
+          </p>
+
+          <div class="mb-4">
+            <strong>Sizes:</strong>
+            ${(product.sizes || []).join(', ')}
+          </div>
+
+          <div class="mb-4">
+            <strong>Colors:</strong>
+            ${(product.colors || []).join(', ')}
+          </div>
+
+          <div class="mb-6">
+            <strong>Stock:</strong>
+            ${product.stock || 0}
+          </div>
+
+          <button
+            class="bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-gray-200"
+          >
+            Add To Cart
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  } catch (err) {
+
+    document.getElementById('productContainer').innerHTML = `
+      <p class="text-red-500 text-center text-2xl">
+        Failed to load product
+      </p>
+    `;
+
+  }
+
+}
+
+loadProduct();
+
+</script>
+
+</body>
+</html>
