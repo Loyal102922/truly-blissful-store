@@ -51,11 +51,12 @@ const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
 // ───── MONGO ─────
 const mongoClient = new MongoClient(process.env.MONGO_URI);
 let productsCollection;
-
+let ordersCollection;
 async function connectMongo() {
   await mongoClient.connect();
   const database = mongoClient.db('store');
   productsCollection = database.collection('products');
+  ordersCollection = database.collection('orders');
   console.log('MongoDB connected');
 }
 connectMongo();
@@ -217,7 +218,14 @@ app.post('/create-checkout-session', async (req, res) => {
     if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
 
     const { cart } = req.body;
+    const order = {
+  cart,
+  status: 'pending',
+  total: 0,
+  createdAt: new Date()
+};
 const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+order.total = subtotal;
     const lineItems = cart.map(item => ({
       price_data: {
         currency: 'usd',
@@ -226,8 +234,9 @@ const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1))
       },
       quantity: item.qty || 1
     }));
-
+await ordersCollection.insertOne(order);
     const session = await stripe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       shipping_address_collection: {
   allowed_countries: ['US', 'CA']
