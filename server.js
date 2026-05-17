@@ -235,7 +235,7 @@ order.total = subtotal;
       quantity: item.qty || 1
     }));
 await ordersCollection.insertOne(order);
-    const session = await stripe.checkout.sessions.create({
+
       const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       shipping_address_collection: {
