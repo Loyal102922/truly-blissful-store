@@ -177,7 +177,16 @@ async function loadOrders() {
         ${address.city || ''}, ${address.state || ''} ${address.postal_code || ''}<br>
         ${address.country || ''}
       </div>
-
+<div style="margin-top:10px;">
+  <strong>Items:</strong><br>
+  ${(order.cart || []).map(item => `
+    <div style="margin-top:6px; padding-left:10px;">
+      ${item.name} × ${item.qty || 1}
+      ${item.size ? `<br>Size: ${item.size}` : ''}
+      ${item.color ? `<br>Color: ${item.color}` : ''}
+    </div>
+  `).join('')}
+</div>
       <div style="margin-top:10px;">
         <strong>Total:</strong> $${order.total || 0}
       </div>
