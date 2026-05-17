@@ -111,7 +111,7 @@ async function deleteProduct(id) {
     alert('Delete failed');
   }
 }
-async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColors) {
+async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColors, oldStock) {
 
 const name = prompt("New product name:", oldName);
 const price = prompt("New product price:", oldPrice);
