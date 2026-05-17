@@ -281,7 +281,7 @@ app.post('/add-product', requireAdmin, upload.array('images', 5), async (req, re
   try {
 const { name, price, category, sizes, colors, stock } = req.body;
 
-    const imagePaths = req.files.map(file => '/uploads/' + file.filename);
+  const imagePaths = req.files.map(file => file.path);
 
  await productsCollection.insertOne({
   name,
