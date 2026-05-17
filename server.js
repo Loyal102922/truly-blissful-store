@@ -237,7 +237,7 @@ order.total = subtotal;
     app.get('/order-details/:sessionId', async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(req.params.sessionId, {
-      expand: ['customer_details']
+    
     });
 
     const orderId = session.metadata?.orderId;
