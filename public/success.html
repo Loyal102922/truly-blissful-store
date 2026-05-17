@@ -37,7 +37,17 @@
     </div>
 <script>
 const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
+const params = new URLSearchParams(window.location.search);
+const sessionId = params.get('session_id');
 
+if (sessionId) {
+  fetch('/order-details/' + sessionId)
+    .then(res => res.json())
+    .then(data => {
+      console.log('ORDER DETAILS:', data);
+    })
+    .catch(err => console.error('Order details failed:', err));
+}
 const summary = document.getElementById('order-summary');
 
 let total = 0;
