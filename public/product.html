@@ -9,7 +9,9 @@
 </head>
 
 <body class="bg-black text-white min-h-screen">
-
+<a href="/" class="inline-block m-6 text-sm text-gray-300 hover:text-white">
+  ← Back to Store
+</a>
   <div class="max-w-6xl mx-auto px-6 py-10" id="productContainer">
     <p class="text-center text-xl">Loading product...</p>
   </div>
@@ -18,14 +20,14 @@
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get('id');
-
+let currentProduct = null;
 async function loadProduct() {
 
   try {
 
     const res = await fetch(`/product/${productId}`);
     const product = await res.json();
-
+currentProduct = product;
     const image =
       product.images?.[0] ||
       product.image ||
@@ -71,11 +73,10 @@ async function loadProduct() {
             ${product.stock || 0}
           </div>
 
-          <button
-            class="bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-gray-200"
-          >
-            Add To Cart
-          </button>
+          
+          <button onclick="addProductToCart()" class="bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-gray-200">
+  Add To Cart
+</button>
 
         </div>
 
@@ -94,7 +95,28 @@ async function loadProduct() {
   }
 
 }
+function addProductToCart() {
+  if (!currentProduct) return;
 
+  const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
+  const existing = cart.find(item => item.name === currentProduct.name);
+
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({
+      name: currentProduct.name,
+      price: currentProduct.price,
+      image: currentProduct.images?.[0] || currentProduct.image || '',
+      size: currentProduct.sizes?.[0] || 'Standard',
+      color: currentProduct.colors?.[0] || 'Standard',
+      qty: 1
+    });
+  }
+
+  localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
+  alert('Added to cart');
+}
 loadProduct();
 
 </script>
