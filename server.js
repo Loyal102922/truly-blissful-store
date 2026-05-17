@@ -271,7 +271,7 @@ const orderResult = await ordersCollection.insertOne(order);
     }
   ],
 
-  success_url: 'https://truly-blissful-store.onrender.com/success.html',
+ success_url: 'https://truly-blissful-store.onrender.com/success.html?session_id={CHECKOUT_SESSION_ID}',
   cancel_url: 'https://truly-blissful-store.onrender.com/cancel.html'
 });
 
