@@ -234,6 +234,41 @@ order.total = subtotal;
       },
       quantity: item.qty || 1
     }));
+    app.get('/order-details/:sessionId', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(req.params.sessionId, {
+      expand: ['customer_details']
+    });
+
+    const orderId = session.metadata?.orderId;
+
+    if (orderId) {
+      await ordersCollection.updateOne(
+        { _id: new ObjectId(orderId) },
+        {
+          $set: {
+            status: session.payment_status === 'paid' ? 'paid' : 'pending',
+            stripeSessionId: session.id,
+            customerEmail: session.customer_details?.email || '',
+            customerName: session.customer_details?.name || '',
+            customerPhone: session.customer_details?.phone || '',
+            shippingAddress: session.customer_details?.address || {},
+            updatedAt: new Date()
+          }
+        }
+      );
+    }
+
+    res.json({
+      success: true,
+      status: session.payment_status,
+      customer: session.customer_details
+    });
+  } catch (err) {
+    console.error('Order details error:', err);
+    res.status(500).json({ error: 'Failed to load order details' });
+  }
+});
 const orderResult = await ordersCollection.insertOne(order);
 
      const session = await stripe.checkout.sessions.create({
