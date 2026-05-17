@@ -252,7 +252,7 @@ order.total = subtotal;
             customerEmail: session.customer_details?.email || '',
             customerName: session.customer_details?.name || '',
             customerPhone: session.customer_details?.phone || '',
-            shippingAddress: session.customer_details?.address || {},
+            shippingAddress: session.shipping_details?.address || session.customer_details?.address || {},
             updatedAt: new Date()
           }
         }
@@ -262,7 +262,10 @@ order.total = subtotal;
     res.json({
       success: true,
       status: session.payment_status,
-      customer: session.customer_details
+     customer: {
+  ...session.customer_details,
+  address: session.shipping_details?.address || session.customer_details?.address || {}
+}
     });
   } catch (err) {
     console.error('Order details error:', err);
