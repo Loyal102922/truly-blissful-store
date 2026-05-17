@@ -252,7 +252,7 @@ if (
 ) {
   for (const item of order.cart) {
     await productsCollection.updateOne(
-      { _id: new ObjectId(item._id) },
+     { name: item.name },
       { $inc: { stock: -(item.qty || 1) } }
     );
   }
@@ -402,12 +402,10 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
     });
 
     res.json({ success: true });
-
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete product' });
   }
 });
-
 app.put('/edit-product/:id', upload.single('image'), async (req, res) => {
   try {
    const { name, price, category, sizes, colors, stock } = req.body;
