@@ -76,6 +76,21 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ error: 'Failed to load products' });
   }
 });
+app.get('/product/:id', async (req, res) => {
+  try {
+    const product = await productsCollection.findOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load product' });
+  }
+});
 app.delete('/products/:id', requireAdmin, async (req, res) => {
   try {
     await productsCollection.deleteOne({
