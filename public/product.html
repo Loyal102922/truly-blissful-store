@@ -120,7 +120,7 @@ currentProduct = product;
 }
 function addProductToCart() {
   if (!currentProduct) return;
-
+const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
  const selectedSize = document.getElementById('selectedSize')?.value || 'Standard';
 const selectedColor = document.getElementById('selectedColor')?.value || 'Standard';
 const selectedQty = Number(document.getElementById('selectedQty')?.value) || 1;
