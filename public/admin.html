@@ -14,6 +14,7 @@
 <input name="category" placeholder="Category e.g. Shirts, Hoodies, Headwear"required style="padding: 10px;">
   <input name="sizes" placeholder="Sizes e.g. M,L,XL,2XL" style="padding: 10px;">
 <input name="colors" placeholder="Colors e.g. Black,White,Cream" style="padding: 10px;">
+<input name="stock" type="number" placeholder="Stock Quantity" required style="padding: 10px;" />
 <input type="file" name="images" accept="image/*" multiple style="color: white;">  
   
   <button 
@@ -78,10 +79,11 @@ loadProducts();
 '${product.name}',
 '${product.price}',
 '${product.category}',
-'${(product.sizes || []).join(",")}',
-'${(product.colors || []).join(",")}'
+'${(product.sizes || []).join(', ')}',
+'${(product.colors || []).join(', ')}',
+'${product.stock || 0}',
 )">
-  Edit
+Edit
 </button>
     `;
 
@@ -109,14 +111,14 @@ async function deleteProduct(id) {
     alert('Delete failed');
   }
 }
-async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColors) {
+async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColors, oldStock) {
 
 const name = prompt("New product name:", oldName);
 const price = prompt("New product price:", oldPrice);
 const category = prompt("Category:", oldCategory);
 const sizes = prompt("Sizes (comma separated):", oldSizes);
 const colors = prompt("Colors (comma separated):", oldColors);
-
+const stock = prompt("Stock quantity:", oldStock || 0);
 if (!name || !price) return;
 
 const password = prompt("Enter admin password");
@@ -129,11 +131,12 @@ headers: {
 Authorization: 'Basic ' + auth
 },
 body: JSON.stringify({
-name,
-price,
-category,
-sizes: sizes.split(','),
-colors: colors.split(',')
+  name,
+  price,
+  category,
+  sizes: sizes.split(','),
+  colors: colors.split(','),
+  stock: Number(stock) || 0
 })
 });
 
