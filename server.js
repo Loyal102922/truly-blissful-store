@@ -320,7 +320,14 @@ const orderResult = await ordersCollection.insertOne(order);
     res.status(500).json({ error: 'Checkout failed' });
   }
 });
+app.get('/orders', async (req, res) => {
+  const orders = await ordersCollection
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
 
+  res.json(orders);
+});
 // ───── ADMIN AUTH ─────
 function requireAdmin(req, res, next) {
   const auth = req.headers.authorization;

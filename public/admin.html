@@ -147,5 +147,48 @@ location.reload();
 alert("Update failed");
 }
 }
+async function loadOrders() {
+  const res = await fetch('/orders');
+  const orders = await res.json();
+
+  const ordersContainer = document.createElement('div');
+  ordersContainer.innerHTML = '<h2 style="margin-top:40px;">Orders</h2>';
+
+  orders.forEach(order => {
+    const div = document.createElement('div');
+
+    div.style.border = '1px solid white';
+    div.style.padding = '15px';
+    div.style.marginTop = '15px';
+    div.style.borderRadius = '10px';
+
+    const address = order.shippingAddress || {};
+
+    div.innerHTML = `
+      <div><strong>Status:</strong> ${order.status}</div>
+      <div><strong>Email:</strong> ${order.customerEmail || ''}</div>
+      <div><strong>Name:</strong> ${order.customerName || ''}</div>
+      <div><strong>Phone:</strong> ${order.customerPhone || ''}</div>
+
+      <div style="margin-top:10px;">
+        <strong>Shipping Address:</strong><br>
+        ${address.line1 || ''}<br>
+        ${address.line2 || ''}<br>
+        ${address.city || ''}, ${address.state || ''} ${address.postal_code || ''}<br>
+        ${address.country || ''}
+      </div>
+
+      <div style="margin-top:10px;">
+        <strong>Total:</strong> $${order.total || 0}
+      </div>
+    `;
+
+    ordersContainer.appendChild(div);
+  });
+
+  document.body.appendChild(ordersContainer);
+}
+
+loadOrders();
 loadProducts();
 </script>
