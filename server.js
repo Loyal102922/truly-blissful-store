@@ -7,6 +7,8 @@ const nodemailer = require('nodemailer');
 const Stripe = require('stripe');
 const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 const transporter = nodemailer.createTransport({
@@ -17,16 +19,19 @@ const transporter = nodemailer.createTransport({
   }
 });
 const PORT = process.env.PORT || 10000;
-
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 // ───── MULTER (UPLOADS) ─────
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'truly-blissful',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
   }
 });
 
