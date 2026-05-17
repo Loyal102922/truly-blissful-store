@@ -9,7 +9,7 @@
 </head>
 
 <body class="bg-black text-white min-h-screen">
-<a href="/" class="inline-block m-6 text-sm text-gray-300 hover:text-white">
+<a href="/" class="inline-block m-6 bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold">
   ← Back to Store
 </a>
   <div class="max-w-6xl mx-auto px-6 py-10" id="productContainer">
@@ -74,7 +74,30 @@ currentProduct = product;
           </div>
 
           
-          <button onclick="addProductToCart()" class="bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-gray-200">
+         <div class="mb-4">
+  <label class="block mb-2 font-bold">Choose Size</label>
+  <select id="selectedSize" class="text-black px-4 py-2 rounded-lg w-full max-w-xs">
+    ${(product.sizes || ['Standard']).map(size => `
+      <option value="${size}">${size}</option>
+    `).join('')}
+  </select>
+</div>
+
+<div class="mb-4">
+  <label class="block mb-2 font-bold">Choose Color</label>
+  <select id="selectedColor" class="text-black px-4 py-2 rounded-lg w-full max-w-xs">
+    ${(product.colors || ['Standard']).map(color => `
+      <option value="${color}">${color}</option>
+    `).join('')}
+  </select>
+</div>
+
+<div class="mb-6">
+  <label class="block mb-2 font-bold">Quantity</label>
+  <input id="selectedQty" type="number" min="1" value="1" class="text-black px-4 py-2 rounded-lg w-24">
+</div>
+
+<button onclick="addProductToCart()" class="bg-orange-500 hover:bg-orange-400 text-black px-8 py-3 rounded-xl font-bold">
   Add To Cart
 </button>
 
@@ -98,19 +121,25 @@ currentProduct = product;
 function addProductToCart() {
   if (!currentProduct) return;
 
-  const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
-  const existing = cart.find(item => item.name === currentProduct.name);
+ const selectedSize = document.getElementById('selectedSize')?.value || 'Standard';
+const selectedColor = document.getElementById('selectedColor')?.value || 'Standard';
+const selectedQty = Number(document.getElementById('selectedQty')?.value) || 1;
+ const existing = cart.find(item =>
+  item.name === currentProduct.name &&
+  item.size === selectedSize &&
+  item.color === selectedColor
+);
 
   if (existing) {
-    existing.qty = (existing.qty || 1) + 1;
+  existing.qty = (existing.qty || 1) + selectedQty;
   } else {
     cart.push({
       name: currentProduct.name,
       price: currentProduct.price,
       image: currentProduct.images?.[0] || currentProduct.image || '',
-      size: currentProduct.sizes?.[0] || 'Standard',
-      color: currentProduct.colors?.[0] || 'Standard',
-      qty: 1
+   size: selectedSize,
+color: selectedColor,
+qty: selectedQty
     });
   }
 
