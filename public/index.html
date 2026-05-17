@@ -775,15 +775,18 @@ const filteredProducts =
     const div = document.createElement('div');
 
  div.className =
-  "bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 max-w-sm md:max-w-lg mx-auto";
+ div.className =
+"bg-neutral-900 p-6 rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 max-w-sm md:max-w-none flex flex-col h-full"
 div.innerHTML = `
 <div class="mb-4">
- <img
-id="main-img-${p.name.replace(/\s+/g, '-')}"
-src="${(p.images || [p.image])[0]}"
-data-index="0"
-onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, Number(this.dataset.index || 0))'
-class="w-full h-64 object-cover rounded-xl"
+<img
+  id="main-img-${p.name.replace(/\s/g, '-')}"
+  src="${(p.images || [p.image])[0]}"
+  data-index="0"
+  onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, Number(this.dataset.index || 0))'
+  class="w-full h-64 object-cover rounded-xl"
+  loading="lazy"
+  onerror="this.src='/images/fallback.jpg'"
 />
 
 <div class="flex gap-2 justify-center flex-wrap">
@@ -800,12 +803,15 @@ ${(p.images || [p.image]).map((img, index) => `
       <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
       <p class="text-gray-400">$${p.price}</p>
 
-<button onclick='openCartOptions(${JSON.stringify(p)})'
-  class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">
-  Add to Cart
-</button>
-    `;
+<div class="mt-auto pt-4">
+  <button onclick='openCartOptions(${JSON.stringify(p)})'
+    class="bg-orange-500 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold">
+    Add to Cart
+  </button>
+</div>
+`;
 
+container.appendChild(div);
     container.appendChild(div);
   });
 }
