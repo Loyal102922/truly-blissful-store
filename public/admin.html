@@ -69,7 +69,7 @@ loadProducts();
 </div>
       <strong>${product.name}</strong><br>
       $${product.price}<br><br>
-
+Stock: ${product.stock || 0}<br><br>
       <button onclick="deleteProduct('${product._id}')">
   Delete
 </button>
