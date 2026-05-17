@@ -44,8 +44,25 @@ if (sessionId) {
   fetch('/order-details/' + sessionId)
     .then(res => res.json())
     .then(data => {
-      console.log('ORDER DETAILS:', data);
-    })
+  console.log('ORDER DETAILS:', data);
+
+  const address = data.customer?.address;
+
+  if (address) {
+    const addressDiv = document.createElement('div');
+    addressDiv.className = 'mt-4 p-4 bg-black/40 border border-white/10 rounded-xl text-sm text-gray-300';
+
+    addressDiv.innerHTML = `
+      <div class="font-bold text-white mb-2">Shipping Address</div>
+      <div>${address.line1 || ''}</div>
+      <div>${address.line2 || ''}</div>
+      <div>${address.city || ''}, ${address.state || ''} ${address.postal_code || ''}</div>
+      <div>${address.country || ''}</div>
+    `;
+
+    document.getElementById('order-summary').appendChild(addressDiv);
+  }
+})
     .catch(err => console.error('Order details failed:', err));
 }
 const summary = document.getElementById('order-summary');
