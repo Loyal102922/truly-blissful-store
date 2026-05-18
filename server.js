@@ -389,6 +389,28 @@ app.get('/admin/analytics', async (req, res) => {
       shipped: orders.filter(o => o.status === 'shipped').length,
       delivered: orders.filter(o => o.status === 'delivered').length,
     };
+   const dailySalesMap = {};
+
+paidOrders.forEach(order => {
+  if (!order.createdAt) return;
+
+  const date = new Date(order.createdAt)
+    .toISOString()
+    .split('T')[0];
+
+  if (!dailySalesMap[date]) {
+    dailySalesMap[date] = 0;
+  }
+
+  dailySalesMap[date] += Number(order.total || 0);
+});
+
+const dailySales = Object.entries(dailySalesMap)
+  .map(([date, revenue]) => ({
+    date,
+    revenue
+  }))
+  .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const productSales = {};
 
@@ -422,6 +444,7 @@ app.get('/admin/analytics', async (req, res) => {
       totalRevenue,
       totalOrders,
       statusCounts,
+      dailySales,
       bestSellingProducts,
       lowStockProducts,
     });

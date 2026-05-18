@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Admin - Truly Blissful</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body style="background:black;color:white;font-family:sans-serif;padding:20px;">
@@ -154,7 +155,17 @@ analyticsDashboard.innerHTML = `
   <h2>Sales Analytics</h2>
 
   <div id="analyticsCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:30px;"></div>
+<div style="
+  background:#111;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:30px;
+  border:1px solid #333;
+">
+  <h3 style="margin-bottom:20px;">Daily Revenue</h3>
 
+  <canvas id="dailySalesChart"></canvas>
+</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
     <div>
       <h3>Best Selling Products</h3>
@@ -221,7 +232,44 @@ async function loadAnalytics() {
           Stock Left: ${product.stock}
         </div>
       `).join('') || '<p>No low stock products.</p>';
+const ctx = document.getElementById('dailySalesChart');
 
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: (data.dailySales || []).map(d => d.date),
+    datasets: [{
+      label: 'Daily Revenue',
+      data: (data.dailySales || []).map(d => d.revenue),
+      borderColor: '#f97316',
+      backgroundColor: 'rgba(249,115,22,0.2)',
+      tension: 0.3,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white'
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        }
+      }
+    }
+  }
+});
   } catch (err) {
     console.error('Analytics load failed:', err);
   }
