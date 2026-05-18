@@ -190,6 +190,27 @@ async function loadOrders() {
       <div style="margin-top:10px;">
         <strong>Total:</strong> $${order.total || 0}
       </div>
+      <div style="margin-top:15px;">
+  <select id="status-${order._id}" style="padding:8px;border-radius:8px;">
+    <option value="paid">Paid</option>
+    <option value="processing">Processing</option>
+    <option value="shipped">Shipped</option>
+    <option value="delivered">Delivered</option>
+  </select>
+
+  <input
+    id="tracking-${order._id}"
+    placeholder="Tracking Number"
+    style="padding:8px;border-radius:8px;margin-left:10px;"
+  />
+
+  <button
+    onclick="updateOrderStatus('${order._id}')"
+    style="padding:8px 14px;background:orange;color:black;border:none;border-radius:8px;margin-left:10px;font-weight:bold;"
+  >
+    Update Order
+  </button>
+</div>
     `;
 
     ordersContainer.appendChild(div);
@@ -197,7 +218,30 @@ async function loadOrders() {
 
   document.body.appendChild(ordersContainer);
 }
+async function updateOrderStatus(orderId) {
+  const status = document.getElementById(`status-${orderId}`).value;
+  const tracking = document.getElementById(`tracking-${orderId}`).value;
 
+  const res = await fetch(`/admin/orders/${orderId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      status,
+      trackingNumber: tracking
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert('Order updated');
+    location.reload();
+  } else {
+    alert(data.error || 'Failed to update order');
+  }
+}
 loadOrders();
 loadProducts();
 </script>
