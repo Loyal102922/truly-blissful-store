@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const PDFDocument = require('pdfkit');
 const Stripe = require('stripe');
 const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
@@ -527,6 +528,100 @@ app.get('/track-order', async (req, res) => {
     res.status(500).json({
       error: 'Failed to track order'
     });
+  }
+});
+app.get('/invoice/:id', async (req, res) => {
+  try {
+    const order = await ordersCollection.findOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    const doc = new PDFDocument({ margin: 50 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `inline; filename=invoice-${order._id}.pdf`
+    );
+
+    doc.pipe(res);
+
+    // BRAND
+    doc
+      .fontSize(26)
+      .fillColor('#f97316')
+      .text('TRULY BLISSFUL', {
+        align: 'center'
+      });
+
+    doc.moveDown();
+
+    doc
+      .fontSize(18)
+      .fillColor('black')
+      .text('Invoice', {
+        align: 'center'
+      });
+
+    doc.moveDown(2);
+
+    // ORDER INFO
+    doc.fontSize(12);
+
+    doc.text(`Order ID: ${order._id}`);
+    doc.text(`Status: ${order.status || 'paid'}`);
+    doc.text(`Customer: ${order.customerName || 'Customer'}`);
+    doc.text(`Email: ${order.customerEmail || ''}`);
+
+    if (order.trackingNumber) {
+      doc.text(`Tracking Number: ${order.trackingNumber}`);
+    }
+
+    doc.moveDown();
+
+    // ITEMS
+    doc.fontSize(16).text('Items');
+
+    doc.moveDown(0.5);
+
+    if (order.items && order.items.length) {
+      order.items.forEach((item) => {
+        doc
+          .fontSize(12)
+          .text(
+            `${item.name} x ${item.quantity} | Size: ${item.size || 'N/A'} | Color: ${item.color || 'N/A'}`
+          );
+      });
+    }
+
+    doc.moveDown(2);
+
+    // TOTAL
+    doc
+      .fontSize(18)
+      .fillColor('#f97316')
+      .text(`Total: $${order.total || 0}`, {
+        align: 'right'
+      });
+
+    doc.moveDown(2);
+
+    doc
+      .fontSize(12)
+      .fillColor('gray')
+      .text('Thank you for shopping with TRULY BLISSFUL.', {
+        align: 'center'
+      });
+
+    doc.end();
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to generate invoice');
   }
 });
 // ───── START SERVER ─────
