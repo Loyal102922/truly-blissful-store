@@ -475,6 +475,37 @@ app.put('/admin/orders/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update order' });
   }
 });
+app.get('/track-order', async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({
+        error: 'Email required'
+      });
+    }
+
+    const order = await ordersCollection.findOne(
+      { customerEmail: email },
+      { sort: { createdAt: -1 } }
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        error: 'Order not found'
+      });
+    }
+
+    res.json({ order });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to track order'
+    });
+  }
+});
 // ───── START SERVER ─────
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
