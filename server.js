@@ -477,6 +477,28 @@ if (
   status.toLowerCase() === 'shipped' &&
   updatedOrder.customerEmail
 ) {
+  const invoiceBuffers = [];
+
+const invoiceDoc = new PDFDocument();
+
+invoiceDoc.on('data', invoiceBuffers.push.bind(invoiceBuffers));
+
+invoiceDoc.fontSize(22).text('TRULY BLISSFUL Invoice');
+
+invoiceDoc.moveDown();
+
+invoiceDoc.text(`Order ID: ${updatedOrder._id}`);
+invoiceDoc.text(`Status: ${status}`);
+invoiceDoc.text(`Tracking: ${trackingNumber || 'Not provided'}`);
+invoiceDoc.text(`Total: $${updatedOrder.total || 0}`);
+
+invoiceDoc.end();
+
+await new Promise((resolve) => {
+  invoiceDoc.on('end', resolve);
+});
+
+const invoicePDF = Buffer.concat(invoiceBuffers);
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: updatedOrder.customerEmail,
@@ -490,7 +512,15 @@ Tracking Number:
 ${trackingNumber || 'Not provided yet'}
 
 Thank you for shopping with TRULY BLISSFUL.
-    `
+`,
+
+attachments: [
+  {
+    filename: `invoice-${updatedOrder._id}.pdf`,
+    content: invoicePDF,
+    contentType: 'application/pdf'
+  }
+]
   });
 }
     res.json({ success: true });
