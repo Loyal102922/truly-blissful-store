@@ -454,6 +454,27 @@ const updateData = {
     res.status(500).json({ error: 'Failed to edit product' });
   }
 });
+app.put('/admin/orders/:id', async (req, res) => {
+  try {
+    const { status, trackingNumber } = req.body;
+
+    await ordersCollection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      {
+        $set: {
+          status,
+          trackingNumber,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update order' });
+  }
+});
 // ───── START SERVER ─────
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
