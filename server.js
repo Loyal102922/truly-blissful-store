@@ -468,7 +468,30 @@ app.put('/admin/orders/:id', async (req, res) => {
         }
       }
     );
+const updatedOrder = await ordersCollection.findOne({
+  _id: new ObjectId(req.params.id)
+});
 
+if (
+  status.toLowerCase() === 'shipped' &&
+  updatedOrder.customerEmail
+) {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: updatedOrder.customerEmail,
+    subject: 'Your TRULY BLISSFUL order has shipped!',
+   text: `
+Your order is on the way!
+
+Status: ${status}
+
+Tracking Number:
+${trackingNumber || 'Not provided yet'}
+
+Thank you for shopping with TRULY BLISSFUL.
+    `
+  });
+}
     res.json({ success: true });
   } catch (err) {
     console.error(err);
