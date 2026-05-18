@@ -368,6 +368,68 @@ app.get('/orders', async (req, res) => {
 
   res.json(orders);
 });
+app.get('/admin/analytics', async (req, res) => {
+  try {
+    const orders = await ordersCollection.find({}).toArray();
+    const products = await productsCollection.find({}).toArray();
+
+    const totalOrders = orders.length;
+
+    const paidOrders = orders.filter(o =>
+      ['paid', 'processing', 'shipped', 'delivered'].includes(o.status)
+    );
+
+    const totalRevenue = paidOrders.reduce((sum, order) => {
+      return sum + Number(order.total || 0);
+    }, 0);
+
+    const statusCounts = {
+      paid: orders.filter(o => o.status === 'paid').length,
+      processing: orders.filter(o => o.status === 'processing').length,
+      shipped: orders.filter(o => o.status === 'shipped').length,
+      delivered: orders.filter(o => o.status === 'delivered').length,
+    };
+
+    const productSales = {};
+
+    paidOrders.forEach(order => {
+      (order.cart || []).forEach(item => {
+        const name = item.name || 'Unknown Product';
+        const qty = Number(item.qty || 1);
+
+        if (!productSales[name]) {
+          productSales[name] = 0;
+        }
+
+        productSales[name] += qty;
+      });
+    });
+
+    const bestSellingProducts = Object.entries(productSales)
+      .map(([name, quantitySold]) => ({ name, quantitySold }))
+      .sort((a, b) => b.quantitySold - a.quantitySold)
+      .slice(0, 5);
+
+    const lowStockProducts = products
+      .filter(p => Number(p.stock || 0) <= 5)
+      .map(p => ({
+        name: p.name,
+        stock: Number(p.stock || 0),
+      }))
+      .sort((a, b) => a.stock - b.stock);
+
+    res.json({
+      totalRevenue,
+      totalOrders,
+      statusCounts,
+      bestSellingProducts,
+      lowStockProducts,
+    });
+  } catch (err) {
+    console.error('Analytics error:', err);
+    res.status(500).json({ error: 'Failed to load analytics' });
+  }
+});
 // ───── ADMIN AUTH ─────
 function requireAdmin(req, res, next) {
   const auth = req.headers.authorization;

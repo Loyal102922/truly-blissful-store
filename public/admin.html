@@ -147,6 +147,85 @@ location.reload();
 alert("Update failed");
 }
 }
+const analyticsDashboard = document.createElement('div');
+analyticsDashboard.id = 'analyticsDashboard';
+analyticsDashboard.style.margin = '40px 0';
+analyticsDashboard.innerHTML = `
+  <h2>Sales Analytics</h2>
+
+  <div id="analyticsCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:30px;"></div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
+    <div>
+      <h3>Best Selling Products</h3>
+      <div id="bestSellingProducts"></div>
+    </div>
+
+    <div>
+      <h3>Low Stock Products</h3>
+      <div id="lowStockProducts"></div>
+    </div>
+  </div>
+`;
+
+document.body.insertBefore(analyticsDashboard, document.body.children[1]);
+async function loadAnalytics() {
+  try {
+    const res = await fetch('/admin/analytics');
+    const data = await res.json();
+
+    document.getElementById('analyticsCards').innerHTML = `
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Total Revenue</h3>
+        <p style="font-size:28px;font-weight:bold;">$${Number(data.totalRevenue || 0).toFixed(2)}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Total Orders</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.totalOrders || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Paid</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.paid || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Processing</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.processing || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Shipped</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.shipped || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Delivered</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.delivered || 0}</p>
+      </div>
+    `;
+
+    document.getElementById('bestSellingProducts').innerHTML =
+      (data.bestSellingProducts || []).map(product => `
+        <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+          <strong>${product.name}</strong><br>
+          Sold: ${product.quantitySold}
+        </div>
+      `).join('') || '<p>No sales yet.</p>';
+
+    document.getElementById('lowStockProducts').innerHTML =
+      (data.lowStockProducts || []).map(product => `
+        <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+          <strong>${product.name}</strong><br>
+          Stock Left: ${product.stock}
+        </div>
+      `).join('') || '<p>No low stock products.</p>';
+
+  } catch (err) {
+    console.error('Analytics load failed:', err);
+  }
+}
 async function loadOrders() {
   const res = await fetch('/orders');
   const orders = await res.json();
@@ -253,4 +332,5 @@ async function updateOrderStatus(orderId) {
 }
 loadOrders();
 loadProducts();
+loadAnalytics();
 </script>
