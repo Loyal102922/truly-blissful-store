@@ -165,6 +165,11 @@ analyticsDashboard.innerHTML = `
   <h3 style="margin-bottom:20px;">Daily Revenue</h3>
 
   <canvas id="dailySalesChart"></canvas>
+  <h3 style="margin-top:40px;">Weekly Revenue</h3>
+<canvas id="weeklySalesChart"></canvas>
+
+<h3 style="margin-top:40px;">Monthly Revenue</h3>
+<canvas id="monthlySalesChart"></canvas>
 </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
     <div>
@@ -245,6 +250,81 @@ new Chart(ctx, {
       backgroundColor: 'rgba(249,115,22,0.2)',
       tension: 0.3,
       fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white'
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        }
+      }
+    }
+  }
+});
+const weeklyCtx = document.getElementById('weeklySalesChart');
+
+new Chart(weeklyCtx, {
+  type: 'bar',
+  data: {
+    labels: (data.weeklySales || []).map(d => d.week),
+    datasets: [{
+      label: 'Weekly Revenue',
+      data: (data.weeklySales || []).map(d => d.revenue),
+      backgroundColor: 'rgba(59,130,246,0.5)',
+      borderColor: '#3b82f6',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white'
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        }
+      }
+    }
+  }
+});
+
+const monthlyCtx = document.getElementById('monthlySalesChart');
+
+new Chart(monthlyCtx, {
+  type: 'bar',
+  data: {
+    labels: (data.monthlySales || []).map(d => d.month),
+    datasets: [{
+      label: 'Monthly Revenue',
+      data: (data.monthlySales || []).map(d => d.revenue),
+      backgroundColor: 'rgba(16,185,129,0.5)',
+      borderColor: '#10b981',
+      borderWidth: 2
     }]
   },
   options: {

@@ -368,6 +368,14 @@ app.get('/orders', async (req, res) => {
 
   res.json(orders);
 });
+function getWeekNumber(date) {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+
+  return `${date.getFullYear()}-W${weekNumber}`;
+}
+
 app.get('/admin/analytics', async (req, res) => {
   try {
     const orders = await ordersCollection.find({}).toArray();
@@ -390,7 +398,8 @@ app.get('/admin/analytics', async (req, res) => {
       delivered: orders.filter(o => o.status === 'delivered').length,
     };
    const dailySalesMap = {};
-
+const weeklySalesMap = {};
+const monthlySalesMap = {};
 paidOrders.forEach(order => {
   if (!order.createdAt) return;
 
@@ -403,6 +412,20 @@ paidOrders.forEach(order => {
   }
 
   dailySalesMap[date] += Number(order.total || 0);
+  const week = getWeekNumber(new Date(order.createdAt));
+const month = new Date(order.createdAt).toISOString().slice(0, 7);
+
+if (!weeklySalesMap[week]) {
+  weeklySalesMap[week] = 0;
+}
+
+weeklySalesMap[week] += Number(order.total || 0);
+
+if (!monthlySalesMap[month]) {
+  monthlySalesMap[month] = 0;
+}
+
+monthlySalesMap[month] += Number(order.total || 0);
 });
 
 const dailySales = Object.entries(dailySalesMap)
@@ -411,7 +434,19 @@ const dailySales = Object.entries(dailySalesMap)
     revenue
   }))
   .sort((a, b) => new Date(a.date) - new Date(b.date));
+const weeklySales = Object.entries(weeklySalesMap)
+  .map(([week, revenue]) => ({
+    week,
+    revenue
+  }))
+  .sort((a, b) => a.week.localeCompare(b.week));
 
+const monthlySales = Object.entries(monthlySalesMap)
+  .map(([month, revenue]) => ({
+    month,
+    revenue
+  }))
+  .sort((a, b) => a.month.localeCompare(b.month));
     const productSales = {};
 
     paidOrders.forEach(order => {
@@ -445,6 +480,8 @@ const dailySales = Object.entries(dailySalesMap)
       totalOrders,
       statusCounts,
       dailySales,
+      weeklySales,
+monthlySales,
       bestSellingProducts,
       lowStockProducts,
     });
