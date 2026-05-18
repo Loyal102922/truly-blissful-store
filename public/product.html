@@ -97,10 +97,25 @@ currentProduct = product;
   <input id="selectedQty" type="number" min="1" value="1" class="text-black px-4 py-2 rounded-lg w-24">
 </div>
 
-<button onclick="addProductToCart()" class="bg-orange-500 hover:bg-orange-400 text-black px-8 py-3 rounded-xl font-bold">
-  Add To Cart
-</button>
-
+${Number(product.stock || 0) <= 0
+  ? `
+    <button
+      disabled
+      class="w-full bg-gray-700 text-white py-4 rounded-xl text-xl font-bold cursor-not-allowed"
+    >
+      SOLD OUT
+    </button>
+  `
+  : `
+    <button
+      onclick="addProductToCart()"
+      class="w-full bg-orange-500 hover:bg-orange-400 text-black py-4 rounded-xl text-xl font-bold"
+    >
+      Add To Cart
+    </button>
+  `
+}
+ 
         </div>
 
       </div>
@@ -120,6 +135,10 @@ currentProduct = product;
 }
 function addProductToCart() {
   if (!currentProduct) return;
+  if (Number(currentProduct.stock || 0) <= 0) {
+  alert('This product is sold out.');
+  return;
+}
 const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
  const selectedSize = document.getElementById('selectedSize')?.value || 'Standard';
 const selectedColor = document.getElementById('selectedColor')?.value || 'Standard';
