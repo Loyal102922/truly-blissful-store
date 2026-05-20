@@ -178,17 +178,24 @@ analyticsDashboard.innerHTML = `
     </div>
 
     <div>
-      <h3>Low Stock Products</h3>
-      <div id="lowStockProducts"></div>
-    </div>
-  </div>
+  <h3>Low Stock Products</h3>
+  <div id="lowStockProducts"></div>
+</div>
+
+<div>
+  <h3>Customer Behavior</h3>
+  <div id="behaviorAnalytics"></div>
+</div>
 `;
 
 document.body.insertBefore(analyticsDashboard, document.body.children[1]);
 async function loadAnalytics() {
   try {
-    const res = await fetch('/admin/analytics');
-    const data = await res.json();
+  const res = await fetch('/admin/analytics');
+const data = await res.json();
+
+const behaviorRes = await fetch('/admin/behavior-analytics');
+const behaviorData = await behaviorRes.json();
 
     document.getElementById('analyticsCards').innerHTML = `
       <div style="padding:20px;border:1px solid white;border-radius:12px;">
@@ -253,6 +260,14 @@ function getStockColor(stock) {
 </div>
         </div>
       `).join('') || '<p>No low stock products.</p>';
+      document.getElementById('behaviorAnalytics').innerHTML =
+  (behaviorData || []).map(item => `
+    <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+      <strong>${item.productName}</strong><br>
+      Views: ${item.views}<br>
+      Added To Cart: ${item.addedToCart}
+    </div>
+  `).join('') || '<p>No behavior data yet.</p>';
 const ctx = document.getElementById('dailySalesChart');
 
 new Chart(ctx, {
