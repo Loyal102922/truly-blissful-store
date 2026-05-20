@@ -358,7 +358,7 @@ app.post('/track-behavior', async (req, res) => {
       return res.status(400).json({ error: 'Missing tracking data' });
     }
 
-   await client.db("trulyblissful").collection('behaviorAnalytics').insertOne(
+   await mongoClient.db("store").collection('behaviorAnalytics').insertOne({
       productId: productId || null,
       productName,
       action,
@@ -373,7 +373,7 @@ app.post('/track-behavior', async (req, res) => {
 });
 app.get('/admin/behavior-analytics', async (req, res) => {
   try {
-   const behavior = await mongoClient.db("store").collection('behaviorAnalytics')
+   const behavior = await mongoClient.db("store").collection('behaviorAnalytics').aggregate([
       {
         $group: {
           _id: '$productName',
