@@ -229,19 +229,13 @@ res.json({
   }
 });
 // ───── CHECKOUT ─────
+// —— CHECKOUT ——
 app.post('/create-checkout-session', async (req, res) => {
   try {
     if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
 
     const { cart } = req.body;
-    const order = {
-  cart,
-  status: 'pending',
-  total: 0,
-  createdAt: new Date()
-};
-const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
-order.total = subtotal;
+
     const lineItems = cart.map(item => ({
       price_data: {
         currency: 'usd',
@@ -250,114 +244,95 @@ order.total = subtotal;
       },
       quantity: item.qty || 1
     }));
-    app.get('/order-details/:sessionId', async (req, res) => {
-  try {
-    const session = await stripe.checkout.sessions.retrieve(req.params.sessionId, {
-    
-    });
 
-    const orderId = session.metadata?.orderId;
-const order = await ordersCollection.findOne({
-  _id: new ObjectId(orderId)
-});
-
-if (
-  order &&
-  session.payment_status === 'paid' &&
-  !order.stockUpdated
-) {
-  for (const item of order.cart) {
-    await productsCollection.updateOne(
-     { name: item.name },
-      { $inc: { stock: -(item.qty || 1) } }
-    );
-  }
-
-  await ordersCollection.updateOne(
-    { _id: new ObjectId(orderId) },
-    {
-      $set: {
-        stockUpdated: true
-      }
-    }
-  );
-}
-    if (orderId) {
-      await ordersCollection.updateOne(
-        { _id: new ObjectId(orderId) },
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'],
+      phone_number_collection: { enabled: true },
+      shipping_address_collection: {
+        allowed_countries: ['US']
+      },
+      automatic_tax: { enabled: true },
+      line_items: lineItems,
+      metadata: {
+        cart: JSON.stringify(cart)
+      },
+      shipping_options: [
         {
-          $set: {
-            status: session.payment_status === 'paid' ? 'paid' : 'pending',
-            stripeSessionId: session.id,
-            customerEmail: session.customer_details?.email || '',
-            customerName: session.customer_details?.name || '',
-            customerPhone: session.customer_details?.phone || '',
-            shippingAddress: session.shipping_details?.address || session.customer_details?.address || {},
-            updatedAt: new Date()
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: { amount: 599, currency: 'usd' },
+            display_name: 'Standard Shipping',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 3 },
+              maximum: { unit: 'business_day', value: 7 }
+            }
           }
         }
-      );
-    }
-
-    res.json({
-      success: true,
-      status: session.payment_status,
-     customer: {
-  ...session.customer_details,
-  address: session.shipping_details?.address || session.customer_details?.address || {}
-}
+      ],
+      success_url: 'https://trulyblissfulshop.com/success.html?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'https://trulyblissfulshop.com/cancel.html'
     });
-  } catch (err) {
-    console.error('Order details error:', err);
-    res.status(500).json({ error: 'Failed to load order details' });
-  }
-});
-const orderResult = await ordersCollection.insertOne(order);
-
-     const session = await stripe.checkout.sessions.create({
-  mode: 'payment',
-  payment_method_types: ['card'],
-
-  customer_creation: 'always',
-  billing_address_collection: 'required',
-  phone_number_collection: {
-    enabled: true
-  },
-
-  shipping_address_collection: {
-    allowed_countries: ['US']
-  },
-
-  automatic_tax: { enabled: true },
-  line_items: lineItems,
-
-  metadata: {
-    orderId: orderResult.insertedId.toString()
-  },
-
-  shipping_options: [
-    {
-      shipping_rate_data: {
-        type: 'fixed_amount',
-        fixed_amount: { amount: 500, currency: 'usd' },
-        display_name: 'Standard Shipping',
-        delivery_estimate: {
-          minimum: { unit: 'business_day', value: 3 },
-          maximum: { unit: 'business_day', value: 7 }
-        }
-      }
-    }
-  ],
-
- success_url: 'https://truly-blissful-store.onrender.com/success.html?session_id={CHECKOUT_SESSION_ID}',
-  cancel_url: 'https://truly-blissful-store.onrender.com/cancel.html'
-});
-
 
     res.json({ id: session.id });
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Checkout failed' });
+  }
+});
+
+app.get('/order-details/:sessionId', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+
+    if (session.payment_status === 'paid') {
+      let order = await ordersCollection.findOne({
+        stripeSessionId: session.id
+      });
+
+      if (!order) {
+        const cart = JSON.parse(session.metadata.cart || '[]');
+
+        const result = await ordersCollection.insertOne({
+          customerName: session.customer_details?.name || '',
+          customerEmail: session.customer_details?.email || '',
+          customerPhone: session.customer_details?.phone || '',
+          shippingAddress: session.customer_details?.address || {},
+          stripeSessionId: session.id,
+          status: 'paid',
+          cart,
+          total: session.amount_total / 100,
+          stockUpdated: false,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+
+        order = await ordersCollection.findOne({ _id: result.insertedId });
+      }
+
+      if (order && !order.stockUpdated) {
+        for (const item of order.cart) {
+          await productsCollection.updateOne(
+            { name: item.name },
+            { $inc: { stock: -(item.qty || 1) } }
+          );
+        }
+
+        await ordersCollection.updateOne(
+          { _id: order._id },
+          { $set: { stockUpdated: true } }
+        );
+      }
+
+      return res.json(order);
+    }
+
+    res.status(400).json({ error: 'Payment not completed' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch order details' });
   }
 });
 app.get('/orders', async (req, res) => {
