@@ -309,6 +309,31 @@ app.get('/order-details/:sessionId', async (req, res) => {
         });
 
         order = await ordersCollection.findOne({ _id: result.insertedId });
+        await transporter.sendMail({
+  from: process.env.EMAIL_USER,
+  to: 'trulyblissful7@gmail.com',
+  subject: '🔥 New TRULY BLISSFUL Order',
+  html: `
+    <h2>New Order Received</h2>
+
+    <p><strong>Customer:</strong> ${order.customerName}</p>
+    <p><strong>Email:</strong> ${order.customerEmail}</p>
+    <p><strong>Phone:</strong> ${order.customerPhone}</p>
+
+    <h3>Items Ordered:</h3>
+
+    ${order.cart.map(item => `
+      <div style="margin-bottom:10px;">
+        <strong>${item.name}</strong><br>
+        Size: ${item.size || 'N/A'}<br>
+        Color: ${item.color || 'N/A'}<br>
+        Qty: ${item.qty || 1}
+      </div>
+    `).join('')}
+
+    <h3>Total: $${order.total}</h3>
+  `
+});
       }
 
       if (order && !order.stockUpdated) {
