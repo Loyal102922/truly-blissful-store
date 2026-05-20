@@ -350,7 +350,64 @@ function getWeekNumber(date) {
 
   return `${date.getFullYear()}-W${weekNumber}`;
 }
+app.post('/track-behavior', async (req, res) => {
+  try {
+    const { productId, productName, action } = req.body;
 
+    if (!productName || !action) {
+      return res.status(400).json({ error: 'Missing tracking data' });
+    }
+
+    await db.collection('behaviorAnalytics').insertOne({
+      productId: productId || null,
+      productName,
+      action,
+      createdAt: new Date()
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Behavior tracking error:', err);
+    res.status(500).json({ error: 'Failed to track behavior' });
+  }
+});
+app.get('/admin/behavior-analytics', async (req, res) => {
+  try {
+    const behavior = await db.collection('behaviorAnalytics').aggregate([
+      {
+        $group: {
+          _id: '$productName',
+          views: {
+            $sum: {
+              $cond: [{ $eq: ['$action', 'view'] }, 1, 0]
+            }
+          },
+          addedToCart: {
+            $sum: {
+              $cond: [{ $eq: ['$action', 'add_to_cart'] }, 1, 0]
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          productName: '$_id',
+          views: 1,
+          addedToCart: 1
+        }
+      },
+      {
+        $sort: { views: -1 }
+      }
+    ]).toArray();
+
+    res.json(behavior);
+  } catch (err) {
+    console.error('Behavior analytics error:', err);
+    res.status(500).json({ error: 'Failed to load behavior analytics' });
+  }
+});
 app.get('/admin/analytics', async (req, res) => {
   try {
     const orders = await ordersCollection.find({}).toArray();

@@ -28,6 +28,17 @@ async function loadProduct() {
     const res = await fetch(`/product/${productId}`);
     const product = await res.json();
 currentProduct = product;
+fetch('/track-behavior', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    productId: product._id,
+    productName: product.name,
+    action: 'view'
+  })
+});
     const image =
       product.images?.[0] ||
       product.image ||
@@ -163,6 +174,17 @@ qty: selectedQty
   }
 
   localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
+  fetch('/track-behavior', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    productId: currentProduct._id,
+    productName: currentProduct.name,
+    action: 'add_to_cart'
+  })
+});
   alert('Added to cart');
 }
 loadProduct();
