@@ -229,12 +229,28 @@ async function loadAnalytics() {
           Sold: ${product.quantitySold}
         </div>
       `).join('') || '<p>No sales yet.</p>';
+function getStockColor(stock) {
+  if (stock <= 0) {
+    return "background:#dc2626;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
+  }
 
+  if (stock <= 3) {
+    return "background:#f97316;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
+  }
+
+  if (stock <= 7) {
+    return "background:#facc15;color:black;padding:6px 12px;border-radius:8px;font-weight:bold;";
+  }
+
+  return "background:#22c55e;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
+}
     document.getElementById('lowStockProducts').innerHTML =
       (data.lowStockProducts || []).map(product => `
         <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
           <strong>${product.name}</strong><br>
-          Stock Left: ${product.stock}
+          <div style="${getStockColor(product.stock)}">
+  ${product.stock <= 0 ? "SOLD OUT" : `${product.stock} Left`}
+</div>
         </div>
       `).join('') || '<p>No low stock products.</p>';
 const ctx = document.getElementById('dailySalesChart');
