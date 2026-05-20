@@ -38,9 +38,63 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }
+limits: { fileSize: 10 * 1024 * 1024 }
 });
+app.post('/custom-order', upload.single('designImage'), async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      productType,
+      size,
+      color,
+      notes
+    } = req.body;
 
+    const imageUrl = req.file?.path || '';
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: 'trulyblissful7@gmail.com',
+      subject: '🎨 New Custom Order Request',
+      html: `
+        <h2>New Custom Order Request</h2>
+
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+
+        <hr>
+
+        <p><strong>Product Type:</strong> ${productType}</p>
+        <p><strong>Size:</strong> ${size}</p>
+        <p><strong>Color:</strong> ${color}</p>
+
+        <hr>
+
+        <p><strong>Customer Notes:</strong></p>
+        <p>${notes}</p>
+
+        <hr>
+
+        <p>
+          <strong>Uploaded Design:</strong><br>
+          <a href="${imageUrl}" target="_blank">${imageUrl}</a>
+        </p>
+      `
+    });
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+    console.error('Custom order error:', err);
+
+    res.status(500).json({
+      error: 'Failed to submit custom order'
+    });
+  }
+});
 // ───── STRIPE ─────
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
