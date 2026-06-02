@@ -163,7 +163,27 @@ async function loadProduct() {
 
     renderReviewForm();
     loadReviews();
+const colorSelect = document.getElementById('selectedColor');
 
+if (colorSelect) {
+  colorSelect.addEventListener('change', () => {
+
+    const selectedColor = colorSelect.value;
+
+    const colorIndex = (product.colors || []).findIndex(
+      c => c.trim() === selectedColor.trim()
+    );
+
+    if (
+      colorIndex >= 0 &&
+      product.images &&
+      product.images[colorIndex]
+    ) {
+      document.getElementById('mainProductImage').src =
+        product.images[colorIndex];
+    }
+  });
+}
   } catch (err) {
     document.getElementById('productContainer').innerHTML = `
       <p class="text-red-500 text-center text-2xl">
