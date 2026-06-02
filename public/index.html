@@ -85,6 +85,38 @@
     </nav>
   </div>
 </div>
+<section class="px-4 pt-4 pb-6">
+  <div class="max-w-6xl mx-auto overflow-hidden rounded-2xl border border-white/10">
+
+    <img
+      id="heroBanner"
+      src="/images/banner2.png"
+      alt="TRULY BLISSFUL Banner"
+      class="w-full object-cover"
+    />
+
+  </div>
+</section>
+
+<script>
+const bannerImages = [
+  '/images/banner2.png',
+  '/images/banner1.png',
+  '/images/banner3.jpg'
+];
+
+let bannerIndex = 0;
+
+setInterval(() => {
+  bannerIndex = (bannerIndex + 1) % bannerImages.length;
+
+  const banner = document.getElementById('heroBanner');
+
+  if (banner) {
+    banner.src = bannerImages[bannerIndex];
+  }
+}, 4000);
+</script>
   <section class="text-center py-16 md:py-24 px-4 sm:px-6">
     <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
 
