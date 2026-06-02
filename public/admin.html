@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Truly Blissful</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body style="background:black;color:white;font-family:sans-serif;padding:20px;">
+
+  <h1>Admin Panel</h1>
+
+<form id="productForm" style="display: flex; flex-direction: column; gap: 12px; max-width: 350px;">
+<input name="name" placeholder="Product Name" required style="padding: 10px;">
+<input name="price" placeholder="Price" required style="padding: 10px;">
+<input name="category" placeholder="Category e.g. Shirts, Hoodies, Headwear"required style="padding: 10px;">
+  <input name="sizes" placeholder="Sizes e.g. M,L,XL,2XL" style="padding: 10px;">
+<input name="colors" placeholder="Colors e.g. Black,White,Cream" style="padding: 10px;">
+<input name="stock" type="number" placeholder="Stock Quantity" required style="padding: 10px;" />
+<input type="file" name="images" accept="image/*" multiple style="color: white;">  
+  
+  <button 
+    type="submit"
+    style="background: orange; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;"
+  >
+    Add Product
+  </button>
+</form>
+
+  <script>
+    document.getElementById('productForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+     const password = prompt("Enter admin password:");
+      const auth = btoa('admin:' + password);
+
+      const formData = new FormData(this);
+
+      const res = await fetch('/add-product', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + auth
+        },
+        body: formData
+      });
+
+      if (res.ok) {
+        alert('Product added');
+this.reset();
+loadProducts();
+      } else {
+        alert('Failed to add product');
+      }
+    });
+    async function loadProducts() {
+  const res = await fetch('/products');
+  const products = await res.json();
+
+  const container = document.createElement('div');
+  container.id = 'productsContainer';
+
+  products.forEach(product => {
+    const div = document.createElement('div');
+
+    div.innerHTML = `
+      <hr>
+      <div>
+  ${(product.images || [product.image]).map(img => `
+    <img src="${img}" width="120"><br>
+  `).join('')}
+</div>
+      <strong>${product.name}</strong><br>
+      $${product.price}<br><br>
+Stock: ${product.stock || 0}<br><br>
+      <button onclick="deleteProduct('${product._id}')">
+  Delete
+</button>
+
+<button onclick="editProduct(
+'${product._id}',
+'${product.name}',
+'${product.price}',
+'${product.category}',
+'${(product.sizes || []).join(', ')}',
+'${(product.colors || []).join(', ')}',
+'${product.stock || 0}',
+)">
+Edit
+</button>
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.body.appendChild(container);
+}
+
+async function deleteProduct(id) {
+  const password = prompt('Enter admin password');
+  const auth = btoa('admin:' + password);
+
+  const res = await fetch('/delete-product/' + id, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Basic ' + auth
+    }
+  });
+
+  if (res.ok) {
+    alert('Product deleted');
+    location.reload();
+  } else {
+    alert('Delete failed');
+  }
+}
+async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColors, oldStock) {
+  const name = prompt("New product name:", oldName);
+  const price = prompt("New product price:", oldPrice);
+  const category = prompt("Category:", oldCategory);
+  const sizes = prompt("Sizes (comma separated):", oldSizes);
+  const colors = prompt("Colors (comma separated):", oldColors);
+  const stock = prompt("Stock quantity:", oldStock || 0);
+
+  if (!name || !price) return;
+
+  const changeImage = confirm("Do you want to update the product image?");
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("category", category);
+  formData.append("sizes", sizes);
+  formData.append("colors", colors);
+  formData.append("stock", Number(stock) || 0);
+
+  async function sendUpdate() {
+    const password = prompt("Enter admin password");
+    const auth = btoa("admin:" + password);
+
+    const res = await fetch("/edit-product/" + id, {
+      method: "PUT",
+      headers: {
+        Authorization: "Basic " + auth
+      },
+      body: formData
+    });
+
+    if (res.ok) {
+      alert("Product updated");
+      location.reload();
+    } else {
+      alert("Update failed");
+    }
+  }
+
+ if (changeImage) {
+
+  const imageInput = document.createElement("input");
+
+  imageInput.type = "file";
+  imageInput.accept = "image/*";
+
+  imageInput.style.display = "block";
+  imageInput.style.marginTop = "10px";
+
+  document.body.appendChild(imageInput);
+
+  imageInput.onchange = async () => {
+
+    if (imageInput.files[0]) {
+
+      formData.append("image", imageInput.files[0]);
+
+      await sendUpdate();
+
+      imageInput.remove();
+
+    } else {
+
+      alert("No image selected");
+
+    }
+  };
+
+} else {
+
+  await sendUpdate();
+
+}
+}
+
+const analyticsDashboard = document.createElement('div');
+analyticsDashboard.id = 'analyticsDashboard';
+analyticsDashboard.style.margin = '40px 0';
+analyticsDashboard.innerHTML = `
+  <h2>Sales Analytics</h2>
+
+  <div id="analyticsCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:30px;"></div>
+<div style="
+  background:#111;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:30px;
+  border:1px solid #333;
+">
+  <h3 style="margin-bottom:20px;">Daily Revenue</h3>
+
+  <canvas id="dailySalesChart"></canvas>
+  <h3 style="margin-top:40px;">Weekly Revenue</h3>
+<canvas id="weeklySalesChart"></canvas>
+
+<h3 style="margin-top:40px;">Monthly Revenue</h3>
+<canvas id="monthlySalesChart"></canvas>
+</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
+    <div>
+      <h3>Best Selling Products</h3>
+      <div id="bestSellingProducts"></div>
+    </div>
+
+    <div>
+  <h3>Low Stock Products</h3>
+  <div id="lowStockProducts"></div>
+</div>
+
+<div>
+  <h3>Customer Behavior</h3>
+  <div id="behaviorAnalytics"></div>
+</div>
+`;
+
+document.body.insertBefore(analyticsDashboard, document.body.children[1]);
+async function loadAnalytics() {
+  try {
+  const res = await fetch('/admin/analytics');
+const data = await res.json();
+
+const behaviorRes = await fetch('/admin/behavior-analytics');
+const behaviorData = await behaviorRes.json();
+
+    document.getElementById('analyticsCards').innerHTML = `
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Total Revenue</h3>
+        <p style="font-size:28px;font-weight:bold;">$${Number(data.totalRevenue || 0).toFixed(2)}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Total Orders</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.totalOrders || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Paid</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.paid || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Processing</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.processing || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Shipped</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.shipped || 0}</p>
+      </div>
+
+      <div style="padding:20px;border:1px solid white;border-radius:12px;">
+        <h3>Delivered</h3>
+        <p style="font-size:28px;font-weight:bold;">${data.statusCounts?.delivered || 0}</p>
+      </div>
+    `;
+
+    document.getElementById('bestSellingProducts').innerHTML =
+      (data.bestSellingProducts || []).map(product => `
+        <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+          <strong>${product.name}</strong><br>
+          Sold: ${product.quantitySold}
+        </div>
+      `).join('') || '<p>No sales yet.</p>';
+function getStockColor(stock) {
+  if (stock <= 0) {
+    return "background:#dc2626;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
+  }
+
+  if (stock <= 3) {
+    return "background:#f97316;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
+  }
+
+  if (stock <= 7) {
+    return "background:#facc15;color:black;padding:6px 12px;border-radius:8px;font-weight:bold;";
+  }
+
+  return "background:#22c55e;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
+}
+    document.getElementById('lowStockProducts').innerHTML =
+      (data.lowStockProducts || []).map(product => `
+        <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+          <strong>${product.name}</strong><br>
+          <div style="${getStockColor(product.stock)}">
+  ${product.stock <= 0 ? "SOLD OUT" : `${product.stock} Left`}
+</div>
+        </div>
+      `).join('') || '<p>No low stock products.</p>';
+      document.getElementById('behaviorAnalytics').innerHTML =
+  (behaviorData || []).map(item => `
+    <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+      <strong>${item.productName}</strong><br>
+      Views: ${item.views}<br>
+      Added To Cart: ${item.addedToCart}
+    </div>
+  `).join('') || '<p>No behavior data yet.</p>';
+const ctx = document.getElementById('dailySalesChart');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: (data.dailySales || []).map(d => d.date),
+    datasets: [{
+      label: 'Daily Revenue',
+      data: (data.dailySales || []).map(d => d.revenue),
+      borderColor: '#f97316',
+      backgroundColor: 'rgba(249,115,22,0.2)',
+      tension: 0.3,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white'
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        }
+      }
+    }
+  }
+});
+const weeklyCtx = document.getElementById('weeklySalesChart');
+
+new Chart(weeklyCtx, {
+  type: 'bar',
+  data: {
+    labels: (data.weeklySales || []).map(d => d.week),
+    datasets: [{
+      label: 'Weekly Revenue',
+      data: (data.weeklySales || []).map(d => d.revenue),
+      backgroundColor: 'rgba(59,130,246,0.5)',
+      borderColor: '#3b82f6',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white'
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        }
+      }
+    }
+  }
+});
+
+const monthlyCtx = document.getElementById('monthlySalesChart');
+
+new Chart(monthlyCtx, {
+  type: 'bar',
+  data: {
+    labels: (data.monthlySales || []).map(d => d.month),
+    datasets: [{
+      label: 'Monthly Revenue',
+      data: (data.monthlySales || []).map(d => d.revenue),
+      backgroundColor: 'rgba(16,185,129,0.5)',
+      borderColor: '#10b981',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white'
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        }
+      }
+    }
+  }
+});
+  } catch (err) {
+    console.error('Analytics load failed:', err);
+  }
+}
+async function loadOrders() {
+  const res = await fetch('/orders');
+  const orders = await res.json();
+
+  const ordersContainer = document.createElement('div');
+  ordersContainer.innerHTML = '<h2 style="margin-top:40px;">Orders</h2>';
+
+  orders.forEach(order => {
+    const div = document.createElement('div');
+
+    div.style.border = '1px solid white';
+    div.style.padding = '15px';
+    div.style.marginTop = '15px';
+    div.style.borderRadius = '10px';
+
+    const address = order.shippingAddress || {};
+
+    div.innerHTML = `
+      <div><strong>Status:</strong> ${order.status}</div>
+      <div><strong>Email:</strong> ${order.customerEmail || ''}</div>
+      <div><strong>Name:</strong> ${order.customerName || ''}</div>
+      <div><strong>Phone:</strong> ${order.customerPhone || ''}</div>
+
+      <div style="margin-top:10px;">
+        <strong>Shipping Address:</strong><br>
+        ${address.line1 || ''}<br>
+        ${address.line2 || ''}<br>
+        ${address.city || ''}, ${address.state || ''} ${address.postal_code || ''}<br>
+        ${address.country || ''}
+      </div>
+<div style="margin-top:10px;">
+  <strong>Items:</strong><br>
+  ${(order.cart || []).map(item => `
+    <div style="margin-top:6px; padding-left:10px;">
+      ${item.name} × ${item.qty || 1}
+      ${item.size ? `<br>Size: ${item.size}` : ''}
+      ${item.color ? `<br>Color: ${item.color}` : ''}
+    </div>
+  `).join('')}
+</div>
+      <div style="margin-top:10px;">
+        <strong>Total:</strong> $${order.total || 0}
+      </div>
+      <div style="margin-top:10px;">
+  <a
+    href="/invoice/${order._id}"
+    target="_blank"
+    style="display:inline-block;padding:8px 14px;background:white;color:black;border-radius:8px;font-weight:bold;text-decoration:none;"
+  >
+    View Invoice PDF
+  </a>
+</div>
+      <div style="margin-top:15px;">
+  <select id="status-${order._id}" style="padding:8px;border-radius:8px;">
+    <option value="paid">Paid</option>
+    <option value="processing">Processing</option>
+    <option value="shipped">Shipped</option>
+    <option value="delivered">Delivered</option>
+  </select>
+
+  <input
+    id="tracking-${order._id}"
+    placeholder="Tracking Number"
+    style="padding:8px;border-radius:8px;margin-left:10px;"
+  />
+
+  <button
+    onclick="updateOrderStatus('${order._id}')"
+    style="padding:8px 14px;background:orange;color:black;border:none;border-radius:8px;margin-left:10px;font-weight:bold;"
+  >
+    Update Order
+  </button>
+</div>
+    `;
+
+    ordersContainer.appendChild(div);
+  });
+
+  document.body.appendChild(ordersContainer);
+}
+async function updateOrderStatus(orderId) {
+  const status = document.getElementById(`status-${orderId}`).value;
+  const tracking = document.getElementById(`tracking-${orderId}`).value;
+
+  const res = await fetch(`/admin/orders/${orderId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      status,
+      trackingNumber: tracking
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert('Order updated');
+    location.reload();
+  } else {
+    alert(data.error || 'Failed to update order');
+  }
+}
+loadOrders();
+loadProducts();
+loadAnalytics();
+</script>

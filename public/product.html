@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Details | TRULY BLISSFUL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black text-white min-h-screen">
+
+<a href="/" class="inline-block m-6 bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold">
+  ← Back to Store
+</a>
+
+<div class="max-w-6xl mx-auto px-6 py-10" id="productContainer">
+  <p class="text-center text-xl">Loading product...</p>
+</div>
+
+<div class="max-w-6xl mx-auto px-6 pb-20" id="reviewsSection"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const productId = params.get('id');
+let currentProduct = null;
+let currentImages = [];
+let selectedImageIndex = 0;
+
+async function loadProduct() {
+  try {
+    const res = await fetch(`/product/${productId}`);
+    const product = await res.json();
+    currentProduct = product;
+
+    fetch('/track-behavior', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: product._id,
+        productName: product.name,
+        action: 'view'
+      })
+    });
+
+    currentImages = product.images && product.images.length
+      ? product.images
+      : product.image
+        ? [product.image]
+        : [];
+
+    const mainImage = currentImages[0] || '';
+
+    document.getElementById('productContainer').innerHTML = `
+      <div class="grid md:grid-cols-2 gap-10 items-start">
+
+        <div>
+          <img
+            id="mainProductImage"
+            src="${mainImage}"
+            class="w-full rounded-2xl object-cover border border-white/10"
+            onerror="this.src='/images/fallback.jpg'"
+          />
+
+          ${
+            currentImages.length > 1
+              ? `
+                <div class="flex gap-3 mt-4 flex-wrap">
+                  ${currentImages.map((img, index) => `
+                    <button
+                      onclick="changeMainImage(${index})"
+                      class="border border-white/20 rounded-xl overflow-hidden w-20 h-20"
+                    >
+                      <img
+                        src="${img}"
+                        class="w-full h-full object-cover"
+                        onerror="this.src='/images/fallback.jpg'"
+                      />
+                    </button>
+                  `).join('')}
+                </div>
+              `
+              : ''
+          }
+        </div>
+
+        <div>
+          <h1 class="text-4xl font-black mb-4 uppercase">
+            ${product.name}
+          </h1>
+
+          <p class="text-2xl mb-4 text-orange-400 font-bold">
+            $${product.price}
+          </p>
+
+          <p class="mb-6 text-gray-300">
+            ${product.category || ''}
+          </p>
+
+          <div class="mb-4">
+            <strong>Sizes:</strong>
+            ${(product.sizes || ['Standard']).join(', ')}
+          </div>
+
+          <div class="mb-4">
+            <strong>Colors:</strong>
+            ${(product.colors || ['Standard']).join(', ')}
+          </div>
+
+          <div class="mb-6">
+            <strong>Stock:</strong>
+            ${
+              Number(product.stock || 0) <= 0
+                ? `<span class="text-red-400 font-bold">Sold Out</span>`
+                : `<span class="text-green-400 font-bold">Only ${product.stock} left</span>`
+            }
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2 font-bold">Choose Size</label>
+            <select id="selectedSize" class="text-black px-4 py-3 rounded-lg w-full max-w-xs">
+              ${(product.sizes || ['Standard']).map(size => `
+                <option value="${size}">${size}</option>
+              `).join('')}
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2 font-bold">Choose Color</label>
+            <select id="selectedColor" class="text-black px-4 py-3 rounded-lg w-full max-w-xs">
+              ${(product.colors || ['Standard']).map(color => `
+                <option value="${color}">${color}</option>
+              `).join('')}
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <label class="block mb-2 font-bold">Quantity</label>
+            <input id="selectedQty" type="number" min="1" value="1" class="text-black px-4 py-3 rounded-lg w-24">
+          </div>
+
+          ${
+            Number(product.stock || 0) <= 0
+              ? `
+                <button
+                  disabled
+                  class="w-full bg-red-600 text-white py-4 rounded-xl text-xl font-black cursor-not-allowed"
+                >
+                  SOLD OUT
+                </button>
+              `
+              : `
+                <button
+                  onclick="addProductToCart()"
+                  class="w-full bg-orange-500 hover:bg-orange-400 text-black py-4 rounded-xl text-xl font-black"
+                >
+                  Add To Cart
+                </button>
+              `
+          }
+        </div>
+      </div>
+    `;
+
+    renderReviewForm();
+    loadReviews();
+
+  } catch (err) {
+    document.getElementById('productContainer').innerHTML = `
+      <p class="text-red-500 text-center text-2xl">
+        Failed to load product
+      </p>
+    `;
+  }
+}
+
+function changeMainImage(index) {
+  selectedImageIndex = index;
+  document.getElementById('mainProductImage').src = currentImages[index];
+}
+
+function addProductToCart() {
+  if (!currentProduct) return;
+
+  if (Number(currentProduct.stock || 0) <= 0) {
+    alert('This product is sold out.');
+    return;
+  }
+
+  const cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
+  const selectedSize = document.getElementById('selectedSize')?.value || 'Standard';
+  const selectedColor = document.getElementById('selectedColor')?.value || 'Standard';
+  const selectedQty = Number(document.getElementById('selectedQty')?.value) || 1;
+
+  const existing = cart.find(item =>
+    item.name === currentProduct.name &&
+    item.size === selectedSize &&
+    item.color === selectedColor
+  );
+
+  if (existing) {
+    existing.qty = (existing.qty || 1) + selectedQty;
+  } else {
+    cart.push({
+      name: currentProduct.name,
+      price: currentProduct.price,
+      image: currentProduct.images?.[0] || currentProduct.image || '',
+      size: selectedSize,
+      color: selectedColor,
+      qty: selectedQty
+    });
+  }
+
+  localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
+
+  fetch('/track-behavior', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      productId: currentProduct._id,
+      productName: currentProduct.name,
+      action: 'add_to_cart'
+    })
+  });
+
+  alert('Added to cart');
+}
+
+function renderReviewForm() {
+  document.getElementById('reviewsSection').innerHTML = `
+    <div class="mt-10 bg-neutral-900 border border-white/10 rounded-2xl p-6">
+      <h2 class="text-3xl font-black mb-6">Customer Reviews</h2>
+
+      <form id="reviewForm" class="space-y-4 mb-8">
+        <input
+          id="reviewName"
+          type="text"
+          placeholder="Your name"
+          class="w-full p-3 rounded-xl bg-black border border-white/10 text-white"
+          required
+        />
+
+        <select
+          id="reviewRating"
+          class="w-full p-3 rounded-xl bg-black border border-white/10 text-white"
+          required
+        >
+          <option value="">Select rating</option>
+          <option value="5">★★★★★ - 5 Stars</option>
+          <option value="4">★★★★☆ - 4 Stars</option>
+          <option value="3">★★★☆☆ - 3 Stars</option>
+          <option value="2">★★☆☆☆ - 2 Stars</option>
+          <option value="1">★☆☆☆☆ - 1 Star</option>
+        </select>
+
+        <textarea
+          id="reviewText"
+          placeholder="Write your review..."
+          rows="4"
+          class="w-full p-3 rounded-xl bg-black border border-white/10 text-white"
+          required
+        ></textarea>
+
+        <input
+          id="reviewImage"
+          type="file"
+          accept="image/*"
+          class="w-full p-3 rounded-xl bg-black border border-white/10 text-white"
+        />
+
+        <button
+          type="submit"
+          class="bg-orange-500 hover:bg-orange-400 text-black font-black px-6 py-3 rounded-xl w-full"
+        >
+          Submit Review
+        </button>
+      </form>
+
+      <div id="reviewsList" class="space-y-4"></div>
+    </div>
+  `;
+
+  document.getElementById('reviewForm').addEventListener('submit', submitReview);
+}
+
+async function submitReview(e) {
+  e.preventDefault();
+
+  const formData = new FormData();
+  formData.append('name', document.getElementById('reviewName').value.trim());
+  formData.append('rating', document.getElementById('reviewRating').value);
+  formData.append('text', document.getElementById('reviewText').value.trim());
+  formData.append('productId', productId);
+
+  const imageFile = document.getElementById('reviewImage').files[0];
+  if (imageFile) {
+    formData.append('image', imageFile);
+  }
+
+  const res = await fetch('/reviews', {
+    method: 'POST',
+    body: formData
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || 'Failed to submit review.');
+    return;
+  }
+
+  document.getElementById('reviewForm').reset();
+  await loadReviews();
+  alert('Review submitted!');
+}
+
+async function loadReviews() {
+  const res = await fetch('/reviews');
+  const reviews = await res.json();
+
+  const productReviews = reviews.filter(review =>
+    !review.productId || review.productId === productId
+  );
+
+  const list = document.getElementById('reviewsList');
+
+  if (!productReviews.length) {
+    list.innerHTML = `<p class="text-gray-400">No reviews yet.</p>`;
+    return;
+  }
+
+  list.innerHTML = productReviews.map(review => `
+    <div class="bg-black border border-white/10 rounded-xl p-4">
+      <div class="flex justify-between gap-4 mb-2">
+        <h3 class="font-bold">${review.name || 'Customer'}</h3>
+        <p class="text-yellow-400">${'★'.repeat(Number(review.rating || 5))}</p>
+      </div>
+
+      <p class="text-gray-300 mb-3">${review.text || ''}</p>
+
+      ${
+        review.image
+          ? `
+            <img
+              src="${review.image}"
+              class="rounded-xl w-full max-h-96 object-cover border border-white/10 mt-3"
+              onerror="this.style.display='none'"
+            />
+          `
+          : ''
+      }
+
+      <p class="text-xs text-gray-500 mt-3">
+        ${review.date ? new Date(review.date).toLocaleDateString() : ''}
+      </p>
+    </div>
+  `).join('');
+}
+
+loadProduct();
+</script>
+
+</body>
+</html>

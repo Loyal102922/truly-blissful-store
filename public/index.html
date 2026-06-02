@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRULY BLISSFUL</title>
+  
+
+<meta name="description" content="TRULY BLISSFUL — Faith-driven streetwear built with purpose, identity, and bold presence." />
+
+<meta name="keywords" content="TRULY BLISSFUL, streetwear, faith clothing, Christian streetwear, hoodies, graphic tees, fashion brand" />
+
+<meta name="author" content="TRULY BLISSFUL" />
+
+<meta property="og:title" content="TRULY BLISSFUL" />
+<meta property="og:description" content="Faith-driven streetwear built with purpose, identity, and bold presence." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="/logo.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="TRULY BLISSFUL" />
+<meta name="twitter:description" content="Faith-driven streetwear built with purpose, identity, and bold presence." />
+<meta name="twitter:image" content="/logo.png" />
+
+<link rel="icon" type="image/png" href="/logo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9BQZHCCJHE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9BQZHCCJHE');
+</script>
+</head>
+<body class="bg-black text-white font-sans">
+
+ <header class="border-b border-white/10 sticky top-0 bg-black/70 backdrop-blur-xl shadow-lg shadow-black/20 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="/logo.png" class="h-12 w-auto bg-white p-1 rounded"/>
+        <div>
+          <h1 class="font-black text-lg tracking-wide">TRULY BLISSFUL</h1>
+          <p class="text-xs text-gray-400 uppercase tracking-[0.25em]">Faith-Driven Streetwear</p>
+        </div>
+      </div>
+     <div class="flex items-center gap-2">
+  <a href="#products" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+    Shop
+  </a>
+
+  <button
+    onclick="openMobileMenu()"
+    class="sm:hidden border border-white/20 rounded-xl px-4 py-2 font-black text-white"
+  >
+    ☰
+  </button>
+</div>
+    </div>
+  </header>
+<div
+  id="mobile-menu"
+  class="fixed inset-0 bg-black/90 backdrop-blur z-[999] hidden"
+>
+  <div class="absolute right-0 top-0 h-full w-72 max-w-[85%] bg-neutral-950 border-l border-orange-500/30 p-6 shadow-2xl">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-xl font-black">TRULY BLISSFUL</h2>
+      <button onclick="closeMobileMenu()" class="text-3xl font-black text-white hover:text-orange-400">
+        ×
+      </button>
+    </div>
+
+    <nav class="flex flex-col gap-4 text-lg font-bold">
+      <a onclick="closeMobileMenu()" href="#products" class="border-b border-white/10 pb-3 hover:text-orange-400">Shop</a>
+      <a onclick="closeMobileMenu()" href="#cart" class="border-b border-white/10 pb-3 hover:text-orange-400">Cart</a>
+      <a onclick="closeMobileMenu()" href="#review-form-wrap" class="border-b border-white/10 pb-3 hover:text-orange-400">Reviews</a>
+      <a onclick="closeMobileMenu()" href="/custom-order.html"
+        class="border-b border-white/10 pb-3 hover:text-orange-400">
+  Custom Order
+</a>
+      <a onclick="closeMobileMenu()" href="mailto:trulyblissful7@gmail.com" class="border-b border-white/10 pb-3 hover:text-orange-400">Contact</a>
+    </nav>
+  </div>
+</div>
+  <section class="text-center py-16 md:py-24 px-4 sm:px-6">
+    <p class="text-sm text-gray-500 uppercase tracking-widest">Limited Drop</p>
+
+    <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mt-4 leading-tight">
+      Wear the Message
+    </h2>
+
+    <p class="text-gray-400 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+      Faith-driven streetwear built with purpose, identity, and bold presence.
+    </p>
+
+    <p class="text-orange-400 mt-3 font-semibold">Limited quantities available</p>
+
+    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#products" class="bg-orange-500 hover:bg-orange-400 transition px-6 py-3 rounded-xl text-black font-bold inline-block">
+        Shop Now
+      </a>
+      <a href="#cart" class="border border-white/20 hover:border-white/40 transition px-6 py-3 rounded-xl font-bold inline-block">
+        View Cart
+      </a>
+      <a href="/custom-order.html"
+  class="border border-orange-500/50 hover:border-orange-400 transition px-6 py-3 rounded-xl font-bold text-orange-400">
+  Request Special Order
+</a>
+ </div>
+
+<section class="px-6 pb-8 max-w-6xl mx-auto">
+  <div class="grid grid-cols-2 gap-3 max-w-md mx-auto sm:flex sm:flex-wrap sm:justify-center">
+    <button onclick="filterProducts('All')" data-category="All"
+class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
+  All
+</button>
+
+   <button onclick="filterProducts('Shirts')" data-category="Shirts"
+class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
+  Shirts
+</button>
+
+   <button onclick="filterProducts('Hoodies')" data-category="Hoodies"
+class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
+  Hoodies
+</button>
+
+    <button onclick="filterProducts('Headwear')" data-category="Headwear"
+class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
+  Headwear
+</button>
+  </div>
+</section>
+
+<section id="products" class="px-0 pb-20 w-full md:px-2">
+
+    <div id="tees" class="mb-16">
+      <h2 id="category-title" class="text-3xl font-black mb-2"></h2>
+      <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
+<div id="products-container" class="grid grid-cols-2 gap-1 w-full md:max-w-7xl md:mx-auto md:grid-cols-3 lg:grid-cols-4">
+
+</div>
+
+ 
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+  <div class="grid md:grid-cols-3 gap-6 text-center">
+
+    <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+      <h4 class="font-bold text-lg mb-2">🔒 Secure Checkout</h4>
+      <p class="text-gray-400 text-sm">Payments are processed securely through Stripe.</p>
+    </div>
+
+    <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+      <h4 class="font-bold text-lg mb-2">🚚 Fast Fulfillment</h4>
+      <p class="text-gray-400 text-sm">Orders are packed and processed as quickly as possible.</p>
+    </div>
+
+    <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+      <h4 class="font-bold text-lg mb-2">♡ Purpose Driven</h4>
+      <p class="text-gray-400 text-sm">Every piece represents faith, identity, and movement.</p>
+    </div>
+
+  </div>
+</section>
+  </section>
+
+  <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
+    <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Cart</h2>
+        <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
+      </div>
+
+      <ul id="cart-items" class="space-y-3"></ul>
+      <p class="mt-4">Total: <span id="total">$0</span></p>
+
+   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+  <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
+    Checkout
+  </button>
+
+  <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold hover:border-white/40 transition">
+    Clear Cart
+  </button>
+</div>
+ <button
+  id="floating-cart-btn"
+  onclick="document.getElementById('cart').scrollIntoView({ behavior: 'smooth' })"
+  class="fixed bottom-5 right-5 z-50 bg-orange-500 hover:bg-orange-400 text-black ..."
+>
+>
+  🛒
+
+  <span
+    id="floating-cart-count"
+    class="absolute -top-2 -right-2 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center"
+  >
+    0
+  </span>
+</button>
+  <section class="max-w-6xl mx-auto px-6 pb-20">
+  <div class="flex items-center justify-between gap-4 flex-wrap mb-8">
+    <h2 class="text-3xl font-black"></h2>
+    <button onclick="scrollToReviewForm()" class="border border-white/20 hover:border-orange-400/60 hover:text-orange-300 transition px-5 py-3 rounded-xl font-bold">
+      Leave a Review
+    </button>
+  </div>
+
+  <div id="reviews-list" class="grid md:grid-cols-3 gap-6 mb-10"></div>
+
+  <div id="review-form-wrap" class="bg-neutral-900/60 p-6 sm:p-8 rounded-2xl border border-white/10 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+    <h3 class="text-2xl font-black mb-4">Leave a Review</h3>
+
+    <div class="grid sm:grid-cols-2 gap-4 mb-4">
+      <input id="review-name" type="text" placeholder="Your name" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3">
+      <select id="review-rating" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3">
+        <option value="5">★★★★★ - 5 Stars</option>
+        <option value="4">★★★★☆ - 4 Stars</option>
+        <option value="3">★★★☆☆ - 3 Stars</option>
+        <option value="2">★★☆☆☆ - 2 Stars</option>
+        <option value="1">★☆☆☆☆ - 1 Star</option>
+      </select>
+    </div>
+
+    <textarea id="review-text" rows="4" placeholder="Tell customers what you liked..." class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 mb-4"></textarea>
+
+    <div class="mt-4 mb-4 flex justify-center items-center">
+      <div class="g-recaptcha" data-sitekey="6LfoTvQsAAAAAAQe6Z1WLf4ftCTxsVsOlvaNY7R3"></div>
+    </div>
+
+    <button onclick="submitReview()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition duration-300">
+      Submit Review
+    </button>
+  </div>
+</section>
+
+  <section class="max-w-4xl mx-auto px-6 pb-20">
+    <div class="bg-neutral-900 p-6 sm:p-8 rounded-2xl border border-white/10">
+      <h2 class="text-2xl font-black mb-3">Contact Us</h2>
+      <p class="text-gray-400 mb-6">For support, orders, or business inquiries, send us a message.</p>
+
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <input id="contact-name" type="text" placeholder="Your name" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3"/>
+        <input id="contact-email" type="email" placeholder="Your email" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3"/>
+      </div>
+
+      <input id="contact-subject" type="text" placeholder="Subject" class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 mb-4"/>
+
+      <textarea id="contact-message" rows="5" placeholder="Write your message here..." class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 mb-4"></textarea>
+
+     <div class="flex flex-col items-center gap-4">
+        <a href="mailto:trulyblissful7@gmail.com" class="text-orange-400 font-bold hover:underline">
+          trulyblissful7@gmail.com
+        </a>
+<div class="mt-4 mb-4 flex justify-center">
+  <div class="g-recaptcha" data-sitekey="6LfoTvQsAAAAAAQe6Z1WLf4ftCTxsVsOlvaNY7R3"></div>
+</div>
+        <button onclick="sendContactMessage()" class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
+          Send Message
+        </button>
+      </div>
+
+      <p id="contact-status" class="text-sm text-gray-500 mt-4"></p>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 pb-20">
+    <div class="bg-neutral-900 p-6 sm:p-8 rounded-2xl border border-white/10 text-center">
+    <h2 class="text-2xl sm:text-3xl font-black mb-3 text-left">Follow Us</h2>
+      <p class="text-gray-400 mb-6 text-left">
+        Stay connected with TRULY BLISSFUL for drops, content, and behind-the-scenes updates.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-4">
+        <a href="https://instagram.com/trulyblissful7" target="_blank" rel="noopener noreferrer" class="bg-black border border-white/10 hover:border-orange-400/60 transition rounded-2xl p-5 text-center">
+          <p class="text-orange-400 text-sm uppercase tracking-widest mb-2">Instagram</p>
+          <p class="font-bold">@trulyblissful7</p>
+        </a>
+
+        <a href="https://youtube.com/@TRULYBLISSFUL7" target="_blank" rel="noopener noreferrer" class="bg-black border border-white/10 hover:border-orange-400/60 transition rounded-2xl p-5 text-center">
+          <p class="text-orange-400 text-sm uppercase tracking-widest mb-2">YouTube</p>
+          <p class="font-bold">@TRULYBLISSFUL7</p>
+        </a>
+
+        <a href="https://tiktok.com/@trulyblissful" target="_blank" rel="noopener noreferrer" class="bg-black border border-white/10 hover:border-orange-400/60 transition rounded-2xl p-5 text-center">
+          <p class="text-orange-400 text-sm uppercase tracking-widest mb-2">TikTok</p>
+          <p class="font-bold">@trulyblissful</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+ <section class="text-center py-16 border-t border-white/10 px-6">
+  <div class="max-w-xl mx-auto bg-neutral-900/60 border border-white/10 rounded-3xl p-6 sm:p-8">
+    <p class="text-orange-400 text-sm uppercase tracking-widest mb-3">Early Access</p>
+    <h3 class="text-3xl font-black mb-4">Join the Movement</h3>
+    <p class="text-gray-400 mb-6">Get early access to future drops, restocks, and exclusive TRULY BLISSFUL updates.</p>
+
+    <div class="flex flex-col sm:flex-row gap-3">
+      <input
+        id="newsletter-email"
+        type="email"
+        placeholder="Enter your email"
+        class="px-4 py-3 rounded-xl bg-black border border-gray-700 w-full"
+      />
+
+      <button
+        onclick="joinNewsletter()"
+        class="bg-orange-500 px-6 py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition whitespace-nowrap"
+      >
+        Join
+      </button>
+    </div>
+
+    <p id="newsletter-status" class="text-sm text-gray-500 mt-4"></p>
+  </div>
+</section>
+
+  <footer class="border-t border-white/10 py-8 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-gray-500 text-sm">© TRULY BLISSFUL</p>
+
+      <div class="flex items-center gap-4 text-sm">
+        <a href="https://instagram.com/trulyblissful7" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-orange-400 transition">
+          Instagram
+        </a>
+        <a href="https://youtube.com/@TRULYBLISSFUL7" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-orange-400 transition">
+          YouTube
+        </a>
+        <a href="https://tiktok.com/@trulyblissful" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-orange-400 transition">
+          TikTok
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="product-modal" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 px-4">
+    <div class="bg-neutral-950 border border-orange-500/30 shadow-2xl shadow-orange-900/20 p-6 sm:p-8 rounded-3xl max-w-lg w-full relative overflow-hidden">
+      <div class="absolute inset-x-0 top-0 h-1 bg-orange-500"></div>
+
+      <button onclick="closeModal()" class="absolute top-3 right-4 text-white text-2xl leading-none hover:text-orange-400 transition">
+        ✕
+      </button>
+
+      <div class="mb-3">
+        <span class="inline-block text-[10px] uppercase tracking-[0.25em] text-orange-400 border border-orange-500/30 rounded-full px-3 py-1">
+          Limited Drop
+        </span>
+      </div>
+
+      <img id="modal-img" class="w-full h-72 object-contain mb-5 rounded-2xl bg-white/5"/>
+
+      <h3 id="modal-title" class="text-3xl font-black mb-2 uppercase tracking-wide"></h3>
+      <p id="modal-price" class="text-gray-300 mb-4 text-lg"></p>
+
+      <p id="modal-copy" class="text-sm text-gray-400 mb-5">
+        Bold faith expression built for everyday movement.
+      </p>
+
+      <div id="modal-variant-wrap" class="space-y-3 mb-5 hidden">
+        <select id="modal-size" class="w-full rounded-xl bg-black border border-white/10 px-3 py-3"></select>
+        <select id="modal-color" class="w-full rounded-xl bg-black border border-white/10 px-3 py-3"></select>
+      </div>
+
+      <button id="modal-add" class="bg-orange-500 w-full py-4 rounded-2xl text-black font-black uppercase tracking-wide hover:bg-orange-400 transition">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
+let stripe = null;
+let reviews = [];
+let allProducts = [];
+let currentCategory = 'All';
+async function initStripe() {
+  try {
+    const res = await fetch('/config');
+    const data = await res.json();
+    if (data.publishableKey) stripe = Stripe(data.publishableKey);
+  } catch (error) {
+    console.error('Stripe init failed:', error);
+  }
+}
+
+function saveCart() {
+  localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
+}
+
+function addToCart(name, price) {
+  const existing = cart.find(item => item.name === name && !item.size && !item.color);
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({ name, price, qty: 1 });
+  }
+  saveCart();
+  renderCart();
+}
+
+function addConfiguredProduct(name, price, sizeId, colorId) {
+  const size = document.getElementById(sizeId).value;
+  const color = document.getElementById(colorId).value;
+  const existing = cart.find(item => item.name === name && item.size === size && item.color === color);
+
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({ name, price, size, color, qty: 1 });
+  }
+
+  saveCart();
+  renderCart();
+}
+
+function changeQty(index, delta) {
+  if (!cart[index]) return;
+  cart[index].qty = (cart[index].qty || 1) + delta;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  saveCart();
+  renderCart();
+}
+function removeCartItem(index) {
+  cart.splice(index, 1);
+  saveCart();
+  renderCart();
+}
+function clearCart() {
+  cart = [];
+  saveCart();
+  renderCart();
+}
+
+function renderCart() {
+  const list = document.getElementById('cart-items');
+  const total = document.getElementById('total');
+  const count = document.getElementById('cart-count');
+  list.innerHTML = '';
+  let sum = 0;
+  let itemCount = 0;
+
+  if (cart.length === 0) {
+    const li = document.createElement('li');
+    li.textContent = 'Your cart is empty.';
+    li.className = 'text-gray-400';
+    list.appendChild(li);
+  }
+
+  cart.forEach((item, index) => {
+    const qty = item.qty || 1;
+    itemCount += qty;
+    sum += item.price * qty;
+
+    const li = document.createElement('li');
+    li.className = 'border border-white/10 rounded-xl p-4';
+
+   li.innerHTML = `
+  <div class="font-bold">${item.name}</div>
+  <div class="text-sm text-gray-400 mt-1">${item.size || 'Standard'} / ${item.color || 'Standard'}</div>
+  <div class="text-sm text-orange-300 mt-2">$${item.price} each</div>
+
+  <div class="flex items-center justify-between gap-3 mt-3">
+    <div class="flex items-center gap-3">
+      <button onclick="changeQty(${index}, -1)" class="border border-white/20 px-3 py-1 rounded-lg">-</button>
+      <span>${qty}</span>
+      <button onclick="changeQty(${index}, 1)" class="border border-white/20 px-3 py-1 rounded-lg">+</button>
+    </div>
+
+    <button onclick="removeCartItem(${index})" class="text-red-400 text-sm font-bold">
+      Remove
+    </button>
+  </div>
+`;
+
+    list.appendChild(li);
+  });
+
+ total.textContent = '$' + sum;
+count.textContent = itemCount;
+document.getElementById('floating-cart-count').textContent = itemCount;
+}
+
+ 
+
+
+
+
+
+async function loadReviews() {
+  try {
+    const res = await fetch('/reviews');
+    const data = await res.json();
+    reviews = Array.isArray(data) ? data : [];
+    renderReviews();
+  } catch (error) {
+    console.error('Load reviews failed:', error);
+  }
+}
+
+function renderReviews() {
+  const wrap = document.getElementById('reviews-list');
+  wrap.innerHTML = '';
+
+  reviews.forEach(review => {
+    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+    const card = document.createElement('div');
+    card.className = "bg-neutral-900/60 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300";
+    card.innerHTML = `
+      <p class="text-orange-400 mb-2">${stars}</p>
+      <p class="text-gray-300 text-sm mb-4">"${review.text}"</p>
+      <p class="text-xs text-gray-500">— ${review.name}</p>
+    `;
+    wrap.appendChild(card);
+  });
+}
+
+function scrollToReviewForm() {
+  document.getElementById('review-form-wrap').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function submitReview() {
+  const name = document.getElementById('review-name').value.trim();
+  const rating = parseInt(document.getElementById('review-rating').value, 10);
+  const text = document.getElementById('review-text').value.trim();
+  const recaptchaToken = grecaptcha.getResponse(0);
+
+  if (!name || !text) {
+    alert('Please add your name and review.');
+    return;
+  }
+
+  if (!recaptchaToken) {
+    alert('Please complete the reCAPTCHA.');
+    return;
+  }
+
+  const res = await fetch('/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, rating, text, recaptchaToken })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || 'Failed to submit review.');
+    return;
+  }
+
+ await loadReviews();
+
+  document.getElementById('review-name').value = '';
+  document.getElementById('review-rating').value = '5';
+  document.getElementById('review-text').value = '';
+  grecaptcha.reset(0);
+
+  alert('Review submitted!');
+}
+
+async function sendContactMessage() {
+  const name = document.getElementById('contact-name').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  const subject = document.getElementById('contact-subject').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+  const status = document.getElementById('contact-status');
+  const recaptchaToken = grecaptcha.getResponse(1);
+
+  status.textContent = '';
+
+  if (!name || !email || !message) {
+    status.textContent = 'Please fill out your name, email, and message.';
+    return;
+  }
+
+  if (!recaptchaToken) {
+    status.textContent = 'Please complete the reCAPTCHA.';
+    return;
+  }
+
+  const res = await fetch('/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, subject, message, recaptchaToken })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    status.textContent = data.error || 'Failed to send message.';
+    return;
+  }
+
+  status.textContent = 'Message sent successfully!';
+
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-subject').value = '';
+  document.getElementById('contact-message').value = '';
+
+  grecaptcha.reset(1);
+}
+
+function openModal(name, price, image, hasVariants = false, productType = '') {
+  document.getElementById('modal-img').src = image;
+  document.getElementById('modal-title').textContent = name;
+  document.getElementById('modal-price').textContent = '$' + price;
+
+  const variantWrap = document.getElementById('modal-variant-wrap');
+  const sizeSelect = document.getElementById('modal-size');
+  const colorSelect = document.getElementById('modal-color');
+  const modalCopy = document.getElementById('modal-copy');
+
+  variantWrap.classList.add('hidden');
+  sizeSelect.innerHTML = '';
+  colorSelect.innerHTML = '';
+
+  if (name.includes('Hoodie')) {
+    modalCopy.textContent = 'Heavyweight streetwear layer built for bold faith expression.';
+  } else if (name.includes('Hat')) {
+    modalCopy.textContent = 'Clean finishing piece built to complete the look.';
+  } else {
+    modalCopy.textContent = 'Statement piece built with message, movement, and purpose.';
+  }
+
+  if (hasVariants) {
+    variantWrap.classList.remove('hidden');
+
+    if (productType === 'tee-cave') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>Stone</option>
+        <option>Forest Green</option>
+      `;
+    }
+
+    if (productType === 'tee-kingdom') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>White</option>
+        <option>Black</option>
+        <option>Cream</option>
+      `;
+    }
+
+    if (productType === 'tee-taking') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>Vintage Black</option>
+        <option>Sand</option>
+      `;
+    }
+
+    if (productType === 'tee-didntask') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>Charcoal</option>
+        <option>White</option>
+      `;
+    }
+
+    if (productType === 'hoodie') {
+      sizeSelect.innerHTML = `
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+      `;
+      colorSelect.innerHTML = `
+        <option>Black</option>
+        <option>White</option>
+        <option>Gray</option>
+      `;
+    }
+
+    if (productType === 'hat') {
+      sizeSelect.innerHTML = `<option>One Size</option>`;
+      colorSelect.innerHTML = `
+        <option>Black/Orange</option>
+        <option>Black/White</option>
+        <option>All Black</option>
+        <option>Cream/Black</option>
+        <option>Gray/Black</option>
+      `;
+    }
+
+    document.getElementById('modal-add').onclick = function() {
+      const size = sizeSelect.value;
+      const color = colorSelect.value;
+      const existing = cart.find(item => item.name === name && item.size === size && item.color === color);
+
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ name, price, size, color, qty: 1 });
+      }
+
+      saveCart();
+      renderCart();
+      closeModal();
+    };
+  } else {
+    document.getElementById('modal-add').onclick = function() {
+      addToCart(name, price);
+      closeModal();
+    };
+  }
+
+  document.getElementById('product-modal').classList.remove('hidden');
+  document.getElementById('product-modal').classList.add('flex');
+}
+
+function closeModal() {
+  document.getElementById('product-modal').classList.add('hidden');
+  document.getElementById('product-modal').classList.remove('flex');
+}
+
+async function checkout() {
+  if (!cart.length) {
+    alert('Your cart is empty.');
+    return;
+  }
+
+  const res = await fetch('/create-checkout-session', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ cart })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || 'Checkout failed.');
+    return;
+  }
+
+  stripe.redirectToCheckout({ sessionId: data.id });
+}
+
+initStripe();
+renderCart();
+loadReviews();
+  async function loadProducts() {
+  const res = await fetch('/products');
+const products = await res.json();
+
+allProducts = products;
+
+const filteredProducts =
+  currentCategory === 'All'
+    ? products
+    : products.filter(
+      p => (p.category || '').trim().toLowerCase() === currentCategory.trim().toLowerCase()
+      );
+ const container = document.getElementById('products-container');
+  container.innerHTML = '';
+
+ filteredProducts.forEach(p => {
+    const div = document.createElement('div');
+
+ div.className =
+  "bg-neutral-900 p-0 overflow-hidden rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 flex flex-col h-full opacity-0 animate-fadeIn"
+div.style.cursor = 'pointer';
+
+div.onclick = () => {
+  window.location.href = `/product.html?id=${p._id}`;
+};
+div.innerHTML = `
+<div class="mb-0 overflow-hidden rounded-xl">
+<img
+  id="main-img-${p.name.replace(/\s/g, '-')}"
+  src="${((p.images || [p.image])[0] || '').replace('/upload/', '/upload/f_auto,q_auto,w_600/')}"
+  data-index="0"
+  onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, 0)'
+  class="w-full h-52 md:h-72 object-cover object-top rounded-none hover:scale-105 transition duration-300"
+  loading="lazy"
+  decoding="async"
+  onerror="this.src='/images/fallback.jpg'"
+/>
+</div>
+      <div class="p-3 flex flex-col flex-1">
+      <h3 class="font-bold">${p.name}</h3>
+      <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
+      <p class="text-gray-400">$${p.price}</p>
+<p class="text-sm font-bold ${p.stock > 0 ? 'text-green-400' : 'text-red-400'}">
+  ${p.stock > 0 ? `Only ${p.stock} left` : 'Sold Out'}
+</p>
+<div class="mt-auto pt-4">
+  ${
+    p.stock > 0
+      ? `
+        <button
+          onclick='openCartOptions(${JSON.stringify(p)})'
+          class="bg-orange-500 hover:bg-orange-400 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold transition duration-300"
+        >
+          🛒 Add to Cart
+        </button>
+      `
+      : `
+        <div class="bg-red-600 text-white px-4 py-2 mt-4 rounded-xl w-full font-bold text-center">
+          SOLD OUT
+        </div>
+      `
+  }
+</div>
+</div>
+`;
+container.appendChild(div);
+    
+  });
+}
+function openCartOptions(product) {
+  const modal = document.createElement('div');
+  modal.className = "fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4";
+
+  modal.innerHTML = `
+    <div class="bg-neutral-900 border border-orange-500/40 rounded-2xl p-6 w-full max-w-sm mx-auto relative">
+      <button
+        onclick="this.closest('.fixed').remove()"
+        class="absolute top-3 right-4 text-white text-2xl font-bold">
+        ×
+      </button>
+
+    <h2 class="text-2xl font-black mb-2">${product.name}</h2>
+<p class="text-gray-400 mb-5">$${product.price}</p>
+      <label class="block text-sm text-gray-400 mb-2">Size</label>
+      <select id="cart-size" class="w-full mb-4 p-3 rounded-xl bg-black border border-white/10 text-white">
+        <option value="">Select Size</option>
+       ${(product.sizes || []).map(size => `
+  <option>${size}</option>
+`).join('')}
+      </select>
+
+      <label class="block text-sm text-gray-400 mb-2">Color</label>
+      <select id="cart-color" class="w-full mb-5 p-3 rounded-xl bg-black border border-white/10 text-white">
+        <option value="">Select Color</option>
+       ${(product.colors || []).map(color => `
+  <option>${color}</option>
+`).join('')}
+      </select>
+
+      <button
+      onclick="confirmCartOptions('${product.name}', ${product.price}, this)"
+        class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold">
+        Add to Cart
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+function confirmCartOptions(name, price, button) {
+  const modal = button.closest('.fixed');
+  const size = modal.querySelector('#cart-size').value;
+  const color = modal.querySelector('#cart-color').value;
+
+  if (!size || !color) {
+    alert('Please select a size and color.');
+    return;
+  }
+
+  const existing = cart.find(item =>
+    item.name === name &&
+    item.size === size &&
+    item.color === color
+  );
+
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({ name, price, size, color, qty: 1 });
+  }
+
+  saveCart();
+  renderCart();
+  modal.remove();
+}
+function openImageGallery(images, startIndex = 0) {
+  let currentIndex = startIndex;
+
+  const modal = document.createElement('div');
+  modal.className = "fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4";
+
+  function renderImage() {
+    modal.innerHTML = `
+      <div class="relative max-w-5xl w-full flex items-center justify-center">
+
+        <button
+          onclick="event.stopPropagation(); changeGalleryImage(-1)"
+         class="absolute left-2 md:left-4 text-white text-5xl font-bold px-4 z-50"
+          ‹
+        </button>
+
+        <img
+          src="${images[currentIndex]}"
+          onclick="event.stopPropagation();"
+          class="max-h-[85vh] w-full object-contain rounded-2xl border border-white/10"
+        />
+
+        <button
+          onclick="event.stopPropagation(); changeGalleryImage(1)"
+       class="absolute right-2 md:right-4 text-white text-5xl font-bold px-4 z-50"
+          ›
+        </button>
+
+        <button
+         onclick="event.stopPropagation(); document.querySelector('.fixed.inset-0').remove()"
+class="fixed top-4 right-4 text-white text-5xl font-bold z-[99999] bg-black/80 rounded-full w-14 h-14 flex items-center justify-center border border-white/20"
+          ×
+        </button>
+
+      </div>
+    `;
+  }
+
+  window.changeGalleryImage = function(direction) {
+    currentIndex += direction;
+
+    if (currentIndex < 0) {
+      currentIndex = images.length - 1;
+    }
+
+    if (currentIndex >= images.length) {
+      currentIndex = 0;
+    }
+
+    renderImage();
+  };
+
+  modal.onclick = () => modal.remove();
+
+  renderImage();
+
+  document.body.appendChild(modal);
+}
+function filterProducts(category) {
+  currentCategory = category;
+
+  const title = document.getElementById('category-title');
+
+  if (category === 'All') {
+    title.textContent = 'All Products';
+  } else {
+    title.textContent = category;
+  }
+
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.remove('bg-orange-500', 'text-black', 'border-orange-500');
+    btn.classList.add('border-white/20', 'text-white');
+  });
+
+  const activeBtn = document.querySelector(`[data-category="${category}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('bg-orange-500', 'text-black', 'border-orange-500');
+    activeBtn.classList.remove('border-white/20', 'text-white');
+  }
+
+  loadProducts();
+}
+loadProducts();
+/* Fade-in section observer */
+const fadeSections = document.querySelectorAll('section');
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  },
+  {
+    threshold: 0.12
+  }
+);
+
+fadeSections.forEach(section => {
+  section.classList.add('fade-in-section');
+  observer.observe(section);
+});
+function openMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('hidden');
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.add('hidden');
+}
+async function joinNewsletter() {
+  const email = document.getElementById('newsletter-email').value.trim();
+  const status = document.getElementById('newsletter-status');
+
+  if (!email) {
+    status.textContent = 'Please enter an email address.';
+    return;
+  }
+
+  try {
+    status.textContent = 'Joining...';
+    const res = await fetch('/newsletter', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      status.textContent = data.error || 'Failed to join newsletter.';
+      return;
+    }
+
+    status.textContent = 'You are officially part of the movement.';
+    document.getElementById('newsletter-email').value = '';
+  } catch (err) {
+    status.textContent = 'Server connection failed.';
+  }
+}
+
+ 
+</script>
+
+<style>
+
+/* TRULY BLISSFUL — Mobile Responsiveness Polish Patch
+   Add this after your main stylesheet so these rules override earlier desktop styles.
+*/
+
+:root {
+  --tb-mobile-page-pad: clamp(1rem, 4vw, 1.5rem);
+  --tb-touch-target: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 80px;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+.btn,
+.button,
+.add-to-cart,
+.checkout-button,
+.shop-now,
+.nav-toggle {
+  min-height: var(--tb-touch-target);
+  min-width: var(--tb-touch-target);
+}
+
+.container,
+.wrapper,
+.section-inner,
+.page-width {
+  width: min(100%, 1180px);
+  padding-inline: var(--tb-mobile-page-pad);
+  margin-inline: auto;
+}
+
+/* Header / Navigation */
+.header,
+.site-header,
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  backdrop-filter: blur(12px);
+}
+
+.header-inner,
+.nav-inner,
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 64px;
+}
+
+.logo,
+.site-logo {
+  max-width: min(48vw, 190px);
+  line-height: 1.05;
+}
+
+.nav-links,
+.menu,
+.primary-menu {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.cart-icon,
+.header-cart,
+.account-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tb-touch-target);
+  min-height: var(--tb-touch-target);
+}
+
+/* Hero */
+.hero,
+.hero-section,
+.home-hero {
+  min-height: auto;
+  padding-block: clamp(3rem, 12vw, 7rem);
+}
+
+.hero-content,
+.hero .content,
+.home-hero .content {
+  max-width: 760px;
+}
+
+.hero h1,
+.hero-title,
+.home-hero h1 {
+  font-size: clamp(2.1rem, 11vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+text-wrap: balance;
+}
+
+.hero p,
+.hero-subtitle,
+.home-hero p {
+  font-size: clamp(1rem, 4.3vw, 1.3rem);
+  line-height: 1.55;
+  max-width: 38rem;
+}
+
+.hero-actions,
+.cta-row,
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* Product grid */
+.products,
+.product-grid,
+.collection-grid,
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: clamp(1rem, 4vw, 1.75rem);
+}
+
+.product-card,
+.card,
+.collection-card {
+  min-width: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.product-card img,
+.card img,
+.collection-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.product-card-content,
+.product-info,
+.card-body {
+  padding: clamp(0.9rem, 3vw, 1.25rem);
+}
+
+.product-title,
+.product-card h3,
+.card h3 {
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  line-height: 1.2;
+}
+
+.price,
+.product-price {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.product-card .btn,
+.product-card button,
+.add-to-cart {
+  width: 100%;
+  margin-top: 0.85rem;
+  border-radius: 999px;
+}
+
+/* Product detail page */
+.product-detail,
+.product-page,
+.product-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.85fr);
+  gap: clamp(1.25rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.product-gallery,
+.gallery {
+  min-width: 0;
+}
+
+.product-summary,
+.product-details,
+.product-info-panel {
+  min-width: 0;
+}
+
+.quantity-selector,
+.qty-row,
+.variant-picker,
+.size-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.variant-picker button,
+.size-picker button,
+.swatch,
+.qty-btn {
+  min-height: var(--tb-touch-target);
+  min-width: var(--tb-touch-target);
+}
+
+/* Cart / checkout */
+.cart-layout,
+.cart-page,
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+  gap: clamp(1rem, 4vw, 2rem);
+  align-items: start;
+}
+
+.cart-item,
+.line-item {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cart-item img,
+.line-item img {
+  width: 96px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0.85rem;
+}
+
+.cart-summary,
+.order-summary {
+  position: sticky;
+  top: 84px;
+  border-radius: 1.25rem;
+}
+
+/* Forms */
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: var(--tb-touch-target);
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+.form-row,
+.checkout-fields,
+.contact-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .product-detail,
+  .product-page,
+  .product-main,
+  .cart-layout,
+  .cart-page,
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-summary,
+  .order-summary {
+    position: static;
+  }
+}
+
+/* Phone */
+@media (max-width: 680px) {
+  :root {
+    --tb-mobile-page-pad: 1rem;
+  }
+
+  .header-inner,
+  .nav-inner,
+  .navbar .container {
+    min-height: 60px;
+  }
+
+  .nav-links,
+  .menu,
+  .primary-menu {
+    gap: 0.5rem;
+  }
+
+  .nav-links a,
+  .menu a,
+  .primary-menu a {
+    font-size: 0.95rem;
+  }
+
+  .hero,
+  .hero-section,
+  .home-hero {
+    padding-block: 2.75rem;
+    text-align: left;
+  }
+
+  .hero-actions,
+  .cta-row,
+  .button-row {
+    flex-direction: column;
+  }
+
+  .hero-actions .btn,
+  .cta-row .btn,
+  .button-row .btn,
+  .shop-now {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .products,
+  .product-grid,
+  .collection-grid,
+  .shop-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+
+  .product-card,
+  .card,
+  .collection-card {
+    border-radius: 1rem;
+  }
+
+  .product-card-content,
+  .product-info,
+  .card-body {
+    padding: 0.8rem;
+  }
+
+  .product-title,
+  .product-card h3,
+  .card h3 {
+    font-size: 0.96rem;
+  }
+
+  .product-card .btn,
+  .product-card button,
+  .add-to-cart {
+    font-size: 0.95rem;
+    padding-inline: 0.9rem;
+  }
+
+  .cart-item,
+  .line-item {
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 0.85rem;
+  }
+
+  .cart-item img,
+  .line-item img {
+    width: 78px;
+  }
+
+  .cart-item-price,
+  .line-item-price,
+  .cart-remove,
+  .line-item-remove {
+    grid-column: 2;
+  }
+
+  .form-row,
+  .checkout-fields,
+  .contact-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small phone */
+@media (max-width: 430px) {
+  .logo,
+  .site-logo {
+    max-width: 56vw;
+  }
+
+  .products,
+  .product-grid,
+  .collection-grid,
+  .shop-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-card img,
+  .card img,
+  .collection-card img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .hero h1,
+  .hero-title,
+  .home-hero h1 {
+    font-size: clamp(2rem, 14vw, 3.5rem);
+  }
+
+  .section-title,
+  .collection-title,
+  h2 {
+    font-size: clamp(1.6rem, 9vw, 2.4rem);
+    line-height: 1.05;
+  }
+}
+/* Premium scroll fade-in animation */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+</style>
+<footer class="text-center text-gray-500 text-sm py-10">
+  <div class="flex justify-center gap-6 flex-wrap">
+    <a href="/returns.html" class="hover:text-orange-400">Returns</a>
+    <a href="/shipping.html" class="hover:text-orange-400">Shipping</a>
+    <a href="/privacy.html" class="hover:text-orange-400">Privacy</a>
+    <a href="/terms.html" class="hover:text-orange-400">Terms</a>
+  </div>
+
+  <p class="mt-4">
+    © 2026 TRULY BLISSFUL. All rights reserved.
+  </p>
+</footer>
+</body>
+</html>
+
