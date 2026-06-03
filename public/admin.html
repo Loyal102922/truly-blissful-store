@@ -86,6 +86,10 @@ Stock: ${product.stock || 0}<br><br>
 )">
 Edit
 </button>
+
+<button onclick="changeProductImage('${product._id}')">
+Change Image
+</button>
     `;
 
     container.appendChild(div);
