@@ -796,7 +796,11 @@ initStripe();
 renderCart();
 loadReviews();
 async function loadProducts(retries = 5, delay = 4000) {
-
+document.getElementById('products-container').innerHTML = `
+  <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
+    <p class="text-gray-400">Loading products...</p>
+  </div>
+`;
   try {
 
    const res = await fetch('/products');
@@ -1051,13 +1055,13 @@ function filterProducts(category) {
     btn.classList.add('border-white/20', 'text-white');
   });
 
-  const activeBtn = document.querySelector(`[data-category="${category}"]`);
-  if (activeBtn) {
-    activeBtn.classList.add('bg-orange-500', 'text-black', 'border-orange-500');
-    activeBtn.classList.remove('border-white/20', 'text-white');
-  }
+const activeBtn = document.querySelector(`[data-category="${category}"]`);
+if (activeBtn) {
+  activeBtn.classList.add('bg-orange-500', 'text-black', 'border-orange-500');
+  activeBtn.classList.remove('border-white/20', 'text-white');
+}
 
-
+loadProducts();
 }
 document.addEventListener('DOMContentLoaded', () => {
 
