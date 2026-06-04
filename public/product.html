@@ -9,10 +9,28 @@
 
 <body class="bg-black text-white min-h-screen">
 
-<a href="/" class="inline-block m-6 bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold">
-  ← Back to Store
-</a>
+<div class="flex justify-between items-center m-6">
 
+  <a href="/" class="bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold">
+    ← Back to Store
+  </a>
+
+  <button
+    onclick="window.location.href='/' + '#cart'"
+    class="relative bg-neutral-900 border border-white/10 px-4 py-3 rounded-xl"
+  >
+    🛒
+
+    <span
+      id="product-cart-count"
+      class="absolute -top-2 -right-2 bg-orange-500 text-black text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"
+    >
+      0
+    </span>
+
+  </button>
+
+</div>
 <div class="max-w-6xl mx-auto px-6 py-10" id="productContainer">
   <p class="text-center text-xl">Loading product...</p>
 </div>
@@ -25,7 +43,21 @@ const productId = params.get('id');
 let currentProduct = null;
 let currentImages = [];
 let selectedImageIndex = 0;
+function updateProductCartCount() {
+  const cart =
+    JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
 
+  const count = cart.reduce(
+    (total, item) => total + (item.qty || 1),
+    0
+  );
+
+  const badge = document.getElementById('product-cart-count');
+
+  if (badge) {
+    badge.textContent = count;
+  }
+}
 async function loadProduct() {
   try {
     const res = await fetch(`/product/${productId}`);
@@ -231,7 +263,7 @@ function addProductToCart() {
   }
 
   localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
-
+updateProductCartCount();
   fetch('/track-behavior', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -376,6 +408,7 @@ async function loadReviews() {
   `).join('');
 }
 
+updateProductCartCount();
 loadProduct();
 </script>
 
