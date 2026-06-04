@@ -8,8 +8,8 @@ const PDFDocument = require('pdfkit');
 const Stripe = require('stripe');
 const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const { S3Client } = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3');
 
 const app = express();
 const transporter = nodemailer.createTransport({
@@ -102,30 +102,29 @@ async function sendCustomerOrderConfirmedEmail(order) {
     `
   });
 }
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-app.use(express.static(path.join(__dirname, 'public')));
-// ───── MULTER (UPLOADS) ─────
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'truly-blissful',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
+const r2 = new S3Client({
+  region: "auto",
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY
   }
 });
 
 const upload = multer({
-  storage,
-limits: { fileSize: 10 * 1024 * 1024 }
-});
-const reviewUpload = multer({
-  storage,
+  storage: multerS3({
+    s3: r2,
+    bucket: process.env.R2_BUCKET_NAME,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: function (req, file, cb) {
+      const safeName = file.originalname.replace(/\s+/g, "-");
+      cb(null, `products/${Date.now()}-${safeName}`);
+    }
+  }),
   limits: { fileSize: 10 * 1024 * 1024 }
 });
+
+const reviewUpload = upload;
 app.post('/custom-order', upload.single('designImage'), async (req, res) => {
   try {
     const {
@@ -137,7 +136,7 @@ app.post('/custom-order', upload.single('designImage'), async (req, res) => {
       notes
     } = req.body;
 
-    const imageUrl = req.file?.path || '';
+    const imageUrl = req.file ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` : '';
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -279,7 +278,7 @@ app.post('/reviews', reviewUpload.single('image'), async (req, res) => {
       rating: Number(rating),
       text,
       productId: productId || '',
-      image: req.file ? req.file.path : '',
+      image: req.file ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` : '',
       date: new Date().toISOString()
     };
 
@@ -692,8 +691,8 @@ app.post('/add-product', requireAdmin, upload.array('images', 5), async (req, re
   try {
 const { name, price, category, sizes, colors, stock } = req.body;
 
-  const imagePaths = req.files.map(file =>
-  file.path.replace('/upload/', '/upload/f_auto,q_auto/')
+const imagePaths = req.files.map(
+  file => `${process.env.R2_PUBLIC_URL}/${file.key}`
 );
 
  await productsCollection.insertOne({
@@ -749,9 +748,9 @@ app.put('/edit-product/:id', requireAdmin, upload.array('images', 10), async (re
 
   const existingImages = product.images || [];
 
-  const newImages = req.files.map(file =>
-    file.path.replace('/upload/', '/upload/f_auto,q_auto/')
-  );
+ const newImages = req.files.map(
+  file => `${process.env.R2_PUBLIC_URL}/${file.key}`
+);
 
   updateData.images = [...existingImages, ...newImages];
 
