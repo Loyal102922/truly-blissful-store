@@ -752,7 +752,8 @@ app.put('/edit-product/:id', requireAdmin, upload.array('images', 10), async (re
   file => `${process.env.R2_PUBLIC_URL}/${file.key}`
 );
 
-  updateData.images = [...existingImages, ...newImages];
+ updateData.images = newImages;
+updateData.image = newImages[0];
 
   if (updateData.images && updateData.images.length > 0) {
   updateData.image = updateData.images[0];
