@@ -125,8 +125,29 @@ async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColo
   if (!name || !price) return;
 
   const changeImage = confirm("Do you want to update the product image?");
+  let imageFiles = [];
 
+if (changeImage) {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.multiple = true;
+  fileInput.accept = "image/*";
+
+  fileInput.onchange = () => {
+    imageFiles = fileInput.files;
+    sendUpdate();
+  };
+
+  fileInput.click();
+} else {
+  sendUpdate();
+}
+
+
+
+async function sendUpdate() {
   const formData = new FormData();
+
   formData.append("name", name);
   formData.append("price", price);
   formData.append("category", category);
@@ -134,60 +155,29 @@ async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColo
   formData.append("colors", colors);
   formData.append("stock", Number(stock) || 0);
 
-  async function sendUpdate() {
-    const password = prompt("Enter admin password");
-    const auth = btoa("admin:" + password);
-
-    const res = await fetch("/edit-product/" + id, {
-      method: "PUT",
-      headers: {
-        Authorization: "Basic " + auth
-      },
-      body: formData
-    });
-
-    if (res.ok) {
-      alert("Product updated");
-      location.reload();
-    } else {
-      alert("Update failed");
-    }
+  for (let file of imageFiles) {
+    formData.append("images", file);
   }
 
- if (changeImage) {
+  const password = prompt("Enter admin password:");
+  const auth = btoa("admin:" + password);
 
-  const imageInput = document.createElement("input");
+  const res = await fetch("/edit-product/" + id, {
+    method: "PUT",
+    headers: {
+      Authorization: "Basic " + auth
+    },
+    body: formData
+  });
 
-  imageInput.type = "file";
-  imageInput.accept = "image/*";
-
-  imageInput.style.display = "block";
-  imageInput.style.marginTop = "10px";
-
-  document.body.appendChild(imageInput);
-
-  imageInput.onchange = async () => {
-
-    if (imageInput.files[0]) {
-
-      formData.append("image", imageInput.files[0]);
-
-      await sendUpdate();
-
-      imageInput.remove();
-
-    } else {
-
-      alert("No image selected");
-
-    }
-  };
-
-} else {
-
-  await sendUpdate();
-
+  if (res.ok) {
+    alert("Product updated");
+    location.reload();
+  } else {
+    alert("Update failed");
+  }
 }
+
 }
 
 const analyticsDashboard = document.createElement('div');

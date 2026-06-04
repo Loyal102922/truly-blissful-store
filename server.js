@@ -729,7 +729,7 @@ app.delete('/delete-product/:id', requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete product' });
   }
 });
-app.put('/edit-product/:id', requireAdmin, upload.single('image'), async (req, res) => {
+app.put('/edit-product/:id', requireAdmin, upload.array('images', 10), async (req, res) => {
   try {
     const { name, price, category, sizes, colors, stock } = req.body;
 
@@ -742,17 +742,23 @@ app.put('/edit-product/:id', requireAdmin, upload.single('image'), async (req, r
       stock: Number(stock) || 0
     };
 
-  if (req.file) {
+ if (req.files && req.files.length > 0) {
+  const product = await productsCollection.findOne({
+    _id: new ObjectId(req.params.id)
+  });
 
-  const imagePath = req.file.path.replace(
-    '/upload/',
-    '/upload/f_auto,q_auto/'
+  const existingImages = product.images || [];
+
+  const newImages = req.files.map(file =>
+    file.path.replace('/upload/', '/upload/f_auto,q_auto/')
   );
 
-  updateData.image = imagePath;
-  updateData.images = [imagePath];
-}
+  updateData.images = [...existingImages, ...newImages];
 
+  if (!updateData.image && updateData.images.length > 0) {
+    updateData.image = updateData.images[0];
+  }
+}
     await productsCollection.updateOne(
       { _id: new ObjectId(req.params.id) },
       { $set: updateData }
