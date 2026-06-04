@@ -795,14 +795,19 @@ async function checkout() {
 initStripe();
 renderCart();
 loadReviews();
-async function loadProducts() {
+async function loadProducts(retries = 5, delay = 4000) {
+  document.getElementById('products-container').innerHTML = `
+  <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
+    <p class="text-gray-400">Loading products...</p>
+  </div>
+`;
   try {
 
-    const res = await fetch('/products');
+   const res = await fetch('/products');
 
-    if (!res.ok) {
-      throw new Error('Failed to load products');
-    }
+if (!res.ok) {
+  throw new Error('Server not ready');
+}
 
     const products = await res.json();
 
@@ -871,22 +876,40 @@ container.appendChild(div);
 
 });
 
-} catch (error) {
-    console.error('Product load error:', error);
+catch (error) {
+  console.error('Product load error:', error);
+
+  if (retries > 0) {
 
     document.getElementById('products-container').innerHTML = `
-      <div class="col-span-full text-center py-12">
-        <h2 class="text-red-500 text-xl font-bold">
-          Failed to load products
-        </h2>
-        <button
-          onclick="loadProducts()"
-          class="mt-4 bg-orange-500 px-6 py-3 rounded-xl text-black font-bold"
-        >
-          Retry
-        </button>
+      <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
+        <p class="animate-pulse text-gray-400">
+          Store is waking up, please wait...
+        </p>
       </div>
     `;
+
+    setTimeout(() => {
+      loadProducts(retries - 1, delay);
+    }, delay);
+
+    return;
+  }
+
+  document.getElementById('products-container').innerHTML = `
+    <div class="col-span-full text-center py-12">
+      <h2 class="text-red-500 text-xl font-bold">
+        Failed to load products
+      </h2>
+
+      <button
+        onclick="loadProducts()"
+        class="mt-4 bg-orange-500 px-6 py-3 rounded-xl text-black font-bold"
+      >
+        Retry
+      </button>
+    </div>
+  `;
 }
 
 }
@@ -1038,7 +1061,9 @@ function filterProducts(category) {
 
   loadProducts();
 }
-loadProducts();
+document.addEventListener('DOMContentLoaded', () => {
+  loadProducts();
+});
 /* Fade-in section observer */
 const fadeSections = document.querySelectorAll('section');
 
