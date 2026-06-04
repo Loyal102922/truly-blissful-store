@@ -754,9 +754,9 @@ app.put('/edit-product/:id', requireAdmin, upload.array('images', 10), async (re
 
   updateData.images = [...existingImages, ...newImages];
 
-  if (!updateData.image && updateData.images.length > 0) {
-    updateData.image = updateData.images[0];
-  }
+  if (updateData.images && updateData.images.length > 0) {
+  updateData.image = updateData.images[0];
+}
 }
     await productsCollection.updateOne(
       { _id: new ObjectId(req.params.id) },
