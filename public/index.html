@@ -795,11 +795,18 @@ async function checkout() {
 initStripe();
 renderCart();
 loadReviews();
-  async function loadProducts() {
-  const res = await fetch('/products');
-const products = await res.json();
+async function loadProducts() {
+  try {
 
-allProducts = products;
+    const res = await fetch('/products');
+
+    if (!res.ok) {
+      throw new Error('Failed to load products');
+    }
+
+    const products = await res.json();
+
+    allProducts = products;
 
 const filteredProducts =
   currentCategory === 'All'
@@ -861,8 +868,27 @@ div.innerHTML = `
 </div>
 `;
 container.appendChild(div);
-    
-  });
+
+});
+
+} catch (error) {
+    console.error('Product load error:', error);
+
+    document.getElementById('products-container').innerHTML = `
+      <div class="col-span-full text-center py-12">
+        <h2 class="text-red-500 text-xl font-bold">
+          Failed to load products
+        </h2>
+        <button
+          onclick="loadProducts()"
+          class="mt-4 bg-orange-500 px-6 py-3 rounded-xl text-black font-bold"
+        >
+          Retry
+        </button>
+      </div>
+    `;
+}
+
 }
 function openCartOptions(product) {
   const modal = document.createElement('div');
