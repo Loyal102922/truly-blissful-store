@@ -796,11 +796,7 @@ initStripe();
 renderCart();
 loadReviews();
 async function loadProducts(retries = 5, delay = 4000) {
-  document.getElementById('products-container').innerHTML = `
-  <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
-    <p class="text-gray-400">Loading products...</p>
-  </div>
-`;
+
   try {
 
    const res = await fetch('/products');
@@ -1061,9 +1057,18 @@ function filterProducts(category) {
     activeBtn.classList.remove('border-white/20', 'text-white');
   }
 
-  
+
 }
 document.addEventListener('DOMContentLoaded', () => {
+
+  document.getElementById('products-container').innerHTML = `
+    <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
+      <p class="text-gray-400 animate-pulse">
+        Loading products...
+      </p>
+    </div>
+  `;
+
   loadProducts();
 });
 /* Fade-in section observer */
