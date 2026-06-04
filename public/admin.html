@@ -64,9 +64,14 @@ loadProducts();
     div.innerHTML = `
       <hr>
       <div>
-  ${(product.images || [product.image]).map(img => `
+ ${(product.images || [product.image]).map(img => `
+  <div style="margin-bottom:10px;">
     <img src="${img}" width="120"><br>
-  `).join('')}
+    <button onclick="removeProductImage('${product._id}','${img}')">
+      Delete Image
+    </button>
+  </div>
+`).join('')}
 </div>
       <strong>${product.name}</strong><br>
       $${product.price}<br><br>
@@ -519,6 +524,26 @@ async function updateOrderStatus(orderId) {
     location.reload();
   } else {
     alert(data.error || 'Failed to update order');
+  }
+}
+async function removeProductImage(productId, imageUrl) {
+  const password = prompt('Admin Password');
+  if (!password) return;
+
+  const res = await fetch(`/admin/products/${productId}/remove-image`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + btoa(`admin:${password}`)
+    },
+    body: JSON.stringify({ imageUrl })
+  });
+
+  if (res.ok) {
+    alert('Image deleted');
+    loadProducts();
+  } else {
+    alert('Failed to delete image');
   }
 }
 loadOrders();

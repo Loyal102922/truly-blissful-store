@@ -769,6 +769,40 @@ app.put('/edit-product/:id', requireAdmin, upload.array('images', 10), async (re
     res.status(500).json({ error: 'Failed to edit product' });
   }
 });
+app.put('/admin/products/:id/remove-image', requireAdmin, async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+
+    if (!imageUrl) {
+      return res.status(400).json({ error: 'Image URL required' });
+    }
+
+    const product = await productsCollection.findOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const updatedImages = (product.images || []).filter(img => img !== imageUrl);
+
+    await productsCollection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      {
+        $set: {
+          images: updatedImages,
+          image: updatedImages[0] || ''
+        }
+      }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Remove image error:', err);
+    res.status(500).json({ error: 'Failed to remove image' });
+  }
+});
 app.put('/admin/orders/:id', async (req, res) => {
   try {
     const { status, trackingNumber } = req.body;
