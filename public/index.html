@@ -111,7 +111,7 @@
     </p>
 
     <p class="text-orange-400 mt-3 font-semibold">Limited quantities available</p>
-</section>
+
 
 
 <section class="px-6 pb-8 max-w-6xl mx-auto">
@@ -139,62 +139,64 @@ class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 p
 </section>
 
 <section id="products" class="px-0 pb-20 w-full md:px-2">
-  <div id="tees" class="mb-16">
-    <h2 id="category-title" class="text-3xl font-black mb-2"></h2>
-    <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
 
-    <div id="products-container" class="grid grid-cols-2 gap-1 w-full md:max-w-7xl md:mx-auto md:grid-cols-3 lg:grid-cols-4">
-    </div>
-  </div>
+    <div id="tees" class="mb-16">
+      <h2 id="category-title" class="text-3xl font-black mb-2"></h2>
+      <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
+<div id="products-container" class="grid grid-cols-2 gap-1 w-full md:max-w-7xl md:mx-auto md:grid-cols-3 lg:grid-cols-4">
 
+</div>
+
+ 
   <section class="max-w-5xl mx-auto px-6 pb-16">
-    <div class="grid md:grid-cols-3 gap-6 text-center">
-      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
-        <h4 class="font-bold text-lg mb-2">Secure Checkout</h4>
-        <p class="text-gray-400 text-sm">Payments are processed securely through Stripe.</p>
-      </div>
+  <div class="grid md:grid-cols-3 gap-6 text-center">
 
-      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
-        <h4 class="font-bold text-lg mb-2">Fast Fulfillment</h4>
-        <p class="text-gray-400 text-sm">Orders are packed and processed as quickly as possible.</p>
-      </div>
-
-      <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
-        <h4 class="font-bold text-lg mb-2">Purpose Driven</h4>
-        <p class="text-gray-400 text-sm">Every piece represents faith, identity, and movement.</p>
-      </div>
-    </div>
-  </section>
-</section>
-
- <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
-  <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold">Cart</h2>
-      <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
+    <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+      <h4 class="font-bold text-lg mb-2">🔒 Secure Checkout</h4>
+      <p class="text-gray-400 text-sm">Payments are processed securely through Stripe.</p>
     </div>
 
-    <ul id="cart-items" class="space-y-3"></ul>
-    <p class="mt-4">Total: <span id="total">$0</span></p>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-      <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
-        Checkout
-      </button>
-
-      <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold hover:border-white/40 transition">
-        Clear Cart
-      </button>
+    <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+      <h4 class="font-bold text-lg mb-2">🚚 Fast Fulfillment</h4>
+      <p class="text-gray-400 text-sm">Orders are packed and processed as quickly as possible.</p>
     </div>
+
+    <div class="bg-neutral-900/50 rounded-2xl p-6 border border-white/10 hover:-translate-y-1 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10 transition duration-300">
+      <h4 class="font-bold text-lg mb-2">♡ Purpose Driven</h4>
+      <p class="text-gray-400 text-sm">Every piece represents faith, identity, and movement.</p>
+    </div>
+
   </div>
 </section>
+  </section>
 
-<button
+  <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
+    <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Cart</h2>
+        <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
+      </div>
+
+      <ul id="cart-items" class="space-y-3"></ul>
+      <p class="mt-4">Total: <span id="total">$0</span></p>
+
+   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+  <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
+    Checkout
+  </button>
+
+  <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold hover:border-white/40 transition">
+    Clear Cart
+  </button>
+</div>
+ <button
   id="floating-cart-btn"
   onclick="document.getElementById('cart').scrollIntoView({ behavior: 'smooth' })"
-  class="hidden fixed bottom-20 right-4 z-50 bg-orange-500 hover:bg-orange-400 text-black rounded-full w-14 h-14 font-black shadow-2xl shadow-orange-500/30 flex items-center justify-center"
+  class="hidden fixed bottom-20 right-4 z-50 bg-orange-500 hover:bg-orange-400 text-black ..."
 >
-  Cart
+>
+  🛒
+
   <span
     id="floating-cart-count"
     class="absolute -top-2 -right-2 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center"
@@ -828,79 +830,59 @@ const filteredProducts =
  const container = document.getElementById('products-container');
   container.innerHTML = '';
 
-filteredProducts.forEach(p => {
-  const div = document.createElement('div');
+ filteredProducts.forEach(p => {
+    const div = document.createElement('div');
 
-  div.className =
-    "bg-neutral-900 p-0 overflow-hidden rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 flex flex-col h-full opacity-0 animate-fadeIn";
+div.className =
+  "bg-neutral-900 p-0 overflow-hidden rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 flex flex-col h-full opacity-0 animate-fadeIn";
 
-  div.style.cursor = 'pointer';
+div.style.cursor = 'pointer';
 
-  div.onclick = () => {
-    window.location.href = `/product.html?id=${p._id}`;
-  };
-
-  const images = p.images || [p.image];
-  const mainImage = ((images[0] || '').replace('/upload/', '/upload/f_auto,q_auto,w_600/'));
-
-  div.innerHTML = `
-    <div class="mb-0 overflow-hidden rounded-xl">
-      <img
-        id="main-img-${p.name.replace(/\s/g, '-')}"
-        src="${mainImage}"
-        data-index="0"
-        class="product-card-img w-full h-52 md:h-72 object-cover object-top rounded-none hover:scale-105 transition duration-300"
-        loading="lazy"
-        decoding="async"
-        onerror="this.src='/images/fallback.jpg'"
-      />
-    </div>
-
-    <div class="p-3 flex flex-col flex-1">
+div.onclick = () => {
+  window.location.href = `/product.html?id=${p._id}`;
+};
+div.innerHTML = `
+<div class="mb-0 overflow-hidden rounded-xl">
+<img
+  id="main-img-${p.name.replace(/\s/g, '-')}"
+  src="${((p.images || [p.image])[0] || '').replace('/upload/', '/upload/f_auto,q_auto,w_600/')}"
+  data-index="0"
+  onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, 0)'
+  class="w-full h-52 md:h-72 object-cover object-top rounded-none hover:scale-105 transition duration-300"
+  loading="lazy"
+  decoding="async"
+  onerror="this.src='/images/fallback.jpg'"
+/>
+</div>
+      <div class="p-3 flex flex-col flex-1">
       <h3 class="font-bold">${p.name}</h3>
       <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
       <p class="text-gray-400">$${p.price}</p>
-
-      <p class="text-sm font-bold ${p.stock > 0 ? 'text-green-400' : 'text-red-400'}">
-        ${p.stock > 0 ? `Only ${p.stock} left` : 'Sold Out'}
-      </p>
-
-      <div class="mt-auto pt-4">
-        ${
-          p.stock > 0
-            ? `
-              <button
-                type="button"
-                class="add-cart-btn bg-orange-500 hover:bg-orange-400 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold transition duration-300"
-              >
-                Add to Cart
-              </button>
-            `
-            : `
-              <div class="bg-red-600 text-white px-4 py-2 mt-4 rounded-xl w-full font-bold text-center">
-                SOLD OUT
-              </div>
-            `
-        }
-      </div>
-    </div>
-  `;
-
-  const imageEl = div.querySelector('.product-card-img');
-  imageEl.addEventListener('click', event => {
-    event.stopPropagation();
-    openImageGallery(images, 0);
-  });
-
-  const cartBtn = div.querySelector('.add-cart-btn');
-  if (cartBtn) {
-    cartBtn.addEventListener('click', event => {
-      event.stopPropagation();
-      openCartOptions(p);
-    });
+<p class="text-sm font-bold ${p.stock > 0 ? 'text-green-400' : 'text-red-400'}">
+  ${p.stock > 0 ? `Only ${p.stock} left` : 'Sold Out'}
+</p>
+<div class="mt-auto pt-4">
+  ${
+    p.stock > 0
+      ? `
+        <button
+          onclick='openCartOptions(${JSON.stringify(p)})'
+          class="bg-orange-500 hover:bg-orange-400 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold transition duration-300"
+        >
+          🛒 Add to Cart
+        </button>
+      `
+      : `
+        <div class="bg-red-600 text-white px-4 py-2 mt-4 rounded-xl w-full font-bold text-center">
+          SOLD OUT
+        </div>
+      `
   }
+</div>
+</div>
+`;
+container.appendChild(div);
 
-  container.appendChild(div);
 });
 
 }  // closes try
@@ -949,34 +931,32 @@ function openCartOptions(product) {
   modal.innerHTML = `
     <div class="bg-neutral-900 border border-orange-500/40 rounded-2xl p-6 w-full max-w-sm mx-auto relative">
       <button
-        type="button"
         onclick="this.closest('.fixed').remove()"
-        class="absolute top-3 right-4 text-white text-2xl font-bold"
-        aria-label="Close product options"
-      >
-        &times;
+        class="absolute top-3 right-4 text-white text-2xl font-bold">
+        ×
       </button>
 
-      <h2 class="text-2xl font-black mb-2">${product.name}</h2>
-      <p class="text-gray-400 mb-5">$${product.price}</p>
-
+    <h2 class="text-2xl font-black mb-2">${product.name}</h2>
+<p class="text-gray-400 mb-5">$${product.price}</p>
       <label class="block text-sm text-gray-400 mb-2">Size</label>
       <select id="cart-size" class="w-full mb-4 p-3 rounded-xl bg-black border border-white/10 text-white">
         <option value="">Select Size</option>
-        ${(product.sizes || []).map(size => `<option>${size}</option>`).join('')}
+       ${(product.sizes || []).map(size => `
+  <option>${size}</option>
+`).join('')}
       </select>
 
       <label class="block text-sm text-gray-400 mb-2">Color</label>
       <select id="cart-color" class="w-full mb-5 p-3 rounded-xl bg-black border border-white/10 text-white">
         <option value="">Select Color</option>
-        ${(product.colors || []).map(color => `<option>${color}</option>`).join('')}
+       ${(product.colors || []).map(color => `
+  <option>${color}</option>
+`).join('')}
       </select>
 
       <button
-        type="button"
-        onclick="confirmCartOptions('${product.name.replace(/'/g, "\\'")}', ${product.price}, this)"
-        class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold"
-      >
+      onclick="confirmCartOptions('${product.name}', ${product.price}, this)"
+        class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold">
         Add to Cart
       </button>
     </div>
@@ -1019,39 +999,31 @@ function openImageGallery(images, startIndex = 0) {
   function renderImage() {
     modal.innerHTML = `
       <div class="relative max-w-5xl w-full flex items-center justify-center">
+
         <button
-          type="button"
           onclick="event.stopPropagation(); changeGalleryImage(-1)"
-          class="absolute left-2 md:left-4 text-white text-5xl font-bold px-4 z-50"
-          aria-label="Previous image"
-        >
-          &lsaquo;
+         class="absolute left-2 md:left-4 text-white text-5xl font-bold px-4 z-50"
+          ‹
         </button>
 
         <img
           src="${images[currentIndex]}"
           onclick="event.stopPropagation();"
           class="max-h-[85vh] w-full object-contain rounded-2xl border border-white/10"
-          alt="Product image"
         />
 
         <button
-          type="button"
           onclick="event.stopPropagation(); changeGalleryImage(1)"
-          class="absolute right-2 md:right-4 text-white text-5xl font-bold px-4 z-50"
-          aria-label="Next image"
-        >
-          &rsaquo;
+       class="absolute right-2 md:right-4 text-white text-5xl font-bold px-4 z-50"
+          ›
         </button>
 
         <button
-          type="button"
-          onclick="event.stopPropagation(); this.closest('.fixed').remove()"
-          class="fixed top-4 right-4 text-white text-5xl font-bold z-[99999] bg-black/80 rounded-full w-14 h-14 flex items-center justify-center border border-white/20"
-          aria-label="Close gallery"
-        >
-          &times;
+         onclick="event.stopPropagation(); document.querySelector('.fixed.inset-0').remove()"
+class="fixed top-4 right-4 text-white text-5xl font-bold z-[99999] bg-black/80 rounded-full w-14 h-14 flex items-center justify-center border border-white/20"
+          ×
         </button>
+
       </div>
     `;
   }
