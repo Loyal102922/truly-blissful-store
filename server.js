@@ -211,7 +211,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/products', async (req, res) => {
   try {
     const products = await productsCollection.find().toArray();
+
+    const R2_BASE = process.env.R2_PUBLIC_URL;
+
+    products.forEach(product => {
+      const convertUrl = (url) => {
+        if (!url) return url;
+
+        const filename = url.split('/').pop();
+
+        return `${R2_BASE}/products/${filename}`;
+      };
+
+      if (product.image) {
+        product.image = convertUrl(product.image);
+      }
+
+      if (Array.isArray(product.images)) {
+        product.images = product.images.map(convertUrl);
+      }
+    });
+
     res.json(products);
+
   } catch (err) {
     res.status(500).json({ error: 'Failed to load products' });
   }
