@@ -80,6 +80,22 @@ Stock: ${product.stock || 0}<br><br>
   Delete
 </button>
 
+<button onclick="quickEditStock('${product._id}', '${product.stock || 0}')">
+Stock
+</button>
+
+<button onclick="quickEditPrice('${product._id}', '${product.price}')">
+Price
+</button>
+
+<button onclick="quickEditSizes('${product._id}', '${(product.sizes || []).join(', ')}')">
+Sizes
+</button>
+
+<button onclick="quickEditColors('${product._id}', '${(product.colors || []).join(', ')}')">
+Colors
+</button>
+
 <button onclick="editProduct(
 '${product._id}',
 '${product.name}',
@@ -89,7 +105,7 @@ Stock: ${product.stock || 0}<br><br>
 '${(product.colors || []).join(', ')}',
 '${product.stock || 0}',
 )">
-Edit
+Full Edit
 </button>
 
 
@@ -118,6 +134,64 @@ async function deleteProduct(id) {
   } else {
     alert('Delete failed');
   }
+}
+async function quickUpdate(id, field, value) {
+  const password = prompt("Admin Password");
+  if (!password) return;
+
+  const auth = btoa("admin:" + password);
+
+  const productRes = await fetch("/product/" + id);
+  const product = await productRes.json();
+
+  const formData = new FormData();
+
+  formData.append("name", product.name);
+  formData.append("price", product.price);
+  formData.append("category", product.category);
+  formData.append("sizes", (product.sizes || []).join(","));
+  formData.append("colors", (product.colors || []).join(","));
+  formData.append("stock", product.stock || 0);
+
+  if (field === "price") formData.set("price", value);
+  if (field === "stock") formData.set("stock", value);
+  if (field === "sizes") formData.set("sizes", value);
+  if (field === "colors") formData.set("colors", value);
+
+  const res = await fetch("/edit-product/" + id, {
+    method: "PUT",
+    headers: {
+      Authorization: "Basic " + auth
+    },
+    body: formData
+  });
+
+  if (res.ok) {
+    alert("Updated");
+    location.reload();
+  } else {
+    alert("Update failed");
+  }
+}
+
+function quickEditStock(id, current) {
+  const value = prompt("New Stock", current);
+  if (value !== null) quickUpdate(id, "stock", value);
+}
+
+function quickEditPrice(id, current) {
+  const value = prompt("New Price", current);
+  if (value !== null) quickUpdate(id, "price", value);
+}
+
+function quickEditSizes(id, current) {
+  const value = prompt("Sizes", current);
+  if (value !== null) quickUpdate(id, "sizes", value);
+}
+
+function quickEditColors(id, current) {
+  const value = prompt("Colors", current);
+  if (value !== null) quickUpdate(id, "colors", value);
 }
 async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColors, oldStock) {
   const name = prompt("New product name:", oldName);
