@@ -199,7 +199,7 @@ async function connectMongo() {
   ordersCollection = database.collection('orders');
   console.log('MongoDB connected');
 }
-connectMongo();
+
 
 // ───── MIDDLEWARE ─────
 app.use(express.json());
@@ -1004,6 +1004,17 @@ app.get('/invoice/:id', async (req, res) => {
   }
 });
 // ───── START SERVER ─────
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectMongo();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
+}
+
+startServer();
