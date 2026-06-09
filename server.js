@@ -384,6 +384,8 @@ const totalItems = cart.reduce(
   0
 );
 
+const discountMultiplier = totalItems >= 2 ? 0.95 : 1;
+
 const lineItems = cart.map(item => ({
   price_data: {
     currency: 'usd',
