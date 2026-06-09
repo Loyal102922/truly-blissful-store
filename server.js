@@ -377,16 +377,25 @@ app.post('/create-checkout-session', async (req, res) => {
   try {
     if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
 
-    const { cart } = req.body;
+const { cart } = req.body;
 
-   const lineItems = cart.map(item => ({
+const totalItems = cart.reduce(
+  (sum, item) => sum + (Number(item.quantity) || 1),
+  0
+);
+
+const discountMultiplier = totalItems >= 2 ? 0.95 : 1;
+
+const lineItems = cart.map(item => ({
   price_data: {
     currency: 'usd',
     product_data: {
       name: item.name,
       images: [item.image],
     },
-    unit_amount: Math.round(Number(item.price) * 100),
+    unit_amount: Math.round(
+      Number(item.price) * discountMultiplier * 100
+    ),
   },
   quantity: Number(item.quantity) || 1,
 }));
