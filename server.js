@@ -380,11 +380,9 @@ app.post('/create-checkout-session', async (req, res) => {
 const { cart } = req.body;
 
 const totalItems = cart.reduce(
-  (sum, item) => sum + (Number(item.quantity) || 1),
+  (sum, item) => sum + (Number(item.qty) || 1),
   0
 );
-
-const discountMultiplier = totalItems >= 2 ? 0.95 : 1;
 
 const lineItems = cart.map(item => ({
   price_data: {
@@ -397,7 +395,7 @@ const lineItems = cart.map(item => ({
       Number(item.price) * discountMultiplier * 100
     ),
   },
-  quantity: Number(item.quantity) || 1,
+  quantity: Number(item.qty) || 1,
 }));
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'hosted',
