@@ -287,7 +287,36 @@ app.post('/reviews', reviewUpload.single('image'), async (req, res) => {
     };
 
     await reviewsCollection.insertOne(review);
+await transporter.sendMail({
+  from: process.env.EMAIL_USER,
+  to: 'support@trulyblissfulshop.com',
+  subject: '⭐ New TRULY BLISSFUL Review',
+  html: `
+    <h2>New Customer Review</h2>
 
+    <p><strong>Name:</strong> ${review.name}</p>
+    <p><strong>Rating:</strong> ${review.rating}/5</p>
+
+    <p><strong>Review:</strong></p>
+    <p>${review.text}</p>
+
+    ${
+      review.image
+        ? `
+          <p><strong>Customer Photo:</strong></p>
+          <img src="${review.image}" width="300" />
+        `
+        : ''
+    }
+
+    <hr>
+
+    <p>
+      Review submitted on:
+      ${new Date(review.date).toLocaleString()}
+    </p>
+  `
+});
     res.json({
       success: true,
       review
