@@ -244,7 +244,12 @@ class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 p
     </div>
 
     <textarea id="review-text" rows="4" placeholder="Tell customers what you liked..." class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 mb-4"></textarea>
-
+<input
+  id="review-image"
+  type="file"
+  accept="image/*"
+  class="w-full rounded-xl bg-black border border-white/10 px-4 py-3 mt-4"
+/>
     <div class="mt-4 mb-4 flex flex-col items-center">
     <div class="g-recaptcha" data-sitekey=6LfoTvQsAAAAAAQe6Z1WLf4ftCTxsVsOlvaNY7R3></div>
 
@@ -586,11 +591,22 @@ async function submitReview() {
     return;
   }
 
-  const res = await fetch('/reviews', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, rating, text, recaptchaToken })
-  });
+ const imageFile = document.getElementById('review-image').files[0];
+
+const formData = new FormData();
+formData.append('name', name);
+formData.append('rating', rating);
+formData.append('text', text);
+formData.append('recaptchaToken', recaptchaToken);
+
+if (imageFile) {
+  formData.append('image', imageFile);
+}
+
+const res = await fetch('/reviews', {
+  method: 'POST',
+  body: formData
+});
 
   const data = await res.json();
 
