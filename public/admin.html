@@ -620,7 +620,106 @@ async function removeProductImage(productId, imageUrl) {
     alert('Failed to delete image');
   }
 }
+async function loadReviewsAdmin() {
+  const res = await fetch('/reviews');
+  const reviews = await res.json();
+
+  const reviewsContainer = document.createElement('div');
+
+  reviewsContainer.innerHTML =
+    '<h2 style="margin-top:40px;">Customer Reviews</h2>';
+
+  reviews.forEach(review => {
+    const div = document.createElement('div');
+
+    div.style.border = '1px solid white';
+    div.style.padding = '15px';
+    div.style.marginTop = '15px';
+    div.style.borderRadius = '10px';
+
+    div.innerHTML = `
+      <strong>${review.name}</strong>
+      <br>
+
+      Rating: ${review.rating}/5
+
+      <br><br>
+
+      "${review.text}"
+
+      ${
+        review.image
+          ? `<br><br><img src="${review.image}" width="200">`
+          : ''
+      }
+
+      <br><br>
+
+      <textarea
+        id="reply-${review._id}"
+        placeholder="Reply to customer..."
+        style="
+          width:100%;
+          height:80px;
+          margin-top:10px;
+          background:black;
+          color:white;
+        "
+      >${review.reply || ''}</textarea>
+
+      <br><br>
+
+      <button
+        onclick="saveReply('${review._id}')"
+        style="
+          background:orange;
+          color:black;
+          padding:10px;
+          border:none;
+          border-radius:8px;
+          font-weight:bold;
+        "
+      >
+        Save Reply
+      </button>
+    `;
+
+    reviewsContainer.appendChild(div);
+  });
+
+  document.body.appendChild(reviewsContainer);
+}
+async function saveReply(reviewId) {
+  const reply =
+    document.getElementById(`reply-${reviewId}`).value;
+
+  const password = prompt('Admin Password');
+  if (!password) return;
+
+  const res = await fetch(
+    `/reviews/${reviewId}/reply`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        reply,
+        password
+      })
+    }
+  );
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert('Reply saved');
+  } else {
+    alert(data.error || 'Failed');
+  }
+}
 loadOrders();
 loadProducts();
 loadAnalytics();
+loadReviewsAdmin();
 </script>

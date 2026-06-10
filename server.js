@@ -328,6 +328,40 @@ await transporter.sendMail({
     });
   }
 });
+app.post('/reviews/:id/reply', async (req, res) => {
+  try {
+    const { reply, password } = req.body;
+
+    if (password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({
+        error: 'Unauthorized'
+      });
+    }
+
+    await reviewsCollection.updateOne(
+      {
+        _id: new ObjectId(req.params.id)
+      },
+      {
+        $set: {
+          reply,
+          repliedAt: new Date()
+        }
+      }
+    );
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+    console.error('Reply error:', err);
+
+    res.status(500).json({
+      error: 'Failed to save reply'
+    });
+  }
+});
 // Config
 app.get('/config', (req, res) => {
   res.json({
