@@ -190,16 +190,21 @@ const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
 
 // ───── MONGO ─────
 const mongoClient = new MongoClient(process.env.MONGO_URI);
+
 let productsCollection;
 let ordersCollection;
+let reviewsCollection;
+
 async function connectMongo() {
   await mongoClient.connect();
   const database = mongoClient.db('store');
+
   productsCollection = database.collection('products');
   ordersCollection = database.collection('orders');
+  reviewsCollection = database.collection('reviews');
+
   console.log('MongoDB connected');
 }
-
 
 // ───── MIDDLEWARE ─────
 app.use(express.json());
@@ -248,11 +253,16 @@ app.delete('/products/:id', requireAdmin, async (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-app.get('/reviews', (req, res) => {
+app.get('/reviews', async (req, res) => {
   try {
-    const reviews = JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8'));
+    const reviews = await reviewsCollection
+      .find({})
+      .sort({ date: -1 })
+      .toArray();
+
     res.json(reviews);
   } catch (err) {
+    console.error('Load reviews error:', err);
     res.json([]);
   }
 });
@@ -265,31 +275,28 @@ app.post('/reviews', reviewUpload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Missing review fields' });
     }
 
-    let reviews = [];
-
-    try {
-      reviews = JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8'));
-    } catch (err) {
-      reviews = [];
-    }
-
     const review = {
       name,
       rating: Number(rating),
       text,
       productId: productId || '',
-      image: req.file ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` : '',
-      date: new Date().toISOString()
+      image: req.file
+        ? `${process.env.R2_PUBLIC_URL}/${req.file.key}`
+        : '',
+      date: new Date()
     };
 
-    reviews.unshift(review);
+    await reviewsCollection.insertOne(review);
 
-    fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
-
-    res.json({ success: true, review });
+    res.json({
+      success: true,
+      review
+    });
   } catch (err) {
     console.error('Review error:', err);
-    res.status(500).json({ error: 'Failed to submit review' });
+    res.status(500).json({
+      error: 'Failed to submit review'
+    });
   }
 });
 // Config
