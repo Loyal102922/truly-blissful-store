@@ -752,35 +752,39 @@ async function loadInventory() {
   const res = await fetch('/inventory');
   const inventory = await res.json();
 
-  document.getElementById('inventoryTable').innerHTML =
-    inventory.map(item => `
-      <div
-        style="
-          border:1px solid white;
-          padding:12px;
-          margin-bottom:10px;
-          border-radius:10px;
-        "
-      >
-        <strong>${item.productName}</strong><br>
+  document.getElementById('inventoryTable').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Color</th>
+          <th>Size</th>
+          <th>Qty</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
 
-        Color: ${item.color}<br>
+      <tbody>
+        ${inventory.map(item => `
+          <tr>
+            <td>${item.productName}</td>
+            <td>${item.color}</td>
+            <td>${item.size}</td>
+            <td>${item.quantity}</td>
+            <td>
+              <button onclick="editInventory('${item._id}')">
+                Edit
+              </button>
 
-        Size: ${item.size}<br>
-
-        Quantity: ${item.quantity}
-
-        <br><br>
-
-        <button onclick="editInventory('${item._id}')">
-          Edit
-        </button>
-
-        <button onclick="deleteInventory('${item._id}')">
-          Delete
-        </button>
-      </div>
-    `).join('') || '<p>No inventory yet.</p>';
+              <button onclick="deleteInventory('${item._id}')">
+                Delete
+              </button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
 }
 async function addInventoryRow() {
   const productName = prompt("Product Name");
