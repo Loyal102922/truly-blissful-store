@@ -785,9 +785,21 @@ async function loadInventory() {
               ${item.size}
             </td>
 
-            <td style="border:1px solid #555;padding:10px;">
-              ${item.quantity}
-            </td>
+<td style="border:1px solid #555;padding:10px;text-align:center;">
+
+  <button onclick="adjustInventoryQty('${item._id}', -1)">
+    -
+  </button>
+
+  <span style="margin:0 10px;font-weight:bold;">
+    ${item.quantity}
+  </span>
+
+  <button onclick="adjustInventoryQty('${item._id}', 1)">
+    +
+  </button>
+
+</td>
 
             <td style="border:1px solid #555;padding:10px;">
               <button onclick="editInventory('${item._id}')">
@@ -889,6 +901,36 @@ async function editInventory(id) {
     loadInventory();
   } else {
     alert(data.error || 'Update failed');
+  }
+}
+async function adjustInventoryQty(id, change) {
+  const res = await fetch('/inventory');
+  const inventory = await res.json();
+
+  const item = inventory.find(i => i._id === id);
+
+  if (!item) return;
+
+  const newQty = Math.max(
+    0,
+    Number(item.quantity) + change
+  );
+
+  const updateRes = await fetch('/inventory/' + id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      productName: item.productName,
+      color: item.color,
+      size: item.size,
+      quantity: newQty
+    })
+  });
+
+  if (updateRes.ok) {
+    loadInventory();
   }
 }
 loadOrders();
