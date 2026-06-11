@@ -817,6 +817,58 @@ async function addInventoryRow() {
     alert(data.error || 'Failed to add inventory');
   }
 }
+async function deleteInventory(id) {
+  const confirmed = confirm("Delete this inventory row?");
+  if (!confirmed) return;
+
+  const res = await fetch('/inventory/' + id, {
+    method: 'DELETE'
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert('Inventory deleted');
+    loadInventory();
+  } else {
+    alert(data.error || 'Delete failed');
+  }
+}
+async function editInventory(id) {
+  const productName = prompt("Product Name");
+  if (!productName) return;
+
+  const color = prompt("Color");
+  if (!color) return;
+
+  const size = prompt("Size");
+  if (!size) return;
+
+  const quantity = prompt("Quantity");
+  if (!quantity) return;
+
+  const res = await fetch('/inventory/' + id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      productName,
+      color,
+      size,
+      quantity: Number(quantity)
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert('Inventory updated');
+    loadInventory();
+  } else {
+    alert(data.error || 'Update failed');
+  }
+}
 loadOrders();
 loadProducts();
 loadInventory();
