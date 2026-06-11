@@ -782,6 +782,41 @@ async function loadInventory() {
       </div>
     `).join('') || '<p>No inventory yet.</p>';
 }
+async function addInventoryRow() {
+  const productName = prompt("Product Name");
+  if (!productName) return;
+
+  const color = prompt("Color");
+  if (!color) return;
+
+  const size = prompt("Size");
+  if (!size) return;
+
+  const quantity = prompt("Quantity");
+  if (!quantity) return;
+
+  const res = await fetch('/inventory', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      productName,
+      color,
+      size,
+      quantity: Number(quantity)
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert('Inventory added');
+    loadInventory();
+  } else {
+    alert(data.error || 'Failed to add inventory');
+  }
+}
 loadOrders();
 loadProducts();
 loadInventory();
