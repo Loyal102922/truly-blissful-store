@@ -760,15 +760,15 @@ async function loadInventory() {
       color:white;
       text-align:left;
     ">
-      <thead>
-        <tr>
-          <th style="border:1px solid #555;padding:10px;">Product</th>
-          <th style="border:1px solid #555;padding:10px;">Color</th>
-          <th style="border:1px solid #555;padding:10px;">Size</th>
-          <th style="border:1px solid #555;padding:10px;">Qty</th>
-          <th style="border:1px solid #555;padding:10px;">Actions</th>
-        </tr>
-      </thead>
+<thead>
+  <tr>
+    <th style="border:1px solid #555;padding:10px;">Product</th>
+    <th style="border:1px solid #555;padding:10px;">Color</th>
+    <th style="border:1px solid #555;padding:10px;">Size</th>
+    <th style="border:1px solid #555;padding:10px;width:140px;text-align:center;">Qty</th>
+    <th style="border:1px solid #555;padding:10px;text-align:center;">Actions</th>
+  </tr>
+</thead>
 
       <tbody>
         ${inventory.map(item => `
@@ -785,7 +785,7 @@ async function loadInventory() {
               ${item.size}
             </td>
 
-<td style="border:1px solid #555;padding:10px;text-align:center;">
+<td style="border:1px solid #555;padding:10px;text-align:center;width:140px;">
 
   <button onclick="adjustInventoryQty('${item._id}', -1)">
     -
