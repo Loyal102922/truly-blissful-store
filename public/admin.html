@@ -753,25 +753,43 @@ async function loadInventory() {
   const inventory = await res.json();
 
   document.getElementById('inventoryTable').innerHTML = `
-    <table style="width:100%;border-collapse:collapse;">
+    <table style="
+      width:900px;
+      border-collapse:collapse;
+      margin-top:20px;
+      color:white;
+      text-align:left;
+    ">
       <thead>
         <tr>
-          <th>Product</th>
-          <th>Color</th>
-          <th>Size</th>
-          <th>Qty</th>
-          <th>Actions</th>
+          <th style="border:1px solid #555;padding:10px;">Product</th>
+          <th style="border:1px solid #555;padding:10px;">Color</th>
+          <th style="border:1px solid #555;padding:10px;">Size</th>
+          <th style="border:1px solid #555;padding:10px;">Qty</th>
+          <th style="border:1px solid #555;padding:10px;">Actions</th>
         </tr>
       </thead>
 
       <tbody>
         ${inventory.map(item => `
           <tr>
-            <td>${item.productName}</td>
-            <td>${item.color}</td>
-            <td>${item.size}</td>
-            <td>${item.quantity}</td>
-            <td>
+            <td style="border:1px solid #555;padding:10px;">
+              ${item.productName}
+            </td>
+
+            <td style="border:1px solid #555;padding:10px;">
+              ${item.color}
+            </td>
+
+            <td style="border:1px solid #555;padding:10px;">
+              ${item.size}
+            </td>
+
+            <td style="border:1px solid #555;padding:10px;">
+              ${item.quantity}
+            </td>
+
+            <td style="border:1px solid #555;padding:10px;">
               <button onclick="editInventory('${item._id}')">
                 Edit
               </button>
