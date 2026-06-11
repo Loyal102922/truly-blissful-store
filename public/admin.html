@@ -789,7 +789,7 @@ async function addInventoryRow() {
   const color = prompt("Color");
   if (!color) return;
 
-  const size = prompt("Size");
+  const size = prompt("Size (ONE SIZE ONLY)");
   if (!size) return;
 
   const quantity = prompt("Quantity");
@@ -801,9 +801,9 @@ async function addInventoryRow() {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      productName,
-      color,
-      size,
+      productName: productName.trim(),
+      color: color.trim().toUpperCase(),
+      size: size.trim().toUpperCase(),
       quantity: Number(quantity)
     })
   });
