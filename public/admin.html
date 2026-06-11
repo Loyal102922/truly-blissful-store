@@ -258,7 +258,37 @@ async function sendUpdate() {
 }
 
 }
+const inventoryDashboard = document.createElement('div');
 
+inventoryDashboard.id = 'inventoryDashboard';
+
+inventoryDashboard.style.margin = '40px 0';
+
+inventoryDashboard.innerHTML = `
+  <h2>Inventory Management</h2>
+
+  <button
+    onclick="addInventoryRow()"
+    style="
+      background:orange;
+      color:black;
+      padding:10px 15px;
+      border:none;
+      border-radius:8px;
+      font-weight:bold;
+      margin-bottom:20px;
+    "
+  >
+    Add Inventory Row
+  </button>
+
+  <div id="inventoryTable"></div>
+`;
+
+document.body.insertBefore(
+  inventoryDashboard,
+  document.body.children[1]
+);
 const analyticsDashboard = document.createElement('div');
 analyticsDashboard.id = 'analyticsDashboard';
 analyticsDashboard.style.margin = '40px 0';
@@ -718,8 +748,43 @@ async function saveReply(reviewId) {
     alert(data.error || 'Failed');
   }
 }
+async function loadInventory() {
+  const res = await fetch('/inventory');
+  const inventory = await res.json();
+
+  document.getElementById('inventoryTable').innerHTML =
+    inventory.map(item => `
+      <div
+        style="
+          border:1px solid white;
+          padding:12px;
+          margin-bottom:10px;
+          border-radius:10px;
+        "
+      >
+        <strong>${item.productName}</strong><br>
+
+        Color: ${item.color}<br>
+
+        Size: ${item.size}<br>
+
+        Quantity: ${item.quantity}
+
+        <br><br>
+
+        <button onclick="editInventory('${item._id}')">
+          Edit
+        </button>
+
+        <button onclick="deleteInventory('${item._id}')">
+          Delete
+        </button>
+      </div>
+    `).join('') || '<p>No inventory yet.</p>';
+}
 loadOrders();
 loadProducts();
+loadInventory();
 loadAnalytics();
 loadReviewsAdmin();
 </script>
