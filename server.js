@@ -194,7 +194,7 @@ const mongoClient = new MongoClient(process.env.MONGO_URI);
 let productsCollection;
 let ordersCollection;
 let reviewsCollection;
-
+let inventoryCollection;
 async function connectMongo() {
   await mongoClient.connect();
   const database = mongoClient.db('store');
@@ -202,7 +202,7 @@ async function connectMongo() {
   productsCollection = database.collection('products');
   ordersCollection = database.collection('orders');
   reviewsCollection = database.collection('reviews');
-
+  inventoryCollection = database.collection('inventory');
   console.log('MongoDB connected');
 }
 
@@ -1095,5 +1095,80 @@ async function startServer() {
     process.exit(1);
   }
 }
+// ───── INVENTORY ─────
 
+// GET ALL INVENTORY
+app.get('/inventory', async (req, res) => {
+  try {
+    const inventory = await inventoryCollection
+      .find({})
+      .sort({ productName: 1 })
+      .toArray();
+
+    res.json(inventory);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to load inventory' });
+  }
+});
+
+// ADD INVENTORY ROW
+app.post('/inventory', async (req, res) => {
+  try {
+    const { productId, productName, color, size, quantity } = req.body;
+
+    await inventoryCollection.insertOne({
+      productId,
+      productName,
+      color,
+      size,
+      quantity: Number(quantity) || 0,
+      createdAt: new Date()
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add inventory' });
+  }
+});
+
+// UPDATE INVENTORY ROW
+app.put('/inventory/:id', async (req, res) => {
+  try {
+    const { productName, color, size, quantity } = req.body;
+
+    await inventoryCollection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      {
+        $set: {
+          productName,
+          color,
+          size,
+          quantity: Number(quantity) || 0,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update inventory' });
+  }
+});
+
+// DELETE INVENTORY ROW
+app.delete('/inventory/:id', async (req, res) => {
+  try {
+    await inventoryCollection.deleteOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete inventory row' });
+  }
+});
 startServer();
