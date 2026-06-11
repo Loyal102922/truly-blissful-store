@@ -540,19 +540,31 @@ app.get('/order-details/:sessionId', async (req, res) => {
 await sendCustomerOrderConfirmedEmail(order);
       }
 
-      if (order && !order.stockUpdated) {
-        for (const item of order.cart) {
-          await productsCollection.updateOne(
-            { name: item.name },
-            { $inc: { stock: -(item.qty || 1) } }
-          );
+   if (order && !order.stockUpdated) {
+  for (const item of order.cart) {
+    await inventoryCollection.updateOne(
+      {
+        productName: item.name,
+        color: item.color,
+        size: item.size
+      },
+      {
+        $inc: {
+          quantity: -(Number(item.qty) || 1)
         }
-
-        await ordersCollection.updateOne(
-          { _id: order._id },
-          { $set: { stockUpdated: true } }
-        );
       }
+    );
+  }
+
+  await ordersCollection.updateOne(
+    { _id: order._id },
+    {
+      $set: {
+        stockUpdated: true
+      }
+    }
+  );
+}
 
       return res.json(order);
     }
