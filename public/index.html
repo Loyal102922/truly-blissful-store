@@ -23,6 +23,7 @@
 <meta name="twitter:image" content="/logo.png" />
 
 <link rel="icon" type="image/png" href="/logo.png" />
+<link rel="preload" as="image" href="/images/banner2.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -41,7 +42,12 @@
  <header class="border-b border-white/10 sticky top-0 bg-black/70 backdrop-blur-xl shadow-lg shadow-black/20 z-50">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="/logo.png" class="h-12 w-auto bg-white p-1 rounded"/>
+        <img
+  src="/logo.png"
+  width="1210"
+  height="1255"
+  class="h-12 w-auto bg-white p-1 rounded"
+/>
         <div>
           <h1 class="font-black text-lg tracking-wide">TRULY BLISSFUL</h1>
           <p class="text-xs text-gray-400 uppercase tracking-[0.25em]">Faith-Driven Streetwear</p>
@@ -111,11 +117,13 @@
   <div class="max-w-6xl mx-auto overflow-hidden rounded-2xl border border-white/10">
 
     <img
-      id="heroBanner"
-      src="/images/banner2.png"
-      alt="TRULY BLISSFUL Banner"
-      class="w-full object-cover"
-    />
+  id="heroBanner"
+  src="/images/banner2.png"
+  alt="TRULY BLISSFUL Banner"
+  width="1774"
+  height="887"
+  class="w-full object-cover"
+/>
 
   </div>
 </section>
