@@ -751,7 +751,30 @@ async function saveReply(reviewId) {
 async function loadInventory() {
   const res = await fetch('/inventory');
   const inventory = await res.json();
+inventory.sort((a, b) => {
+  const sizeOrder = {
+    XS: 1,
+    S: 2,
+    M: 3,
+    L: 4,
+    XL: 5,
+    XXL: 6,
+    '3XL': 7,
+    '4XL': 8,
+    '5XL': 9
+  };
 
+  if (a.productName !== b.productName) {
+    return a.productName.localeCompare(b.productName);
+  }
+
+  if (a.color !== b.color) {
+    return a.color.localeCompare(b.color);
+  }
+
+  return (sizeOrder[a.size] || 999) -
+         (sizeOrder[b.size] || 999);
+});
   document.getElementById('inventoryTable').innerHTML = `
     <table style="
       width:900px;
@@ -906,30 +929,7 @@ async function editInventory(id) {
 async function adjustInventoryQty(id, change) {
   const res = await fetch('/inventory');
   const inventory = await res.json();
-inventory.sort((a, b) => {
-  const sizeOrder = {
-    XS: 1,
-    S: 2,
-    M: 3,
-    L: 4,
-    XL: 5,
-    XXL: 6,
-    '3XL': 7,
-    '4XL': 8,
-    '5XL': 9
-  };
 
-  if (a.productName !== b.productName) {
-    return a.productName.localeCompare(b.productName);
-  }
-
-  if (a.color !== b.color) {
-    return a.color.localeCompare(b.color);
-  }
-
-  return (sizeOrder[a.size] || 999) -
-         (sizeOrder[b.size] || 999);
-});
   const item = inventory.find(i => i._id === id);
 
   if (!item) return;
