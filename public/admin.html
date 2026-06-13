@@ -296,6 +296,7 @@ analyticsDashboard.innerHTML = `
   <h2>Sales Analytics</h2>
 
   <div id="analyticsCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:30px;"></div>
+  <div id="inventoryAlertCard"></div>
 <div style="
   background:#111;
   padding:20px;
@@ -386,7 +387,7 @@ function getStockColor(stock) {
     return "background:#f97316;color:white;padding:6px 12px;border-radius:8px;font-weight:bold;";
   }
 
-  if (stock <= 7) {
+  if (stock <= 10) {
     return "background:#facc15;color:black;padding:6px 12px;border-radius:8px;font-weight:bold;";
   }
 
@@ -401,14 +402,23 @@ function getStockColor(stock) {
 </div>
         </div>
       `).join('') || '<p>No low stock products.</p>';
-      document.getElementById('behaviorAnalytics').innerHTML =
-  (behaviorData || []).map(item => `
-    <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
-      <strong>${item.productName}</strong><br>
-      Views: ${item.views}<br>
-      Added To Cart: ${item.addedToCart}
-    </div>
-  `).join('') || '<p>No behavior data yet.</p>';
+document.getElementById('behaviorAnalytics').innerHTML =
+  (behaviorData || []).map(item => {
+
+    const conversion =
+      item.views > 0
+        ? ((item.addedToCart / item.views) * 100).toFixed(1)
+        : 0;
+
+    return `
+      <div style="border:1px solid white;padding:12px;margin-bottom:10px;border-radius:10px;">
+        <strong>${item.productName}</strong><br>
+        Views: ${item.views}<br>
+        Added To Cart: ${item.addedToCart}<br>
+        Conversion: ${conversion}%
+      </div>
+    `;
+  }).join('') || '<p>No behavior data yet.</p>';
 const ctx = document.getElementById('dailySalesChart');
 
 new Chart(ctx, {
@@ -814,9 +824,23 @@ inventory.sort((a, b) => {
     -
   </button>
 
-  <span style="margin:0 10px;font-weight:bold;">
-    ${item.quantity}
-  </span>
+  <span style="
+  margin:0 10px;
+  font-weight:bold;
+  padding:4px 10px;
+  border-radius:6px;
+  ${
+    item.quantity <= 0
+      ? 'background:#dc2626;color:white;'
+      : item.quantity <= 3
+      ? 'background:#f97316;color:white;'
+      : item.quantity <= 7
+      ? 'background:#facc15;color:black;'
+      : 'background:#22c55e;color:white;'
+  }
+">
+  ${item.quantity}
+</span>
 
   <button onclick="adjustInventoryQty('${item._id}', 1)">
     +
