@@ -362,6 +362,25 @@ app.post('/reviews/:id/reply', async (req, res) => {
     });
   }
 });
+app.delete(
+  '/reviews/:id',
+  requireAdmin,
+  async (req, res) => {
+    try {
+      await reviewsCollection.deleteOne({
+        _id: new ObjectId(req.params.id)
+      });
+
+      res.json({ success: true });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        error: 'Delete failed'
+      });
+    }
+  }
+);
 // Config
 app.get('/config', (req, res) => {
   res.json({

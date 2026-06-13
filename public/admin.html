@@ -722,6 +722,20 @@ async function loadReviewsAdmin() {
       >
         Save Reply
       </button>
+      <button
+  onclick="deleteReview('${review._id}')"
+  style="
+    background:#dc2626;
+    color:white;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    margin-left:10px;
+  "
+>
+  Delete Review
+</button>
     `;
 
     reviewsContainer.appendChild(div);
@@ -756,6 +770,34 @@ async function saveReply(reviewId) {
     alert('Reply saved');
   } else {
     alert(data.error || 'Failed');
+  }
+}
+async function deleteReview(reviewId) {
+  const confirmed = confirm(
+    "Delete this review permanently?"
+  );
+
+  if (!confirmed) return;
+
+  const password = prompt("Admin Password");
+  if (!password) return;
+
+  const res = await fetch(
+    `/reviews/${reviewId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization:
+          'Basic ' + btoa(`admin:${password}`)
+      }
+    }
+  );
+
+  if (res.ok) {
+    alert('Review deleted');
+    location.reload();
+  } else {
+    alert('Failed to delete review');
   }
 }
 async function loadInventory() {
