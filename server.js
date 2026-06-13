@@ -740,13 +740,15 @@ const monthlySales = Object.entries(monthlySalesMap)
       .sort((a, b) => b.quantitySold - a.quantitySold)
       .slice(0, 5);
 
-    const lowStockProducts = products
-      .filter(p => Number(p.stock || 0) <= 5)
-      .map(p => ({
-        name: p.name,
-        stock: Number(p.stock || 0),
-      }))
-      .sort((a, b) => a.stock - b.stock);
+   const inventory = await inventoryCollection.find({}).toArray();
+
+const lowStockProducts = inventory
+  .filter(item => Number(item.quantity || 0) <= 10)
+  .map(item => ({
+    name: `${item.productName} (${item.color} ${item.size})`,
+    stock: Number(item.quantity || 0),
+  }))
+  .sort((a, b) => a.stock - b.stock);
 
     res.json({
       totalRevenue,
