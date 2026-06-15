@@ -944,8 +944,24 @@ div.innerHTML = `
       <h3 class="font-bold">${p.name}</h3>
       <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
       <p class="text-gray-400">$${p.price}</p>
-<p class="text-sm font-bold ${p.stock > 0 ? 'text-green-400' : 'text-red-400'}">
-  ${p.stock > 0 ? `Only ${p.stock} left` : 'Sold Out'}
+<p class="text-sm font-bold ${
+  p.stock <= 0
+    ? 'text-red-400'
+    : p.stock <= 2
+    ? 'text-orange-500'
+    : p.stock <= 5
+    ? 'text-yellow-400'
+    : ''
+}">
+  ${
+    p.stock <= 0
+      ? 'Sold Out'
+      : p.stock <= 2
+      ? '🔥 Almost Gone'
+      : p.stock <= 5
+      ? '⚠️ Low Stock'
+      : ''
+  }
 </p>
 <div class="mt-auto pt-4">
   ${
