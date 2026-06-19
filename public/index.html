@@ -531,7 +531,10 @@ function clearCart() {
 function renderCart() {
   const list = document.getElementById('cart-items');
   const total = document.getElementById('total');
-  const count = document.getElementById('cart-count');
+  const count =
+  document.getElementById('cart-count') ||
+  document.getElementById('floating-cart-count');
+  if (!list) return;
   list.innerHTML = '';
   let sum = 0;
   let itemCount = 0;
@@ -572,17 +575,19 @@ function renderCart() {
     list.appendChild(li);
   });
 
- total.textContent = '$' + sum;
-count.textContent = itemCount;
+if (total) total.textContent = '$' + sum;
+if (count) count.textContent = itemCount;
 const floatingCartBtn = document.getElementById('floating-cart-btn');
 
-if (itemCount > 0) {
-  floatingCartBtn.classList.remove('hidden');
-} else {
-  floatingCartBtn.classList.add('hidden');
+if (floatingCartBtn) {
+  if (itemCount > 0) {
+    floatingCartBtn.classList.remove('hidden');
+  } else {
+    floatingCartBtn.classList.add('hidden');
+  }
 }
-
-document.getElementById('floating-cart-count').textContent = itemCount;
+const floatingCount = document.getElementById('floating-cart-count');
+if (floatingCount) floatingCount.textContent = itemCount;
 }
 
  
@@ -1616,6 +1621,58 @@ textarea {
     © 2026 TRULY BLISSFUL. All rights reserved.
   </p>
 </footer>
+<!-- Cart Drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-[998] hidden">
+  <div onclick="toggleCart()" class="absolute inset-0 bg-black/60"></div>
+  <div class="absolute right-0 top-0 h-full w-full max-w-md bg-neutral-950 border-l border-white/10 flex flex-col shadow-2xl">
+    
+    <div class="flex items-center justify-between p-6 border-b border-white/10">
+      <h2 class="text-2xl font-black">Your Cart</h2>
+      <button onclick="toggleCart()" class="text-3xl font-black hover:text-orange-400">×</button>
+    </div>
+
+    <ul id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></ul>
+
+    <div class="p-6 border-t border-white/10">
+      <div class="flex justify-between text-lg font-bold mb-4">
+        <span>Total</span>
+        <span id="total">$0</span>
+      </div>
+      <button onclick="checkout()"
+        class="bg-orange-500 hover:bg-orange-400 text-black font-black w-full py-4 rounded-2xl text-lg transition">
+        Checkout
+      </button>
+      <button onclick="clearCart()"
+        class="mt-3 w-full text-gray-500 hover:text-red-400 text-sm font-bold transition">
+        Clear Cart
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Floating Cart Button -->
+<div id="floating-cart-btn" class="hidden fixed bottom-6 right-6 z-50">
+  <button onclick="toggleCart()"
+    class="bg-orange-500 hover:bg-orange-400 text-black font-black px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
+    🛒 <span id="floating-cart-count">0</span> items
+  </button>
+</div>
+<script>
+function toggleCart() {
+  const drawer = document.getElementById('cart-drawer');
+  if (drawer.classList.contains('hidden')) {
+    drawer.classList.remove('hidden');
+    drawer.classList.add('flex');
+  } else {
+    drawer.classList.add('hidden');
+    drawer.classList.remove('flex');
+  }
+}
+if (new URLSearchParams(window.location.search).get('openCart') === 'true') {
+    toggleCart();
+}
+</script>
 </body>
 </html>
 
