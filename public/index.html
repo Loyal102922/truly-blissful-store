@@ -55,13 +55,29 @@
       </div>
    <div class="flex items-center gap-2">
 
-  <a href="/about.html" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
-    About
-  </a>
+<a href="/" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+  Home
+</a>
 
-  <a href="#products" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
-    Shop
-  </a>
+<a href="/shirts.html" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+  Shirts
+</a>
+
+<a href="/hoodies.html" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+  Hoodies
+</a>
+
+<a href="/headwear.html" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+  Headwear
+</a>
+
+<a href="/kids.html" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+  Kids
+</a>
+
+<a href="/about.html" class="hidden sm:inline-block bg-orange-500 hover:bg-orange-400 transition px-4 py-2 rounded-xl text-black font-bold">
+  About
+</a>
 
   <button
     onclick="openMobileMenu()"
@@ -84,33 +100,27 @@
       </button>
     </div>
 
- <nav class="flex flex-col gap-4 text-lg font-bold">
-  <a onclick="closeMobileMenu()" href="/about.html"
-     class="border-b border-white/10 pb-3 hover:text-orange-400">
-     About
-  </a>
+<nav class="flex flex-col gap-4 text-lg font-bold">
 
-  <a onclick="closeMobileMenu()" href="#products"
-     class="border-b border-white/10 pb-3 hover:text-orange-400">
-     Shop
-  </a>
+  <a onclick="closeMobileMenu()" href="/">Home</a>
 
-  <a onclick="closeMobileMenu()" href="#cart"
-     class="border-b border-white/10 pb-3 hover:text-orange-400">
-     Cart
-  </a>
+  <a onclick="closeMobileMenu()" href="/shirts.html">Shirts</a>
 
-  <a onclick="closeMobileMenu()" href="#review-form-wrap"
-     class="border-b border-white/10 pb-3 hover:text-orange-400">
-     Reviews
-  </a>
+  <a onclick="closeMobileMenu()" href="/hoodies.html">Hoodies</a>
 
-  <a onclick="closeMobileMenu()" href="/custom-order.html"
-     class="border-b border-white/10 pb-3 hover:text-orange-400">
-     Custom Order
-  </a>
-      <a onclick="closeMobileMenu()" href="mailto:support@trulyblissfulshop.com" class="border-b border-white/10 pb-3 hover:text-orange-400">Contact</a>
-    </nav>
+  <a onclick="closeMobileMenu()" href="/headwear.html">Headwear</a>
+
+  <a onclick="closeMobileMenu()" href="/kids.html">Kids</a>
+
+  <a onclick="closeMobileMenu()" href="/about.html">About</a>
+
+  <a onclick="closeMobileMenu()" href="#review-form-wrap">Reviews</a>
+
+  <a onclick="closeMobileMenu()" href="/custom-order.html">Custom Order</a>
+
+  <a onclick="closeMobileMenu()" href="mailto:support@trulyblissfulshop.com">Contact</a>
+
+</nav>
   </div>
 </div>
 <section class="px-4 pt-4 pb-6">
@@ -156,43 +166,67 @@
     </p>
 
     <p class="text-orange-400 mt-3 font-semibold">Limited quantities available</p>
-
-
 </section>
-<section class="px-6 pb-8 max-w-6xl mx-auto">
-  <div class="grid grid-cols-2 gap-3 max-w-md mx-auto sm:flex sm:flex-wrap sm:justify-center">
-    <button onclick="filterProducts('All')" data-category="All"
-class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
-  All
-</button>
 
-   <button onclick="filterProducts('Shirts')" data-category="Shirts"
-class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
-  Shirts
-</button>
 
-   <button onclick="filterProducts('Hoodies')" data-category="Hoodies"
-class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
-  Hoodies
-</button>
+<section class="max-w-6xl mx-auto px-6 pb-20">
 
-    <button onclick="filterProducts('Headwear')" data-category="Headwear"
-class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 py-3 font-bold text-white hover:bg-orange-500 hover:text-black transition duration-300 active:scale-95">
-  Headwear
-</button>
+  <h2 class="text-3xl font-black text-center mb-10">
+    Shop By Category
+  </h2>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+    <a href="/shirts.html"
+       class="bg-neutral-900 rounded-2xl border border-white/10 hover:border-orange-500 overflow-hidden transition">
+
+      <div class="h-52 bg-neutral-800 flex items-center justify-center">
+        <span class="text-2xl font-black">SHIRTS</span>
+      </div>
+
+    </a>
+
+    <a href="/hoodies.html"
+       class="bg-neutral-900 rounded-2xl border border-white/10 hover:border-orange-500 overflow-hidden transition">
+
+      <div class="h-52 bg-neutral-800 flex items-center justify-center">
+        <span class="text-2xl font-black">HOODIES</span>
+      </div>
+
+    </a>
+
+    <a href="/headwear.html"
+       class="bg-neutral-900 rounded-2xl border border-white/10 hover:border-orange-500 overflow-hidden transition">
+
+      <div class="h-52 bg-neutral-800 flex items-center justify-center">
+        <span class="text-2xl font-black">HEADWEAR</span>
+      </div>
+
+    </a>
+
+    <a href="/kids.html"
+       class="bg-neutral-900 rounded-2xl border border-white/10 hover:border-orange-500 overflow-hidden transition">
+
+      <div class="h-52 bg-neutral-800 flex items-center justify-center">
+        <span class="text-2xl font-black">KIDS</span>
+      </div>
+
+    </a>
+
   </div>
+
+
+<section class="max-w-6xl mx-auto px-6 pb-20">
+
+  <h2 class="text-3xl font-black text-center mb-10">
+    Featured Products
+  </h2>
+
+  <div id="featured-products"
+       class="grid grid-cols-2 md:grid-cols-4 gap-6">
+  </div>
+
 </section>
-
-<section id="products" class="px-6 pb-20 max-w-7xl mx-auto">
-
-    <div id="tees" class="mb-16 max-w-7xl mx-auto text-center">
-      <h2 id="category-title" class="text-3xl font-black mb-2"></h2>
-      <p class="text-gray-400 mb-6">Statement pieces built with message and purpose.</p>
-<div id="products-container" class="grid grid-cols-2 gap-1 w-full md:max-w-7xl md:mx-auto md:grid-cols-3 lg:grid-cols-4">
-
-</div>
-
- 
   <section class="max-w-5xl mx-auto px-6 pb-16">
   <div class="grid md:grid-cols-3 gap-6 text-center">
 
@@ -215,40 +249,7 @@ class="category-btn whitespace-nowrap border border-white/20 rounded-full px-5 p
 </section>
   </section>
 
-  <section id="cart" class="max-w-3xl mx-auto px-6 pb-20">
-    <div class="bg-neutral-900 p-4 sm:p-6 rounded-2xl border border-white/10">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Cart</h2>
-        <span id="cart-count" class="bg-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">0</span>
-      </div>
 
-      <ul id="cart-items" class="space-y-3"></ul>
-      <p class="mt-4">Total: <span id="total">$0</span></p>
-
-   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-  <button onclick="checkout()" class="bg-orange-500 w-full py-3 rounded-xl text-black font-bold hover:bg-orange-400 transition">
-    Checkout
-  </button>
-
-  <button onclick="clearCart()" class="border border-white/20 w-full py-3 rounded-xl font-bold hover:border-white/40 transition">
-    Clear Cart
-  </button>
-</div>
- <button
-  id="floating-cart-btn"
-  onclick="document.getElementById('cart').scrollIntoView({ behavior: 'smooth' })"
-  class="hidden fixed bottom-20 right-4 z-50 bg-orange-500 hover:bg-orange-400 text-black ..."
-
->
-  🛒
-
-  <span
-    id="floating-cart-count"
-    class="absolute -top-2 -right-2 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center"
-  >
-    0
-  </span>
-</button>
   <section class="max-w-6xl mx-auto px-6 pb-20">
   <div class="flex items-center justify-between mb-8">
     <h2 class="text-3xl font-black">Customer Reviews</h2>
@@ -888,144 +889,8 @@ async function checkout() {
 initStripe();
 renderCart();
 loadReviews();
-async function loadProducts(retries = 5, delay = 4000) {
-document.getElementById('products-container').innerHTML = `
-  <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
-    <p class="text-gray-400">Loading products...</p>
-  </div>
-`;
-  try {
 
-   const res = await fetch('/products');
 
-if (!res.ok) {
-  throw new Error('Server not ready');
-}
-
-    const products = await res.json();
-
-    allProducts = products;
-
-const filteredProducts =
-  currentCategory === 'All'
-    ? products
-    : products.filter(
-      p => (p.category || '').trim().toLowerCase() === currentCategory.trim().toLowerCase()
-      );
- const container = document.getElementById('products-container');
-  container.innerHTML = '';
-
- filteredProducts.forEach(p => {
-    const div = document.createElement('div');
-
-div.className =
-div.className =
-  "bg-neutral-900 p-0 overflow-hidden rounded-2xl text-center border border-white/10 hover:border-orange-400 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 flex flex-col h-full";
-
-div.style.cursor = 'pointer';
-
-div.onclick = () => {
-  window.location.href = `/product.html?id=${p._id}`;
-};
-div.innerHTML = `
-<div class="mb-0 overflow-hidden rounded-xl">
-<img
-  id="main-img-${p.name.replace(/\s/g, '-')}"
-  src="${((p.images || [p.image])[0] || '').replace('/upload/', '/upload/f_auto,q_auto,w_600/')}"
-  data-index="0"
-  onclick='openImageGallery(${JSON.stringify(p.images || [p.image])}, 0)'
-  class="w-full h-52 md:h-72 object-cover object-top rounded-none hover:scale-105 transition duration-300"
-  loading="lazy"
-  decoding="async"
-  onerror="this.src='/images/fallback.jpg'"
-/>
-</div>
-      <div class="p-3 flex flex-col flex-1">
-      <h3 class="font-bold">${p.name}</h3>
-      <p class="text-orange-400 text-sm font-bold">${p.category || 'Uncategorized'}</p>
-      <p class="text-gray-400">$${p.price}</p>
-<p class="text-sm font-bold ${
-  p.stock <= 0
-    ? 'text-red-400'
-    : p.stock <= 2
-    ? 'text-orange-500'
-    : p.stock <= 5
-    ? 'text-yellow-400'
-    : ''
-}">
-  ${
-    p.stock <= 0
-      ? 'Sold Out'
-      : p.stock <= 2
-      ? '🔥 Almost Gone'
-      : p.stock <= 5
-      ? '⚠️ Low Stock'
-      : ''
-  }
-</p>
-<div class="mt-auto pt-4">
-  ${
-    p.stock > 0
-      ? `
-        <button
-          onclick='openCartOptions(${JSON.stringify(p)})'
-          class="bg-orange-500 hover:bg-orange-400 px-4 py-2 mt-4 rounded-xl text-black w-full font-bold transition duration-300"
-        >
-          🛒 Add to Cart
-        </button>
-      `
-      : `
-        <div class="bg-red-600 text-white px-4 py-2 mt-4 rounded-xl w-full font-bold text-center">
-          SOLD OUT
-        </div>
-      `
-  }
-</div>
-</div>
-`;
-container.appendChild(div);
-
-});
-
-}  // closes try
-
-catch (error) {
-  console.error('Product load error:', error);
-
-  if (retries > 0) {
-
-    document.getElementById('products-container').innerHTML = `
-      <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
-        <p class="animate-pulse text-gray-400">
-          Store is waking up, please wait...
-        </p>
-      </div>
-    `;
-
-    setTimeout(() => {
-      loadProducts(retries - 1, delay);
-    }, delay);
-
-    return;
-  }
-
-  document.getElementById('products-container').innerHTML = `
-    <div class="col-span-full text-center py-12">
-      <h2 class="text-red-500 text-xl font-bold">
-        Failed to load products
-      </h2>
-
-      <button
-        onclick="loadProducts()"
-        class="mt-4 bg-orange-500 px-6 py-3 rounded-xl text-black font-bold"
-      >
-        Retry
-      </button>
-    </div>
-  `;
-}
-
-}
 function openCartOptions(product) {
   const modal = document.createElement('div');
   modal.className = "fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4";
@@ -1150,42 +1015,8 @@ class="fixed top-4 right-4 text-white text-5xl font-bold z-[99999] bg-black/80 r
 
   document.body.appendChild(modal);
 }
-function filterProducts(category) {
-  currentCategory = category;
 
-  const title = document.getElementById('category-title');
 
-  if (category === 'All') {
-    title.textContent = 'All Products';
-  } else {
-    title.textContent = category;
-  }
-
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.classList.remove('bg-orange-500', 'text-black', 'border-orange-500');
-    btn.classList.add('border-white/20', 'text-white');
-  });
-
-const activeBtn = document.querySelector(`[data-category="${category}"]`);
-if (activeBtn) {
-  activeBtn.classList.add('bg-orange-500', 'text-black', 'border-orange-500');
-  activeBtn.classList.remove('border-white/20', 'text-white');
-}
-
-loadProducts();
-}
-document.addEventListener('DOMContentLoaded', () => {
-
-  document.getElementById('products-container').innerHTML = `
-    <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
-      <p class="text-gray-400 animate-pulse">
-        Loading products...
-      </p>
-    </div>
-  `;
-
-  loadProducts();
-});
 /* Fade-in section observer */
 const fadeSections = document.querySelectorAll('section');
 
