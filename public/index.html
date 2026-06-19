@@ -943,6 +943,15 @@ function closeModal() {
   document.getElementById('product-modal').classList.remove('flex');
 }
 
+let stripe = null;
+
+async function initStripe() {
+  const res = await fetch('/config');
+  const data = await res.json();
+
+  stripe = Stripe(data.publishableKey);
+}
+
 async function checkout() {
   if (!cart.length) {
     alert('Your cart is empty.');
