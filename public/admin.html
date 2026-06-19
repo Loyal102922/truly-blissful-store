@@ -16,7 +16,13 @@
   <input name="sizes" placeholder="Sizes e.g. M,L,XL,2XL" style="padding: 10px;">
 <input name="colors" placeholder="Colors e.g. Black,White,Cream" style="padding: 10px;">
 <input name="stock" type="number" placeholder="Stock Quantity" required style="padding: 10px;" />
-<input type="file" name="images" accept="image/*" multiple style="color: white;">  
+
+<label style="display:flex;align-items:center;gap:8px;color:white;">
+  <input type="checkbox" name="isNewArrival">
+  New Arrival
+</label>
+
+<input type="file" name="images" accept="image/*" multiple style="color: white;">
   
   <button 
     type="submit"
@@ -1022,9 +1028,109 @@ async function adjustInventoryQty(id, change) {
     loadInventory();
   }
 }
-loadOrders();
-loadProducts();
-loadInventory();
-loadAnalytics();
-loadReviewsAdmin();
+async function loadNewArrivalsAdmin() {
+console.log('NEW ARRIVALS FUNCTION RUNNING');
+  let section = document.getElementById('newArrivalsSection');
+
+  if (!section) {
+    section = document.createElement('div');
+    section.id = 'newArrivalsSection';
+
+    section.innerHTML = `
+      <h2 style="margin-top:40px;">New Arrivals</h2>
+      <div id="currentNewArrivals"></div>
+      <hr style="margin:20px 0;">
+      <div id="availableProducts"></div>
+    `;
+
+    document.body.appendChild(section);
+  }
+
+ 
+
+ 
+
+  const arrivalsRes = await fetch('/new-arrivals');
+ 
+
+  const arrivals = await arrivalsRes.json();
+ 
+
+  const productsRes = await fetch('/products');
+  
+
+  const products = await productsRes.json();
+ 
+
+  section = document.getElementById('newArrivalsSection');
+
+  document.getElementById('currentNewArrivals').innerHTML = `
+    <h3>Current New Arrivals</h3>
+    ${arrivals.map(item => `
+      <div style="margin-bottom:10px;">
+        ${item.name}
+        <button onclick="deleteNewArrival('${item._id}')">
+          Delete
+        </button>
+      </div>
+    `).join('')}
+  `;
+
+  document.getElementById('availableProducts').innerHTML = `
+    <h3>Add Product</h3>
+    ${products.map(product => `
+      <div style="margin-bottom:10px;">
+        ${product.name}
+        <button onclick="addToNewArrivals('${product._id}')">
+          Add
+        </button>
+      </div>
+    `).join('')}
+  `;
+}
+
+async function addToNewArrivals(productId) {
+
+  const password = prompt('Admin Password');
+  if (!password) return;
+
+  const auth = btoa('admin:' + password);
+
+  const productRes = await fetch('/product/' + productId);
+  const product = await productRes.json();
+
+  const res = await fetch('/new-arrivals', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + auth
+    },
+    body: JSON.stringify(product)
+  });
+
+  if (res.ok) {
+    loadNewArrivalsAdmin();
+  }
+}
+
+async function deleteNewArrival(id) {
+
+  const password = prompt('Admin Password');
+  if (!password) return;
+
+  const auth = btoa('admin:' + password);
+
+  const res = await fetch('/new-arrivals/' + id, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': 'Basic ' + auth
+    }
+  });
+
+  if (res.ok) {
+    loadNewArrivalsAdmin();
+  }
+}
+
+loadNewArrivalsAdmin();
 </script>
