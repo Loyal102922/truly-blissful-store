@@ -46,27 +46,30 @@ async function loadProducts() {
     headwear.forEach(product => {
 
         container.innerHTML += `
-        <div class="bg-neutral-900 rounded-xl overflow-hidden">
+<a
+    href="/product.html?id=${product._id}"
+    class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
+>
 
-            <img
-                src="${product.images?.[0] || ''}"
-                class="w-full h-72 object-cover"
-            >
+    <img
+        src="${product.images?.[0] || ''}"
+        class="w-full h-72 object-cover"
+    >
 
-            <div class="p-4">
+    <div class="p-4">
 
-                <h3 class="font-bold">
-                    ${product.name}
-                </h3>
+        <h3 class="font-bold">
+            ${product.name}
+        </h3>
 
-                <p class="text-orange-400">
-                    $${product.price}
-                </p>
+        <p class="text-orange-400">
+            $${product.price}
+        </p>
 
-            </div>
+    </div>
 
-        </div>
-        `;
+</a>
+`;
     });
 }
 
