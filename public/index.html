@@ -1624,14 +1624,14 @@ textarea {
 <!-- Cart Drawer -->
 <div id="cart-drawer" class="fixed inset-0 z-[998] hidden">
   <div onclick="toggleCart()" class="absolute inset-0 bg-black/60"></div>
-  <div class="absolute right-0 top-0 h-full w-full max-w-md bg-neutral-950 border-l border-white/10 flex flex-col shadow-2xl">
+ <div class="absolute right-4 top-20 w-full max-w-md max-h-[80vh] bg-neutral-950 border border-white/10 flex flex-col">
     
     <div class="flex items-center justify-between p-6 border-b border-white/10">
       <h2 class="text-2xl font-black">Your Cart</h2>
       <button onclick="toggleCart()" class="text-3xl font-black hover:text-orange-400">×</button>
     </div>
 
-    <ul id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></ul>
+   <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
 
     <div class="p-6 border-t border-white/10">
       <div class="flex justify-between text-lg font-bold mb-4">
