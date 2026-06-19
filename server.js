@@ -102,6 +102,9 @@ async function sendCustomerOrderConfirmedEmail(order) {
     `
   });
 }
+console.log("R2_BUCKET:", process.env.R2_BUCKET);
+console.log("R2_ENDPOINT:", process.env.R2_ENDPOINT);
+console.log("R2_ACCESS_KEY_ID:", process.env.R2_ACCESS_KEY_ID);
 const r2 = new S3Client({
   region: "auto",
   endpoint: process.env.R2_ENDPOINT,
@@ -114,7 +117,7 @@ const r2 = new S3Client({
 const upload = multer({
   storage: multerS3({
     s3: r2,
-   bucket: process.env.R2_BUCKET,
+  bucket: "trulyblissful",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: function (req, file, cb) {
       const safeName = file.originalname.replace(/\s+/g, "-");
@@ -195,6 +198,7 @@ let productsCollection;
 let ordersCollection;
 let reviewsCollection;
 let inventoryCollection;
+let newArrivalsCollection;
 async function connectMongo() {
   await mongoClient.connect();
   const database = mongoClient.db('store');
@@ -203,6 +207,7 @@ async function connectMongo() {
   ordersCollection = database.collection('orders');
   reviewsCollection = database.collection('reviews');
   inventoryCollection = database.collection('inventory');
+newArrivalsCollection = database.collection('newArrivals');
   console.log('MongoDB connected');
 }
 
@@ -361,6 +366,36 @@ app.post('/reviews/:id/reply', async (req, res) => {
       error: 'Failed to save reply'
     });
   }
+});
+// ===== NEW ARRIVALS =====
+
+app.get('/new-arrivals', async (req, res) => {
+    try {
+        const items = await newArrivalsCollection.find({}).toArray();
+        res.json(items);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to load new arrivals' });
+    }
+});
+app.post('/new-arrivals', requireAdmin, async (req, res) => {
+    try {
+        await newArrivalsCollection.insertOne(req.body);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to add new arrival' });
+    }
+});
+
+app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
+    try {
+        await newArrivalsCollection.deleteOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete new arrival' });
+    }
 });
 app.delete(
   '/reviews/:id',
