@@ -453,63 +453,57 @@
   </div>
 
 <script>
-let cart = JSON.parse(localStorage.getItem('trulyBlissfulCart')) || [];
-function updateCartCount() {
-    const count = cart.reduce((total, item) => {
-        return total + (item.qty || 1);
-    }, 0);
-
-    const badge = document.getElementById("cart-count");
-
-    if (badge) {
-        badge.textContent = count;
-    }
-}
-let stripe = null;
-let reviews = [];
-let allProducts = [];
-let currentCategory = 'All';
-async function initStripe() {
-  try {
-    const res = await fetch('/config');
-    const data = await res.json();
-    if (data.publishableKey) stripe = Stripe(data.publishableKey);
-  } catch (error) {
-    console.error('Stripe init failed:', error);
-  }
-}
+let cart = JSON.parse(localStorage.getItem("trulyBlissfulCart")) || [];
 
 function saveCart() {
-    localStorage.setItem('trulyBlissfulCart', JSON.stringify(cart));
-    updateCartCount();
+    localStorage.setItem("trulyBlissfulCart", JSON.stringify(cart));
+    renderCart();
 }
 
-function addToCart(name, price) {
-  const existing = cart.find(item => item.name === name && !item.size && !item.color);
-  if (existing) {
-    existing.qty = (existing.qty || 1) + 1;
-  } else {
-    cart.push({ name, price, qty: 1 });
-  }
-  saveCart();
-  renderCart();
+function addToCart(name, price, size = "Standard", color = "Standard") {
+    const existing = cart.find(
+        item =>
+            item.name === name &&
+            item.size === size &&
+            item.color === color
+    );
+
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({
+            name,
+            price: Number(price),
+            size,
+            color,
+            qty: 1
+        });
+    }
+
+    saveCart();
 }
 
-function addConfiguredProduct(name, price, sizeId, colorId) {
-  const size = document.getElementById(sizeId).value;
-  const color = document.getElementById(colorId).value;
-  const existing = cart.find(item => item.name === name && item.size === size && item.color === color);
+function changeQty(index, delta) {
+    if (!cart[index]) return;
 
-  if (existing) {
-    existing.qty = (existing.qty || 1) + 1;
-  } else {
-    cart.push({ name, price, size, color, qty: 1 });
-  }
+    cart[index].qty += delta;
 
-  saveCart();
-  renderCart();
+    if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+    }
+
+    saveCart();
 }
 
+function removeCartItem(index) {
+    cart.splice(index, 1);
+    saveCart();
+}
+
+function clearCart() {
+    cart = [];
+    saveCart();
+}
 function changeQty(index, delta) {
   if (!cart[index]) return;
   cart[index].qty = (cart[index].qty || 1) + delta;
@@ -529,65 +523,86 @@ function clearCart() {
 }
 
 function renderCart() {
-  const list = document.getElementById('cart-items');
-  const total = document.getElementById('total');
-  const count =
-  document.getElementById('cart-count') ||
-  document.getElementById('floating-cart-count');
-  if (!list) return;
-  list.innerHTML = '';
-  let sum = 0;
-  let itemCount = 0;
+    const list = document.getElementById("cart-items");
+    const total = document.getElementById("total");
+    const badge = document.getElementById("cart-count");
+    const floatingBadge = document.getElementById("floating-cart-count");
 
-  if (cart.length === 0) {
-    const li = document.createElement('li');
-    li.textContent = 'Your cart is empty.';
-    li.className = 'text-gray-400';
-    list.appendChild(li);
-  }
+    if (!list) return;
 
-  cart.forEach((item, index) => {
-    const qty = item.qty || 1;
-    itemCount += qty;
-    sum += item.price * qty;
+    list.innerHTML = "";
 
-    const li = document.createElement('li');
-    li.className = 'border border-white/10 rounded-xl p-4';
+    let itemCount = 0;
+    let totalPrice = 0;
 
-   li.innerHTML = `
-  <div class="font-bold">${item.name}</div>
-  <div class="text-sm text-gray-400 mt-1">${item.size || 'Standard'} / ${item.color || 'Standard'}</div>
-  <div class="text-sm text-orange-300 mt-2">$${item.price} each</div>
+    cart.forEach((item, index) => {
+        itemCount += item.qty;
+        totalPrice += item.price * item.qty;
 
-  <div class="flex items-center justify-between gap-3 mt-3">
-    <div class="flex items-center gap-3">
-      <button onclick="changeQty(${index}, -1)" class="border border-white/20 px-3 py-1 rounded-lg">-</button>
-      <span>${qty}</span>
-      <button onclick="changeQty(${index}, 1)" class="border border-white/20 px-3 py-1 rounded-lg">+</button>
-    </div>
+        const row = document.createElement("div");
 
-    <button onclick="removeCartItem(${index})" class="text-red-400 text-sm font-bold">
-      Remove
-    </button>
-  </div>
-`;
+        row.className =
+            "border border-white/10 rounded-xl p-4 mb-3";
 
-    list.appendChild(li);
-  });
+        row.innerHTML = `
+            <div class="font-bold">${item.name}</div>
 
-if (total) total.textContent = '$' + sum;
-if (count) count.textContent = itemCount;
-const floatingCartBtn = document.getElementById('floating-cart-btn');
+            <div class="text-sm text-gray-400">
+                ${item.size} / ${item.color}
+            </div>
 
-if (floatingCartBtn) {
-  if (itemCount > 0) {
-    floatingCartBtn.classList.remove('hidden');
-  } else {
-    floatingCartBtn.classList.add('hidden');
-  }
-}
-const floatingCount = document.getElementById('floating-cart-count');
-if (floatingCount) floatingCount.textContent = itemCount;
+            <div class="text-orange-400 font-bold mt-1">
+                $${item.price.toFixed(2)}
+            </div>
+
+            <div class="flex items-center justify-between mt-3">
+
+                <div class="flex items-center gap-2">
+
+                    <button
+                        onclick="changeQty(${index},-1)"
+                        class="border border-white/20 px-3 py-1 rounded">
+                        -
+                    </button>
+
+                    <span>${item.qty}</span>
+
+                    <button
+                        onclick="changeQty(${index},1)"
+                        class="border border-white/20 px-3 py-1 rounded">
+                        +
+                    </button>
+
+                </div>
+
+                <button
+                    onclick="removeCartItem(${index})"
+                    class="text-red-400 font-bold">
+                    Remove
+                </button>
+
+            </div>
+        `;
+
+        list.appendChild(row);
+    });
+
+    if (cart.length === 0) {
+        list.innerHTML =
+            '<p class="text-gray-400">Your cart is empty.</p>';
+    }
+
+    if (total) {
+        total.textContent = "$" + totalPrice.toFixed(2);
+    }
+
+    if (badge) {
+        badge.textContent = itemCount;
+    }
+
+    if (floatingBadge) {
+        floatingBadge.textContent = itemCount;
+    }
 }
 
  
@@ -1660,19 +1675,46 @@ textarea {
 </div>
 <script>
 function toggleCart() {
-  const drawer = document.getElementById('cart-drawer');
-  if (drawer.classList.contains('hidden')) {
-    drawer.classList.remove('hidden');
-    drawer.classList.add('flex');
-  } else {
-    drawer.classList.add('hidden');
-    drawer.classList.remove('flex');
-  }
+    const drawer = document.getElementById('cart-drawer');
+
+    if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        drawer.classList.add('flex');
+
+        if (typeof renderCart === 'function') {
+            renderCart();
+        }
+    } else {
+        drawer.classList.add('hidden');
+        drawer.classList.remove('flex');
+    }
 }
-if (new URLSearchParams(window.location.search).get('openCart') === 'true') {
-    toggleCart();
+
+if (new URLSearchParams(window.location.search).get("openCart") === "true") {
+    window.scrollTo(0, 0);
+
+    if (typeof toggleCart === "function") {
+        toggleCart();
+    }
+
+    if (typeof renderCart === "function") {
+        renderCart();
+    }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderCart();
+
+    if (new URLSearchParams(window.location.search).get('openCart') === 'true') {
+        const drawer = document.getElementById('cart-drawer');
+
+        if (drawer) {
+            drawer.classList.remove('hidden');
+            drawer.classList.add('flex');
+        }
+    }
+});
 </script>
+
 </body>
 </html>
-
