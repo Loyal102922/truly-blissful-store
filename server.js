@@ -114,7 +114,7 @@ const r2 = new S3Client({
 const upload = multer({
   storage: multerS3({
     s3: r2,
-   bucket: process.env.R2_BUCKET,
+   bucket: process.env.R2_BUCKET_NAME,
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: function (req, file, cb) {
       const safeName = file.originalname.replace(/\s+/g, "-");
