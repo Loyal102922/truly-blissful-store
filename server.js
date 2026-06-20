@@ -393,15 +393,13 @@ app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
 
         console.log('DELETE REQUEST ID:', req.params.id);
 
-        const item = await newArrivalsCollection.findOne({
-            _id: new ObjectId(req.params.id)
-        });
+      const item = await newArrivalsCollection.findOne({
+    _id: req.params.id
+});
 
-        console.log('FOUND ITEM:', item);
-
-        const result = await newArrivalsCollection.deleteOne({
-            _id: new ObjectId(req.params.id)
-        });
+const result = await newArrivalsCollection.deleteOne({
+    _id: req.params.id
+});
 
         console.log('DELETE RESULT:', result);
 
