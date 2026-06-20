@@ -385,35 +385,27 @@ app.post('/new-arrivals', requireAdmin, async (req, res) => {
         res.status(500).json({ error: 'Failed to add new arrival' });
     }
 });
+app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
+    try {
 
-async function deleteNewArrival(id) {
+        const result = await newArrivalsCollection.deleteOne({
+            _id: new ObjectId(req.params.id)
+        });
 
-  console.log('Deleting ID:', id);
+        console.log('Delete result:', result);
 
-  const password = prompt('Admin Password');
-  if (!password) return;
+        res.json(result);
 
-  const auth = btoa('admin:' + password);
-
-  const res = await fetch('/new-arrivals/' + id, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': 'Basic ' + auth
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: 'Failed to delete new arrival'
+        });
     }
-  });
+});
 
-  console.log('Status:', res.status);
 
-  const text = await res.text();
-  console.log('Response:', text);
 
-  if (res.ok) {
-    alert('Deleted');
-    loadNewArrivalsAdmin();
-  } else {
-    alert('Delete failed');
-  }
-}
 app.delete(
   '/reviews/:id',
   requireAdmin,
