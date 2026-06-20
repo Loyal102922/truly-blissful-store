@@ -1131,11 +1131,11 @@ async function deleteNewArrival(id) {
 
   console.log('Status:', res.status);
 
-  const responseText = await res.text();
-  console.log('Response:', responseText);
+  const text = await res.text();
+  console.log('Response:', text);
 
   if (res.ok) {
-    alert('Deleted successfully');
+    alert('Deleted');
     loadNewArrivalsAdmin();
   } else {
     alert('Delete failed');
