@@ -388,11 +388,19 @@ app.post('/new-arrivals', requireAdmin, async (req, res) => {
 app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
     try {
 
+        console.log('DELETE REQUEST ID:', req.params.id);
+
+        const item = await newArrivalsCollection.findOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        console.log('FOUND ITEM:', item);
+
         const result = await newArrivalsCollection.deleteOne({
             _id: new ObjectId(req.params.id)
         });
 
-        console.log('Delete result:', result);
+        console.log('DELETE RESULT:', result);
 
         res.json(result);
 
@@ -403,7 +411,6 @@ app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
         });
     }
 });
-
 
 
 app.delete(
