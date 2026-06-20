@@ -372,6 +372,9 @@ app.post('/reviews/:id/reply', async (req, res) => {
 app.get('/new-arrivals', async (req, res) => {
     try {
         const items = await newArrivalsCollection.find({}).toArray();
+
+        console.log('NEW ARRIVALS:', items);
+
         res.json(items);
     } catch (err) {
         res.status(500).json({ error: 'Failed to load new arrivals' });
