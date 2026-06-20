@@ -388,12 +388,17 @@ app.post('/new-arrivals', requireAdmin, async (req, res) => {
 
 app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
     try {
-        await newArrivalsCollection.deleteOne({
+
+        const result = await newArrivalsCollection.deleteOne({
             _id: new ObjectId(req.params.id)
         });
 
-        res.json({ success: true });
+        console.log('Delete result:', result);
+
+        res.json(result);
+
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Failed to delete new arrival' });
     }
 });
