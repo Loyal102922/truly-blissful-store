@@ -431,9 +431,25 @@ function goBackToStore() {
   const category = localStorage.getItem('lastCategory');
   const scrollPos = localStorage.getItem('lastScroll');
 
+  sessionStorage.setItem('restoreScroll', scrollPos || 0);
+
   if (category === 'shirts') {
-    sessionStorage.setItem('restoreScroll', scrollPos || 0);
     window.location.href = '/shirts.html';
+    return;
+  }
+
+  if (category === 'hoodies') {
+    window.location.href = '/hoodies.html';
+    return;
+  }
+
+  if (category === 'headwear') {
+    window.location.href = '/headwear.html';
+    return;
+  }
+
+  if (category === 'kids') {
+    window.location.href = '/kids.html';
     return;
   }
 

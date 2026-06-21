@@ -46,7 +46,10 @@ async function loadProducts() {
 
        container.innerHTML += `
 <a
-    href="/product.html?id=${product._id}"
+    onclick="
+    localStorage.setItem('lastCategory','kids');
+    localStorage.setItem('lastScroll', window.scrollY);
+"
     class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
 >
 
