@@ -43,49 +43,50 @@ async function loadProducts() {
 
     container.innerHTML = '';
 
-  shirts.forEach(product => {
+    shirts.forEach(product => {
 
-    container.innerHTML += `
-    <a
-    <a
-    href="/product.html?id=${product._id}"
-    onclick="
-        localStorage.setItem('lastCategory','shirts');
-        localStorage.setItem('lastScroll', window.scrollY);
-    "
-    class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
->
-
-        <img
-            src="${product.images?.[0] || ''}"
-            class="w-full h-72 object-cover"
+        container.innerHTML += `
+        <a
+            href="/product.html?id=${product._id}"
+            onclick="
+                localStorage.setItem('lastCategory','shirts');
+                localStorage.setItem('lastScroll', window.scrollY);
+            "
+            class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
         >
 
-        <div class="p-4">
+            <img
+                src="${product.images?.[0] || ''}"
+                class="w-full h-72 object-cover"
+            >
 
-            <h3 class="font-bold">
-                ${product.name}
-            </h3>
+            <div class="p-4">
 
-            <p class="text-orange-400">
-                $${product.price}
-            </p>
+                <h3 class="font-bold">
+                    ${product.name}
+                </h3>
 
-        </div>
+                <p class="text-orange-400">
+                    $${product.price}
+                </p>
 
-    </a>
-    `;
-});
+            </div>
+
+        </a>
+        `;
+    });
 }
 
 loadProducts();
-<a
-  href="#"
-  onclick="goBackToStore()"
-  class="bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold"
->
-  ← Back to Store
-</a>
+
+const savedScroll = sessionStorage.getItem('restoreScroll');
+
+if (savedScroll) {
+    window.addEventListener('load', () => {
+        window.scrollTo(0, parseInt(savedScroll));
+        sessionStorage.removeItem('restoreScroll');
+    });
+}
 </script>
 
 </body>
