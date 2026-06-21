@@ -46,47 +46,53 @@ async function loadProducts() {
     shirts.forEach(product => {
 
         container.innerHTML += `
-        <a
-            href="/product.html?id=${product._id}"
-            onclick="
-                localStorage.setItem('lastCategory','shirts');
-                localStorage.setItem('lastScroll', window.scrollY);
-            "
-            class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
-        >
+<a
+    data-product-id="${product._id}"
+    href="/product.html?id=${product._id}"
+    onclick="
+        localStorage.setItem('lastCategory','shirts');
+        localStorage.setItem('lastProductId','${product._id}');
+    "
+    class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
+>
 
-            <img
-                src="${product.images?.[0] || ''}"
-                class="w-full h-72 object-cover"
-            >
+    <img
+        src="${product.images?.[0] || ''}"
+        class="w-full h-72 object-cover"
+    >
 
-            <div class="p-4">
+    <div class="p-4">
 
-                <h3 class="font-bold">
-                    ${product.name}
-                </h3>
+        <h3 class="font-bold">
+            ${product.name}
+        </h3>
 
-                <p class="text-orange-400">
-                    $${product.price}
-                </p>
+        <p class="text-orange-400">
+            $${product.price}
+        </p>
 
-            </div>
+    </div>
 
-        </a>
-        `;
+</a>
+`;
     });
+
+    const lastProductId = localStorage.getItem('lastProductId');
+
+    if (lastProductId) {
+        const card = document.querySelector(
+         `[data-product-id="${lastProductId}"]`
+        );
+
+        if (card) {
+            card.scrollIntoView({
+                block: 'center'
+            });
+        }
+    }
 }
 
 loadProducts();
-
-const savedScroll = sessionStorage.getItem('restoreScroll');
-
-if (savedScroll) {
-    window.addEventListener('load', () => {
-        window.scrollTo(0, parseInt(savedScroll));
-        sessionStorage.removeItem('restoreScroll');
-    });
-}
 </script>
 
 </body>
