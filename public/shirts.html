@@ -47,9 +47,14 @@ async function loadProducts() {
 
     container.innerHTML += `
     <a
-        href="/product.html?id=${product._id}"
-        class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
-    >
+    <a
+    href="/product.html?id=${product._id}"
+    onclick="
+        localStorage.setItem('lastCategory','shirts');
+        localStorage.setItem('lastScroll', window.scrollY);
+    "
+    class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
+>
 
         <img
             src="${product.images?.[0] || ''}"
@@ -74,6 +79,13 @@ async function loadProducts() {
 }
 
 loadProducts();
+<a
+  href="#"
+  onclick="goBackToStore()"
+  class="bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold"
+>
+  ← Back to Store
+</a>
 </script>
 
 </body>

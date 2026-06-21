@@ -11,9 +11,13 @@
 
 <div class="flex justify-between items-center m-6">
 
-  <a href="/" class="bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold">
-    ← Back to Store
-  </a>
+  <a
+  href="#"
+  onclick="goBackToStore()"
+  class="bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-xl font-bold"
+>
+  ← Back to Store
+</a>
 
   <button
    onclick="window.location.href='/?openCart=true'"
@@ -422,6 +426,18 @@ updateProductCartCount();
 loadProduct();
 function openKidsSizeChart() {
  window.open('/size-chart.html', '_blank');
+}
+function goBackToStore() {
+  const category = localStorage.getItem('lastCategory');
+  const scrollPos = localStorage.getItem('lastScroll');
+
+  if (category === 'shirts') {
+    sessionStorage.setItem('restoreScroll', scrollPos || 0);
+    window.location.href = '/shirts.html';
+    return;
+  }
+
+  window.location.href = '/';
 }
 </script>
 
