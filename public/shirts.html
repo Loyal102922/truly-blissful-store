@@ -46,12 +46,12 @@ async function loadProducts() {
     shirts.forEach(product => {
 
         container.innerHTML += `
+    
 <a
-    data-product-id="${product._id}"
     href="/product.html?id=${product._id}"
     onclick="
         localStorage.setItem('lastCategory','shirts');
-        localStorage.setItem('lastProductId','${product._id}');
+        localStorage.setItem('lastScroll', window.scrollY);
     "
     class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
 >
@@ -75,21 +75,7 @@ async function loadProducts() {
 
 </a>
 `;
-    });
-
-    const lastProductId = localStorage.getItem('lastProductId');
-
-    if (lastProductId) {
-        const card = document.querySelector(
-         `[data-product-id="${lastProductId}"]`
-        );
-
-        if (card) {
-            card.scrollIntoView({
-    block: 'start'
-});
-        }
-    }
+      });
 }
 
 loadProducts();
