@@ -254,7 +254,7 @@
 
   </div>
 </section>
-  </section>
+
 
 
   <section class="max-w-6xl mx-auto px-6 pb-20">
@@ -269,7 +269,10 @@
      View All Reviews
   </a>
 </div>
- <section id="review-form-wrap" class="max-w-4xl mx-auto mt-12">
+
+</section>
+
+<section id="review-form-wrap" class="max-w-4xl mx-auto mt-12">
 
   <div class="bg-neutral-900 p-6 sm:p-8 rounded-2xl border border-white/10">
 
@@ -506,17 +509,17 @@ function changeQty(index, delta) {
   cart[index].qty = (cart[index].qty || 1) + delta;
   if (cart[index].qty <= 0) cart.splice(index, 1);
   saveCart();
-  renderCart();
+ 
 }
 function removeCartItem(index) {
   cart.splice(index, 1);
   saveCart();
-  renderCart();
+  
 }
 function clearCart() {
   cart = [];
   saveCart();
-  renderCart();
+ 
 }
 
 function renderCart() {
@@ -651,6 +654,7 @@ filteredProducts.slice(0, 4).forEach(product => {
 }
 
 loadFeaturedProducts();
+let reviews = [];
 async function loadReviews() {
   try {
     const res = await fetch('/reviews');
@@ -921,7 +925,7 @@ function openModal(name, price, image, hasVariants = false, productType = '') {
       }
 
       saveCart();
-      renderCart();
+    
       closeModal();
     };
   } else {
@@ -1630,18 +1634,7 @@ textarea {
   animation: fadeIn 0.5s ease forwards;
 }
 </style>
-<footer class="text-center text-gray-500 text-sm py-10">
-  <div class="flex justify-center gap-6 flex-wrap">
-    <a href="/returns.html" class="hover:text-orange-400">Returns</a>
-    <a href="/shipping.html" class="hover:text-orange-400">Shipping</a>
-    <a href="/privacy.html" class="hover:text-orange-400">Privacy</a>
-    <a href="/terms.html" class="hover:text-orange-400">Terms</a>
-  </div>
 
-  <p class="mt-4">
-    © 2026 TRULY BLISSFUL. All rights reserved.
-  </p>
-</footer>
 <!-- Cart Drawer -->
 <div id="cart-drawer" class="fixed inset-0 z-[998] hidden">
   <div onclick="toggleCart()" class="absolute inset-0 bg-black/60"></div>
@@ -1696,17 +1689,7 @@ function toggleCart() {
     }
 }
 
-if (new URLSearchParams(window.location.search).get("openCart") === "true") {
-    window.scrollTo(0, 0);
 
-    if (typeof toggleCart === "function") {
-        toggleCart();
-    }
-
-    if (typeof renderCart === "function") {
-        renderCart();
-    }
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     renderCart();
