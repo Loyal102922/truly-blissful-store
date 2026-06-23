@@ -154,28 +154,44 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
 
     <a href="/shirts.html" class="group overflow-hidden rounded-2xl border border-white/10">
-        <img src="/images/category-shirts.jpg" class="w-full h-72 object-cover">
+       <img
+  src="/images/category-shirts.jpg"
+  loading="lazy"
+  decoding="async"
+  class="w-full h-72 object-cover">
         <div class="p-4 text-center">
             <h3 class="text-xl font-black">SHIRTS</h3>
         </div>
     </a>
 
     <a href="/hoodies.html" class="group overflow-hidden rounded-2xl border border-white/10">
-        <img src="/images/category-hoodies.jpg" class="w-full h-72 object-cover">
+        <img
+  src="/images/category-hoodies.jpg"
+  loading="lazy"
+  decoding="async"
+  class="w-full h-72 object-cover">
         <div class="p-4 text-center">
             <h3 class="text-xl font-black">HOODIES</h3>
         </div>
     </a>
 
     <a href="/headwear.html" class="group overflow-hidden rounded-2xl border border-white/10">
-        <img src="/images/category-headwear.jpg" class="w-full h-72 object-cover">
+        <img
+  src="/images/category-headwear.jpg"
+  loading="lazy"
+  decoding="async"
+  class="w-full h-72 object-cover">
         <div class="p-4 text-center">
             <h3 class="text-xl font-black">HEADWEAR</h3>
         </div>
     </a>
 
     <a href="/kids.html" class="group overflow-hidden rounded-2xl border border-white/10">
-        <img src="/images/category-kids.jpg" class="w-full h-72 object-cover">
+        <img
+  src="/images/category-kids.jpg"
+  loading="lazy"
+  decoding="async"
+  class="w-full h-72 object-cover">
         <div class="p-4 text-center">
             <h3 class="text-xl font-black">KIDS</h3>
         </div>
@@ -483,27 +499,8 @@ function addToCart(name, price, size = "Standard", color = "Standard") {
     saveCart();
 }
 
-function changeQty(index, delta) {
-    if (!cart[index]) return;
 
-    cart[index].qty += delta;
 
-    if (cart[index].qty <= 0) {
-        cart.splice(index, 1);
-    }
-
-    saveCart();
-}
-
-function removeCartItem(index) {
-    cart.splice(index, 1);
-    saveCart();
-}
-
-function clearCart() {
-    cart = [];
-    saveCart();
-}
 function changeQty(index, delta) {
   if (!cart[index]) return;
   cart[index].qty = (cart[index].qty || 1) + delta;
@@ -977,7 +974,7 @@ async function checkout() {
 initStripe();
 renderCart();
 loadReviews();
-updateCartCount();
+
 
 function openCartOptions(product) {
   const modal = document.createElement('div');
