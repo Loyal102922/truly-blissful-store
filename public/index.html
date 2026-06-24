@@ -61,8 +61,7 @@
 
 <a href="#cart"
    onclick="toggleCart()"
-   class="relative hidden sm:inline-block text-white hover:text-orange-400 text-2xl transition">
-
+   class="relative inline-block text-white hover:text-orange-400 text-2xl transition">
    🛒
 
    <span id="cart-count"
@@ -605,6 +604,14 @@ function renderCart() {
     if (floatingBadge) {
         floatingBadge.textContent = itemCount;
     }
+    const floatingBtn = document.getElementById('floating-cart-btn');
+if (floatingBtn) {
+  if (itemCount > 0) {
+    floatingBtn.classList.remove('hidden');
+  } else {
+    floatingBtn.classList.add('hidden');
+  }
+}
 }
 
  
