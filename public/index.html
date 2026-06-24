@@ -23,7 +23,7 @@
 <meta name="twitter:image" content="/logo.png" />
 
 <link rel="icon" type="image/png" href="/logo.png" />
-<link rel="preload" as="image" href="/images/banner2.png">
+<link rel="preload" as="image" href="/images/banner2.png" fetchpriority="high">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -116,12 +116,14 @@
 <section class="px-4 pt-4 pb-6">
   <div class="max-w-6xl mx-auto overflow-hidden rounded-2xl border border-white/10">
 
-    <img
+<img
   id="heroBanner"
   src="/images/banner2.png"
   alt="TRULY BLISSFUL Banner"
   width="1774"
   height="887"
+  fetchpriority="high"
+  decoding="async"
   class="w-full object-cover"
 />
 
