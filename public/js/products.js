@@ -35,8 +35,7 @@ card.className = "bg-neutral-900 rounded-2xl overflow-hidden border border-white
 card.innerHTML = `
   <img src="${product.images?.[0] || ""}" alt="${product.name}" loading="lazy" class="w-full h-72 object-cover">
   <div class="p-4">
-    <h3 class="font-bold">${product.name}</h3>
-    <p class="text-orange-400 font-bold mt-1">$${product.price}</p>
+   <h3 class="font-bold">${product.name}</h3>
   </div>
 `;
       container.appendChild(card);
