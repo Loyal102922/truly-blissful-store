@@ -30,7 +30,7 @@ async function loadFeaturedProducts() {
     }
 
     filteredProducts.slice(0, 4).forEach(product => {
-      const card = document.createElement("div");
+const card = document.createElement("div");
 card.className = "bg-neutral-900 rounded-2xl overflow-hidden border border-white/10";
 card.innerHTML = `
   <img src="${product.images?.[0] || ""}" alt="${product.name}" loading="lazy" class="w-full h-72 object-cover">
