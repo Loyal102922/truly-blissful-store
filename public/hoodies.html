@@ -29,56 +29,10 @@
 
 </div>
 
+<script src="/js/category.js"></script>
+
 <script>
-async function loadProducts() {
-
-    const res = await fetch('/products');
-    const products = await res.json();
-
-    const hoodies = products.filter(
-        p => p.category === 'Hoodies'
-    );
-
-    const container = document.getElementById('products');
-
-    container.innerHTML = '';
-
-    hoodies.forEach(product => {
-
-  container.innerHTML += `
-<a
-   href="/product.html?id=${product._id}"
-onclick="
-    localStorage.setItem('lastCategory','hoodies');
-    localStorage.setItem('lastScroll', window.scrollY);
-"
-    class="block bg-neutral-900 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition"
->
-
-    <img
-        src="${product.images?.[0] || ''}"
-        class="w-full h-72 object-cover"
-    >
-
-    <div class="p-4">
-
-        <h3 class="font-bold">
-            ${product.name}
-        </h3>
-
-        <p class="text-orange-400">
-            $${product.price}
-        </p>
-
-    </div>
-
-</a>
-`;
-    });
-}
-
-loadProducts();
+loadCategoryProducts('Hoodies', 'hoodies');
 </script>
-
 </body>
 </html>

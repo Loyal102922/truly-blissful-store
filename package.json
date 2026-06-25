@@ -18,5 +18,10 @@
     "nodemailer": "^6.10.1",
     "pdfkit": "^0.18.0",
     "stripe": "^18.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.2",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.1"
   }
 }
