@@ -31,19 +31,14 @@ async function loadFeaturedProducts() {
 
     filteredProducts.slice(0, 4).forEach(product => {
       const card = document.createElement("div");
-      card.className = "bg-neutral-900 rounded-2xl overflow-hidden border border-white/10 cursor-pointer";
-      card.innerHTML = `
-        <img src="${product.images?.[0] || ""}" alt="${product.name}" loading="lazy" class="w-full h-72 object-cover">
-        <div class="p-4">
-          <h3 class="font-bold">${product.name}</h3>
-          <p class="text-orange-400 font-bold mt-1">$${product.price}</p>
-          <button
-            onclick="openCartOptions(${JSON.stringify(product).replace(/"/g, '&quot;')})"
-            class="mt-3 w-full bg-orange-500 hover:bg-orange-400 text-black font-bold py-2 rounded-xl transition">
-            Add to Cart
-          </button>
-        </div>
-      `;
+card.className = "bg-neutral-900 rounded-2xl overflow-hidden border border-white/10";
+card.innerHTML = `
+  <img src="${product.images?.[0] || ""}" alt="${product.name}" loading="lazy" class="w-full h-72 object-cover">
+  <div class="p-4">
+    <h3 class="font-bold">${product.name}</h3>
+    <p class="text-orange-400 font-bold mt-1">$${product.price}</p>
+  </div>
+`;
       container.appendChild(card);
     });
   } catch (err) {
