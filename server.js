@@ -514,6 +514,49 @@ res.json({
 });
 // ───── CHECKOUT ─────
 // —— CHECKOUT ——
+app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    console.error('Webhook error:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed' ||
+      event.type === 'payment_intent.succeeded') {
+
+    const session = event.data.object;
+
+    const existingOrder = await ordersCollection.findOne({
+      stripeSessionId: session.id
+    });
+
+    if (!existingOrder) {
+      await ordersCollection.insertOne({
+        customerName: session.customer_details?.name || 'Custom Order',
+        customerEmail: session.customer_details?.email || '',
+        customerPhone: session.customer_details?.phone || '',
+        shippingAddress: session.customer_details?.address || {},
+        stripeSessionId: session.id,
+        status: 'paid',
+        cart: [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }],
+        total: session.amount_total / 100,
+        orderType: 'custom',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+    }
+  }
+
+  res.json({ received: true });
+});
 app.post('/create-checkout-session', async (req, res) => {
   try {
     if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
