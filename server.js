@@ -21,8 +21,29 @@ const transporter = nodemailer.createTransport({
 });
 const PORT = process.env.PORT || 10000;
 
-// 👇 ADD EVERYTHING HERE
 const OWNER_EMAIL = process.env.OWNER_EMAIL || "trulyblissful7@gmail.com";
+
+// Verifies a reCAPTCHA token with Google -- the frontend already
+// collects and sends this token on /reviews and /contact, but nothing
+// was actually checking it server-side, meaning it provided no real
+// protection at all until now.
+async function verifyRecaptcha(token) {
+  if (!token) return false;
+
+  try {
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
+    });
+
+    const data = await response.json();
+    return data.success === true;
+  } catch (err) {
+    console.error('reCAPTCHA verification error:', err);
+    return false;
+  }
+}
 
 function formatAddress(address = {}) {
   return [
@@ -102,9 +123,13 @@ async function sendCustomerOrderConfirmedEmail(order) {
     `
   });
 }
-console.log("R2_BUCKET:", process.env.R2_BUCKET);
-console.log("R2_ENDPOINT:", process.env.R2_ENDPOINT);
-console.log("R2_ACCESS_KEY_ID:", process.env.R2_ACCESS_KEY_ID);
+
+// R2 credentials are configured -- not logging their actual values,
+// only whether they're present, to avoid leaking secrets into server logs.
+console.log("R2_BUCKET configured:", !!process.env.R2_BUCKET);
+console.log("R2_ENDPOINT configured:", !!process.env.R2_ENDPOINT);
+console.log("R2_ACCESS_KEY_ID configured:", !!process.env.R2_ACCESS_KEY_ID);
+
 const r2 = new S3Client({
   region: "auto",
   endpoint: process.env.R2_ENDPOINT,
@@ -212,7 +237,16 @@ newArrivalsCollection = database.collection('newArrivals');
 }
 
 // ───── MIDDLEWARE ─────
-app.use(express.json());
+// Stripe's webhook needs the raw, unparsed request body to verify the
+// signature -- express.json() must not run on that one path, or the
+// signature verification will always fail.
+app.use((req, res, next) => {
+  if (req.originalUrl === '/stripe-webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ───── ROUTES ─────
@@ -247,7 +281,7 @@ app.delete('/products/:id', requireAdmin, async (req, res) => {
       _id: new ObjectId(req.params.id)
     });
 
-    res.json({ success: true, reviews });
+    res.json({ success: true });
 
   } catch (err) {
     console.error(err);
@@ -274,10 +308,15 @@ app.get('/reviews', async (req, res) => {
 
 app.post('/reviews', reviewUpload.single('image'), async (req, res) => {
   try {
-    const { name, rating, text, productId } = req.body;
+    const { name, rating, text, productId, recaptchaToken } = req.body;
 
     if (!name || !rating || !text) {
       return res.status(400).json({ error: 'Missing review fields' });
+    }
+
+    const recaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaValid) {
+      return res.status(400).json({ error: 'reCAPTCHA verification failed. Please try again.' });
     }
 
     const review = {
@@ -373,8 +412,6 @@ app.get('/new-arrivals', async (req, res) => {
     try {
         const items = await newArrivalsCollection.find({}).toArray();
 
-        console.log('NEW ARRIVALS:', items);
-
         res.json(items);
     } catch (err) {
         res.status(500).json({ error: 'Failed to load new arrivals' });
@@ -390,18 +427,12 @@ app.post('/new-arrivals', requireAdmin, async (req, res) => {
 });
 app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
     try {
-
-        console.log('DELETE REQUEST ID:', req.params.id);
-
-      const item = await newArrivalsCollection.findOne({
-    _id: req.params.id
-});
-
-const result = await newArrivalsCollection.deleteOne({
-    _id: req.params.id
-});
-
-        console.log('DELETE RESULT:', result);
+        // _id is stored as an ObjectId by MongoDB by default -- querying
+        // with a plain string here never matches anything, meaning this
+        // delete has likely never actually worked.
+        const result = await newArrivalsCollection.deleteOne({
+            _id: new ObjectId(req.params.id)
+        });
 
         res.json(result);
 
@@ -475,12 +506,17 @@ Email: ${email}
 });
 app.post('/contact', async (req, res) => {
   try {
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, recaptchaToken } = req.body;
 
     if (!name || !email || !message) {
       return res.status(400).json({
         error: 'Missing required fields'
       });
+    }
+
+    const recaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaValid) {
+      return res.status(400).json({ error: 'reCAPTCHA verification failed. Please try again.' });
     }
 
    await transporter.sendMail({
@@ -513,7 +549,6 @@ res.json({
   }
 });
 // ───── CHECKOUT ─────
-// —— CHECKOUT ——
 app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -539,6 +574,19 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
     });
 
     if (!existingOrder) {
+      // Reconstruct the full cart from metadata if it was attached at
+      // checkout-session creation. Falls back to a single generic line
+      // item only if no cart metadata is present at all (e.g. a manually
+      // created Stripe Payment Link with no metadata configured).
+      let cart;
+      try {
+        cart = session.metadata?.cart
+          ? JSON.parse(session.metadata.cart)
+          : [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+      } catch {
+        cart = [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+      }
+
       await ordersCollection.insertOne({
         customerName: session.customer_details?.name || 'Custom Order',
         customerEmail: session.customer_details?.email || '',
@@ -546,9 +594,9 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
         shippingAddress: session.customer_details?.address || {},
         stripeSessionId: session.id,
         status: 'paid',
-        cart: [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }],
+        cart,
         total: session.amount_total / 100,
-        orderType: 'custom',
+        orderType: session.metadata?.cart ? 'standard' : 'custom',
         createdAt: new Date(),
         updatedAt: new Date()
       });
@@ -593,8 +641,12 @@ const lineItems = cart.map(item => ({
       },
       automatic_tax: { enabled: true },
       line_items: lineItems,
-     
-      
+      // Full cart attached as metadata -- this is what lets both the
+      // webhook and /order-details reconstruct the real order contents,
+      // instead of silently falling back to an empty cart.
+      metadata: {
+        cart: JSON.stringify(cart)
+      },
       shipping_options: [
         {
           shipping_rate_data: {
@@ -633,7 +685,7 @@ app.get('/order-details/:sessionId', async (req, res) => {
       });
 
       if (!order) {
-        const cart = JSON.parse(session.metadata.cart || '[]');
+        const cart = JSON.parse(session.metadata?.cart || '[]');
 
         const result = await ordersCollection.insertOne({
           customerName: session.customer_details?.name || '',
@@ -1011,7 +1063,7 @@ app.put('/admin/products/:id/remove-image', requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to remove image' });
   }
 });
-app.put('/admin/orders/:id', async (req, res) => {
+app.put('/admin/orders/:id', requireAdmin, async (req, res) => {
   try {
     const { status, trackingNumber } = req.body;
 
@@ -1226,7 +1278,7 @@ async function startServer() {
 // ───── INVENTORY ─────
 
 // GET ALL INVENTORY
-app.get('/inventory', async (req, res) => {
+app.get('/inventory', requireAdmin, async (req, res) => {
   try {
     const inventory = await inventoryCollection
       .find({})
@@ -1241,7 +1293,7 @@ app.get('/inventory', async (req, res) => {
 });
 
 // ADD INVENTORY ROW
-app.post('/inventory', async (req, res) => {
+app.post('/inventory', requireAdmin, async (req, res) => {
   try {
     const { productId, productName, color, size, quantity } = req.body;
 
@@ -1262,7 +1314,7 @@ app.post('/inventory', async (req, res) => {
 });
 
 // UPDATE INVENTORY ROW
-app.put('/inventory/:id', async (req, res) => {
+app.put('/inventory/:id', requireAdmin, async (req, res) => {
   try {
     const { productName, color, size, quantity } = req.body;
 
@@ -1287,7 +1339,7 @@ app.put('/inventory/:id', async (req, res) => {
 });
 
 // DELETE INVENTORY ROW
-app.delete('/inventory/:id', async (req, res) => {
+app.delete('/inventory/:id', requireAdmin, async (req, res) => {
   try {
     await inventoryCollection.deleteOne({
       _id: new ObjectId(req.params.id)
