@@ -168,7 +168,7 @@ app.post('/custom-order', upload.single('designImage'), async (req, res) => {
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'trulyblissful7@gmail.com',
+      to: 'support@trulyblissfulshop.com',
       subject: '🎨 New Custom Order Request',
       html: `
         <h2>New Custom Order Request</h2>
@@ -482,7 +482,7 @@ app.post('/newsletter', async (req, res) => {
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
+      to: 'support@trulyblissfulshop.com',
       subject: 'New TRULY BLISSFUL Newsletter Signup',
       text: `
 New newsletter signup:
@@ -521,7 +521,7 @@ app.post('/contact', async (req, res) => {
 
    await transporter.sendMail({
   from: process.env.EMAIL_USER,
-  to: process.env.EMAIL_USER,
+  to: 'support@trulyblissfulshop.com',
   subject: `TRULY BLISSFUL Contact: ${subject || 'New Message'}`,
   text: `
 Name: ${name}
