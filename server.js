@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 });
 const PORT = process.env.PORT || 10000;
 
-const OWNER_EMAIL = process.env.OWNER_EMAIL || "support@trulyblissfulshop.com";
+const OWNER_EMAIL = process.env.OWNER_EMAIL || "trulyblissful7@gmail.com";
 
 // Verifies a reCAPTCHA token with Google -- the frontend already
 // collects and sends this token on /reviews and /contact, but nothing
@@ -168,7 +168,7 @@ app.post('/custom-order', upload.single('designImage'), async (req, res) => {
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'support@trulyblissfulshop.com',
+      to: 'trulyblissful7@gmail.com',
       subject: '🎨 New Custom Order Request',
       html: `
         <h2>New Custom Order Request</h2>
