@@ -39,7 +39,13 @@
      const password = prompt("Enter admin password:");
       const auth = btoa('admin:' + password);
 
+      // isNewArrival is only used client-side to decide whether to also
+      // call /new-arrivals after creation -- the server doesn't read it
+      // directly from /add-product, so it must not be sent as part of
+      // the product fields themselves.
+      const isNewArrival = this.querySelector('[name="isNewArrival"]').checked;
       const formData = new FormData(this);
+      formData.delete('isNewArrival');
 
       const res = await fetch('/add-product', {
         method: 'POST',
@@ -50,13 +56,38 @@
       });
 
       if (res.ok) {
+        if (isNewArrival) {
+          await addLatestProductToNewArrivals(auth);
+        }
         alert('Product added');
-this.reset();
-loadProducts();
+        this.reset();
+        loadProducts();
+        loadNewArrivalsAdmin();
       } else {
         alert('Failed to add product');
       }
     });
+
+    // Called right after a product is created with "New Arrival" checked.
+    // /add-product doesn't return the new product's id, so the most
+    // recently created product is fetched back out and added separately.
+    async function addLatestProductToNewArrivals(auth) {
+      const productsRes = await fetch('/products');
+      const products = await productsRes.json();
+      if (!products.length) return;
+
+      const latest = products[products.length - 1];
+
+      await fetch('/new-arrivals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + auth
+        },
+        body: JSON.stringify(latest)
+      });
+    }
+
     async function loadProducts() {
   const res = await fetch('/products');
   const products = await res.json();
@@ -102,15 +133,7 @@ Sizes
 Colors
 </button>
 
-<button onclick="editProduct(
-'${product._id}',
-'${product.name}',
-'${product.price}',
-'${product.category}',
-'${(product.sizes || []).join(', ')}',
-'${(product.colors || []).join(', ')}',
-'${product.stock || 0}',
-)">
+<button onclick='editProduct(${JSON.stringify(product._id)}, ${JSON.stringify(product.name)}, ${JSON.stringify(product.price)}, ${JSON.stringify(product.category)}, ${JSON.stringify((product.sizes || []).join(", "))}, ${JSON.stringify((product.colors || []).join(", "))}, ${JSON.stringify(product.stock || 0)})'>
 Full Edit
 </button>
 
@@ -212,24 +235,6 @@ async function editProduct(id, oldName, oldPrice, oldCategory, oldSizes, oldColo
   const changeImage = confirm("Do you want to update the product image?");
   let imageFiles = [];
 
-if (changeImage) {
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.multiple = true;
-  fileInput.accept = "image/*";
-
-  fileInput.onchange = () => {
-    imageFiles = fileInput.files;
-    sendUpdate();
-  };
-
-  fileInput.click();
-} else {
-  sendUpdate();
-}
-
-
-
 async function sendUpdate() {
   const formData = new FormData();
 
@@ -261,6 +266,22 @@ async function sendUpdate() {
   } else {
     alert("Update failed");
   }
+}
+
+if (changeImage) {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.multiple = true;
+  fileInput.accept = "image/*";
+
+  fileInput.onchange = () => {
+    imageFiles = fileInput.files;
+    sendUpdate();
+  };
+
+  fileInput.click();
+} else {
+  sendUpdate();
 }
 
 }
@@ -626,10 +647,14 @@ async function updateOrderStatus(orderId) {
   const status = document.getElementById(`status-${orderId}`).value;
   const tracking = document.getElementById(`tracking-${orderId}`).value;
 
+  const password = prompt('Admin Password');
+  if (!password) return;
+
   const res = await fetch(`/admin/orders/${orderId}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + btoa(`admin:${password}`)
     },
     body: JSON.stringify({
       status,
@@ -807,8 +832,26 @@ async function deleteReview(reviewId) {
   }
 }
 async function loadInventory() {
-  const res = await fetch('/inventory');
+  const password = prompt('Admin Password (needed to view inventory)');
+  if (!password) return;
+
+  const auth = btoa('admin:' + password);
+
+  const res = await fetch('/inventory', {
+    headers: { 'Authorization': 'Basic ' + auth }
+  });
+
+  if (!res.ok) {
+    alert('Failed to load inventory. Check admin password.');
+    return;
+  }
+
   const inventory = await res.json();
+
+  // Store the auth for this session so subsequent inventory actions
+  // (add/edit/delete/adjust) don't have to re-prompt every single time.
+  window._inventoryAuth = auth;
+
 inventory.sort((a, b) => {
   const sizeOrder = {
     XS: 1,
@@ -911,6 +954,19 @@ inventory.sort((a, b) => {
     </table>
   `;
 }
+
+// All inventory mutations below reuse the auth captured during
+// loadInventory() if present, otherwise prompt fresh -- avoids asking
+// for the password on every single click within the same session.
+async function getInventoryAuth() {
+  if (window._inventoryAuth) return window._inventoryAuth;
+  const password = prompt('Admin Password');
+  if (!password) return null;
+  const auth = btoa('admin:' + password);
+  window._inventoryAuth = auth;
+  return auth;
+}
+
 async function addInventoryRow() {
   const productName = prompt("Product Name");
   if (!productName) return;
@@ -924,10 +980,14 @@ async function addInventoryRow() {
   const quantity = prompt("Quantity");
   if (!quantity) return;
 
+  const auth = await getInventoryAuth();
+  if (!auth) return;
+
   const res = await fetch('/inventory', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + auth
     },
     body: JSON.stringify({
       productName: productName.trim(),
@@ -950,8 +1010,12 @@ async function deleteInventory(id) {
   const confirmed = confirm("Delete this inventory row?");
   if (!confirmed) return;
 
+  const auth = await getInventoryAuth();
+  if (!auth) return;
+
   const res = await fetch('/inventory/' + id, {
-    method: 'DELETE'
+    method: 'DELETE',
+    headers: { 'Authorization': 'Basic ' + auth }
   });
 
   const data = await res.json();
@@ -976,10 +1040,14 @@ async function editInventory(id) {
   const quantity = prompt("Quantity");
   if (!quantity) return;
 
+  const auth = await getInventoryAuth();
+  if (!auth) return;
+
   const res = await fetch('/inventory/' + id, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + auth
     },
     body: JSON.stringify({
       productName,
@@ -999,7 +1067,12 @@ async function editInventory(id) {
   }
 }
 async function adjustInventoryQty(id, change) {
-  const res = await fetch('/inventory');
+  const auth = await getInventoryAuth();
+  if (!auth) return;
+
+  const res = await fetch('/inventory', {
+    headers: { 'Authorization': 'Basic ' + auth }
+  });
   const inventory = await res.json();
 
   const item = inventory.find(i => i._id === id);
@@ -1014,7 +1087,8 @@ async function adjustInventoryQty(id, change) {
   const updateRes = await fetch('/inventory/' + id, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + auth
     },
     body: JSON.stringify({
       productName: item.productName,
@@ -1029,7 +1103,6 @@ async function adjustInventoryQty(id, change) {
   }
 }
 async function loadNewArrivalsAdmin() {
-console.log('NEW ARRIVALS FUNCTION RUNNING');
   let section = document.getElementById('newArrivalsSection');
 
   if (!section) {
@@ -1046,21 +1119,11 @@ console.log('NEW ARRIVALS FUNCTION RUNNING');
     document.body.appendChild(section);
   }
 
- 
-
- 
-
   const arrivalsRes = await fetch('/new-arrivals');
- 
-
   const arrivals = await arrivalsRes.json();
- 
 
   const productsRes = await fetch('/products');
-  
-
   const products = await productsRes.json();
- 
 
   section = document.getElementById('newArrivalsSection');
 
@@ -1133,8 +1196,13 @@ async function deleteNewArrival(id) {
 }
 loadOrders();
 loadProducts();
-loadInventory();
 loadAnalytics();
 loadReviewsAdmin();
 loadNewArrivalsAdmin();
+// Inventory now requires a password to even view (matching the new
+// server-side protection), so it's no longer auto-loaded on page load
+// like the others -- click "Add Inventory Row" or reload manually.
+loadInventory();
 </script>
+</body>
+</html>

@@ -30,6 +30,9 @@ async function loadFeaturedProducts() {
     }
 
     filteredProducts.slice(0, 4).forEach(product => {
+// Intentionally not clickable/linked -- these are meant as a teaser to
+// draw customers into browsing full categories, not a direct
+// add-to-cart or view-product shortcut.
 const card = document.createElement("div");
 card.className = "bg-neutral-900 rounded-2xl overflow-hidden border border-white/10";
 card.innerHTML = `

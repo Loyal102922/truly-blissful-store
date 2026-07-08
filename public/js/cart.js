@@ -141,11 +141,6 @@ async function checkout() {
     return;
   }
 
-  if (!stripe) {
-    alert("Checkout is loading, please try again.");
-    return;
-  }
-
   const res = await fetch("/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -159,5 +154,10 @@ async function checkout() {
     return;
   }
 
-  stripe.redirectToCheckout({ sessionId: data.id });
+  // The session is created with ui_mode: 'hosted', which already
+  // returns a full, ready-to-use checkout URL -- redirecting the
+  // browser there directly is the modern, recommended approach for
+  // hosted sessions, rather than routing through Stripe.js's older
+  // client-side redirectToCheckout() method.
+  window.location.href = data.url;
 }

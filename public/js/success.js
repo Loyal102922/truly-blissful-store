@@ -5,6 +5,12 @@ const sessionId = params.get('session_id');
 
 const summary = document.getElementById('order-summary');
 
+// Multi-item discount matches the same logic applied server-side in
+// create-checkout-session, so the total shown here actually matches
+// what the customer was charged.
+const totalItems = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
+const discountMultiplier = totalItems >= 2 ? 0.95 : 1;
+
 if (sessionId) {
 
     fetch('/order-details/' + sessionId)
@@ -13,9 +19,11 @@ if (sessionId) {
 
             console.log('ORDER DETAILS:', data);
 
-            const address = data.customer?.address;
+            // The order document returns shippingAddress as a top-level
+            // field, not nested under a "customer" object.
+            const address = data.shippingAddress;
 
-            if (address) {
+            if (address && (address.line1 || address.city)) {
 
                 const addressDiv = document.createElement('div');
 
@@ -50,7 +58,8 @@ let total = 0;
 
 cart.forEach(item => {
 
-    total += item.price * (item.qty || 1);
+    const lineTotal = item.price * discountMultiplier * (item.qty || 1);
+    total += lineTotal;
 
     const div = document.createElement('div');
 
@@ -67,7 +76,7 @@ cart.forEach(item => {
         </div>
 
         <div class="text-orange-400">
-            $${item.price} × ${item.qty || 1}
+            $${(item.price * discountMultiplier).toFixed(2)} × ${item.qty || 1}
         </div>
     `;
 
@@ -75,11 +84,18 @@ cart.forEach(item => {
 
 });
 
+if (discountMultiplier < 1) {
+    const discountNote = document.createElement('p');
+    discountNote.className = "text-orange-400 text-sm mt-2";
+    discountNote.textContent = "5% multi-item discount applied";
+    summary.appendChild(discountNote);
+}
+
 const totalDiv = document.createElement('div');
 
 totalDiv.className = "pt-4 font-bold text-xl";
 
-totalDiv.innerHTML = `Total: $${total}`;
+totalDiv.innerHTML = `Total: $${total.toFixed(2)}`;
 
 summary.appendChild(totalDiv);
 
