@@ -427,12 +427,16 @@ app.post('/new-arrivals', requireAdmin, async (req, res) => {
 });
 app.delete('/new-arrivals/:id', requireAdmin, async (req, res) => {
     try {
-        // _id is stored as an ObjectId by MongoDB by default -- querying
-        // with a plain string here never matches anything, meaning this
-        // delete has likely never actually worked.
-        const result = await newArrivalsCollection.deleteOne({
-            _id: new ObjectId(req.params.id)
-        });
+        // New Arrivals documents get their _id from a JSON round-trip
+        // (product fetched as JSON, then re-sent as JSON), which strips
+        // the special MongoDB ObjectId type down to plain text. This
+        // matches against both possible forms so it works regardless
+        // of which type a given document actually has stored.
+        const query = ObjectId.isValid(req.params.id)
+            ? { $or: [{ _id: req.params.id }, { _id: new ObjectId(req.params.id) }] }
+            : { _id: req.params.id };
+
+        const result = await newArrivalsCollection.deleteOne(query);
 
         res.json(result);
 
