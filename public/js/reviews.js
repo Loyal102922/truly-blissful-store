@@ -32,6 +32,13 @@ function renderReviews() {
     reviewText.className = 'text-gray-300 text-sm mb-4';
     reviewText.textContent = '"' + review.text + '"';
     card.appendChild(reviewText);
+    if (review.image) {
+      const reviewImg = document.createElement('img');
+      reviewImg.src = review.image;
+      reviewImg.alt = 'Customer photo';
+      reviewImg.className = 'rounded-xl mb-4 w-full object-cover max-h-64';
+      card.appendChild(reviewImg);
+    }
 
     const reviewName = document.createElement('p');
     reviewName.className = 'text-xs text-gray-500 mb-3';
