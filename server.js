@@ -124,6 +124,56 @@ async function sendCustomerOrderConfirmedEmail(order) {
   });
 }
 
+async function sendProcessingEmail(order) {
+  await transporter.sendMail({
+    from: `"TRULY BLISSFUL" <${process.env.EMAIL_USER}>`,
+    to: order.customerEmail,
+    subject: "Your TRULY BLISSFUL Order Is Being Processed",
+    html: `
+      <h2>Your order is being processed!</h2>
+
+      <p>We're getting your order ready to ship.</p>
+
+      <h3>Order Summary</h3>
+      <ul>${formatItems(order.cart)}</ul>
+
+      <p>
+        <strong>Total Paid:</strong> $${order.total}<br>
+        <strong>Status:</strong> Processing
+      </p>
+
+      <p>You'll receive another update as soon as your order ships.</p>
+
+      <p>Thank you for supporting TRULY BLISSFUL.</p>
+    `
+  });
+}
+
+async function sendDeliveredEmail(order) {
+  await transporter.sendMail({
+    from: `"TRULY BLISSFUL" <${process.env.EMAIL_USER}>`,
+    to: order.customerEmail,
+    subject: "Your TRULY BLISSFUL Order Has Been Delivered",
+    html: `
+      <h2>Your order has arrived!</h2>
+
+      <p>Your TRULY BLISSFUL order has been marked as delivered.</p>
+
+      <h3>Order Summary</h3>
+      <ul>${formatItems(order.cart)}</ul>
+
+      <p>
+        <strong>Total Paid:</strong> $${order.total}<br>
+        <strong>Status:</strong> Delivered
+      </p>
+
+      <p>We'd love to hear what you think -- leave us a review on the site!</p>
+
+      <p>Thank you for supporting TRULY BLISSFUL.</p>
+    `
+  });
+}
+
 // R2 credentials are configured -- not logging their actual values,
 // only whether they're present, to avoid leaking secrets into server logs.
 console.log("R2_BUCKET configured:", !!process.env.R2_BUCKET);
@@ -1100,41 +1150,47 @@ app.put('/admin/orders/:id', requireAdmin, async (req, res) => {
         }
       }
     );
-const updatedOrder = await ordersCollection.findOne({
-  _id: new ObjectId(req.params.id)
-});
 
-if (
-  status.toLowerCase() === 'shipped' &&
-  updatedOrder.customerEmail
-) {
-  const invoiceBuffers = [];
+    const updatedOrder = await ordersCollection.findOne({
+      _id: new ObjectId(req.params.id)
+    });
 
-const invoiceDoc = new PDFDocument();
+    const normalizedStatus = status.toLowerCase();
 
-invoiceDoc.on('data', invoiceBuffers.push.bind(invoiceBuffers));
+    if (updatedOrder.customerEmail) {
+      if (normalizedStatus === 'processing') {
+        await sendProcessingEmail(updatedOrder);
+      }
 
-invoiceDoc.fontSize(22).text('TRULY BLISSFUL Invoice');
+      if (normalizedStatus === 'shipped') {
+        const invoiceBuffers = [];
 
-invoiceDoc.moveDown();
+        const invoiceDoc = new PDFDocument();
 
-invoiceDoc.text(`Order ID: ${updatedOrder._id}`);
-invoiceDoc.text(`Status: ${status}`);
-invoiceDoc.text(`Tracking: ${trackingNumber || 'Not provided'}`);
-invoiceDoc.text(`Total: $${updatedOrder.total || 0}`);
+        invoiceDoc.on('data', invoiceBuffers.push.bind(invoiceBuffers));
 
-invoiceDoc.end();
+        invoiceDoc.fontSize(22).text('TRULY BLISSFUL Invoice');
 
-await new Promise((resolve) => {
-  invoiceDoc.on('end', resolve);
-});
+        invoiceDoc.moveDown();
 
-const invoicePDF = Buffer.concat(invoiceBuffers);
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: updatedOrder.customerEmail,
-    subject: 'Your TRULY BLISSFUL order has shipped!',
-   text: `
+        invoiceDoc.text(`Order ID: ${updatedOrder._id}`);
+        invoiceDoc.text(`Status: ${status}`);
+        invoiceDoc.text(`Tracking: ${trackingNumber || 'Not provided'}`);
+        invoiceDoc.text(`Total: $${updatedOrder.total || 0}`);
+
+        invoiceDoc.end();
+
+        await new Promise((resolve) => {
+          invoiceDoc.on('end', resolve);
+        });
+
+        const invoicePDF = Buffer.concat(invoiceBuffers);
+
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: updatedOrder.customerEmail,
+          subject: 'Your TRULY BLISSFUL order has shipped!',
+          text: `
 Your order is on the way!
 
 Status: ${status}
@@ -1144,16 +1200,21 @@ ${trackingNumber || 'Not provided yet'}
 
 Thank you for shopping with TRULY BLISSFUL.
 `,
+          attachments: [
+            {
+              filename: `invoice-${updatedOrder._id}.pdf`,
+              content: invoicePDF,
+              contentType: 'application/pdf'
+            }
+          ]
+        });
+      }
 
-attachments: [
-  {
-    filename: `invoice-${updatedOrder._id}.pdf`,
-    content: invoicePDF,
-    contentType: 'application/pdf'
-  }
-]
-  });
-}
+      if (normalizedStatus === 'delivered') {
+        await sendDeliveredEmail(updatedOrder);
+      }
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error(err);
