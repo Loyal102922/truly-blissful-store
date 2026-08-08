@@ -568,43 +568,62 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  if (event.type === 'checkout.session.completed' ||
-      event.type === 'payment_intent.succeeded') {
+  try {
+    // Only handle checkout.session.completed. payment_intent.succeeded
+    // was also firing for the same purchase, but that event's object is
+    // a raw PaymentIntent -- it has no customer_details, no amount_total,
+    // and no cart metadata, so it was creating a second broken/empty
+    // order for every real sale instead of a real one.
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
 
-    const session = event.data.object;
-
-    const existingOrder = await ordersCollection.findOne({
-      stripeSessionId: session.id
-    });
-
-    if (!existingOrder) {
-      // Reconstruct the full cart from metadata if it was attached at
-      // checkout-session creation. Falls back to a single generic line
-      // item only if no cart metadata is present at all (e.g. a manually
-      // created Stripe Payment Link with no metadata configured).
-      let cart;
-      try {
-        cart = session.metadata?.cart
-          ? JSON.parse(session.metadata.cart)
-          : [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
-      } catch {
-        cart = [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
-      }
-
-      await ordersCollection.insertOne({
-        customerName: session.customer_details?.name || 'Custom Order',
-        customerEmail: session.customer_details?.email || '',
-        customerPhone: session.customer_details?.phone || '',
-        shippingAddress: session.customer_details?.address || {},
-        stripeSessionId: session.id,
-        status: 'paid',
-        cart,
-        total: session.amount_total / 100,
-        orderType: session.metadata?.cart ? 'standard' : 'custom',
-        createdAt: new Date(),
-        updatedAt: new Date()
+      const existingOrder = await ordersCollection.findOne({
+        stripeSessionId: session.id
       });
+
+      if (!existingOrder) {
+        // Reconstruct the full cart from metadata if it was attached at
+        // checkout-session creation. Falls back to a single generic line
+        // item only if no cart metadata is present at all (e.g. a manually
+        // created Stripe Payment Link with no metadata configured).
+        let cart;
+        try {
+          cart = session.metadata?.cart
+            ? JSON.parse(session.metadata.cart)
+            : [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+        } catch {
+          cart = [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+        }
+
+        const orderDoc = {
+          customerName: session.customer_details?.name || 'Custom Order',
+          customerEmail: session.customer_details?.email || '',
+          customerPhone: session.customer_details?.phone || '',
+          shippingAddress: session.customer_details?.address || {},
+          stripeSessionId: session.id,
+          status: 'paid',
+          cart,
+          total: session.amount_total / 100,
+          orderType: session.metadata?.cart ? 'standard' : 'custom',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+
+        const result = await ordersCollection.insertOne(orderDoc);
+        const order = await ordersCollection.findOne({ _id: result.insertedId });
+
+        // Webhook is the reliable trigger for order emails -- the
+        // customer's browser redirect to success.html isn't guaranteed
+        // to happen at all (they could close the tab before it loads),
+        // so email-sending belongs here, not in /order-details.
+        await sendOwnerNewOrderEmail(order);
+        await sendCustomerOrderConfirmedEmail(order);
+      }
     }
+  } catch (err) {
+    console.error('Webhook processing error:', err);
+    // Still return 200 below so Stripe doesn't endlessly retry a poison
+    // event -- the error is logged here for you to investigate instead.
   }
 
   res.json({ received: true });
