@@ -632,21 +632,39 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
       });
 
       if (!existingOrder) {
-        // Reconstruct the full cart from metadata if it was attached at
-        // checkout-session creation. Falls back to a single generic line
-        // item only if no cart metadata is present at all (e.g. a manually
-        // created Stripe Payment Link with no metadata configured).
         let cart;
-        try {
-          cart = session.metadata?.cart
-            ? JSON.parse(session.metadata.cart)
-            : [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
-        } catch {
-          cart = [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+
+        if (session.metadata?.cart) {
+          // Website checkout -- full cart with size/color already attached.
+          try {
+            cart = JSON.parse(session.metadata.cart);
+          } catch {
+            cart = [{ name: session.metadata?.product || 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+          }
+        } else {
+          // No cart metadata (e.g. a Stripe Payment Link created directly
+          // in the dashboard) -- pull the real line items straight from
+          // Stripe instead of falling back to a generic "Custom Order"
+          // label. Every Checkout Session has line items regardless of
+          // how it was created, so this always reflects the real product
+          // purchased. Size/color aren't available this way since Stripe
+          // itself doesn't track those -- only our own cart metadata does.
+          try {
+            const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+
+            cart = lineItems.data.map(item => ({
+              name: item.description,
+              price: item.amount_total / 100,
+              qty: item.quantity
+            }));
+          } catch (lineItemErr) {
+            console.error('Failed to fetch line items:', lineItemErr);
+            cart = [{ name: 'Custom Order', price: session.amount_total / 100, qty: 1 }];
+          }
         }
 
         const orderDoc = {
-          customerName: session.customer_details?.name || 'Custom Order',
+          customerName: session.customer_details?.name || 'Customer',
           customerEmail: session.customer_details?.email || '',
           customerPhone: session.customer_details?.phone || '',
           shippingAddress: session.customer_details?.address || {},
@@ -654,7 +672,7 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
           status: 'paid',
           cart,
           total: session.amount_total / 100,
-          orderType: session.metadata?.cart ? 'standard' : 'custom',
+          orderType: session.metadata?.cart ? 'standard' : 'payment_link',
           createdAt: new Date(),
           updatedAt: new Date()
         };
