@@ -274,6 +274,7 @@ let ordersCollection;
 let reviewsCollection;
 let inventoryCollection;
 let newArrivalsCollection;
+let pushTokensCollection;
 async function connectMongo() {
   await mongoClient.connect();
   const database = mongoClient.db('store');
@@ -283,6 +284,11 @@ async function connectMongo() {
   reviewsCollection = database.collection('reviews');
   inventoryCollection = database.collection('inventory');
 newArrivalsCollection = database.collection('newArrivals');
+  pushTokensCollection = database.collection('pushTokens');
+
+  // One row per phone -- stops the same phone being saved twice
+  await pushTokensCollection.createIndex({ token: 1 }, { unique: true });
+
   console.log('MongoDB connected');
 }
 
@@ -833,7 +839,7 @@ await sendCustomerOrderConfirmedEmail(order);
     res.status(500).json({ error: 'Failed to fetch order details' });
   }
 });
-app.get('/orders', async (req, res) => {
+app.get('/orders', requireAdmin, async (req, res) => {
   const orders = await ordersCollection
     .find({})
     .sort({ createdAt: -1 })
@@ -869,7 +875,7 @@ app.post('/track-behavior', async (req, res) => {
     res.status(500).json({ error: 'Failed to track behavior' });
   }
 });
-app.get('/admin/behavior-analytics', async (req, res) => {
+app.get('/admin/behavior-analytics', requireAdmin, async (req, res) => {
   try {
    const behavior = await mongoClient.db("store").collection('behaviorAnalytics').aggregate([
       {
@@ -906,7 +912,7 @@ app.get('/admin/behavior-analytics', async (req, res) => {
     res.status(500).json({ error: 'Failed to load behavior analytics' });
   }
 });
-app.get('/admin/analytics', async (req, res) => {
+app.get('/admin/analytics', requireAdmin, async (req, res) => {
   try {
     const orders = await ordersCollection.find({}).toArray();
     const products = await productsCollection.find({}).toArray();
@@ -1270,7 +1276,7 @@ app.get('/track-order', async (req, res) => {
     });
   }
 });
-app.get('/invoice/:id', async (req, res) => {
+app.get('/invoice/:id', requireAdmin, async (req, res) => {
   try {
     const order = await ordersCollection.findOne({
       _id: new ObjectId(req.params.id)
@@ -1364,6 +1370,136 @@ app.get('/invoice/:id', async (req, res) => {
     res.status(500).send('Failed to generate invoice');
   }
 });
+// ───── PUSH NOTIFICATIONS (MOBILE APP) ─────
+
+// Expo push tokens look like ExponentPushToken[xxxxxxxx]
+function isValidPushToken(token) {
+  return typeof token === 'string' &&
+    /^(ExponentPushToken|ExpoPushToken)\[[A-Za-z0-9_-]+\]$/.test(token);
+}
+
+// The app calls this when a customer allows notifications
+app.post('/api/push/register', async (req, res) => {
+  try {
+    const { token, platform } = req.body;
+
+    if (!isValidPushToken(token)) {
+      return res.status(400).json({ error: 'Invalid push token' });
+    }
+
+    await pushTokensCollection.updateOne(
+      { token },
+      {
+        $set: {
+          platform: platform === 'android' ? 'android' : 'ios',
+          updatedAt: new Date()
+        },
+        $setOnInsert: { createdAt: new Date() }
+      },
+      { upsert: true }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Push register error:', err);
+    res.status(500).json({ error: 'Failed to register device' });
+  }
+});
+
+// How many phones are signed up for notifications
+app.get('/api/push/count', requireAdmin, async (req, res) => {
+  try {
+    const total = await pushTokensCollection.countDocuments({});
+    const ios = await pushTokensCollection.countDocuments({ platform: 'ios' });
+    const android = await pushTokensCollection.countDocuments({ platform: 'android' });
+
+    res.json({ total, ios, android });
+  } catch (err) {
+    console.error('Push count error:', err);
+    res.status(500).json({ error: 'Failed to count subscribers' });
+  }
+});
+
+// Admin sends a notification to every signed-up phone
+app.post('/api/push/send', requireAdmin, async (req, res) => {
+  try {
+    const title = String(req.body.title || '').trim().slice(0, 65);
+    const body = String(req.body.body || '').trim().slice(0, 178);
+    let url = String(req.body.url || '/').trim();
+
+    if (!title || !body) {
+      return res.status(400).json({ error: 'Title and message are required' });
+    }
+
+    // Only allow links to your own site
+    if (!url.startsWith('/')) url = '/';
+
+    const tokens = (await pushTokensCollection.find({}).toArray()).map(t => t.token);
+
+    if (!tokens.length) {
+      return res.json({ success: true, sent: 0, failed: 0, removed: 0 });
+    }
+
+    let sent = 0;
+    let failed = 0;
+    const deadTokens = [];
+
+    // Expo accepts up to 100 messages per request
+    for (let i = 0; i < tokens.length; i += 100) {
+      const batch = tokens.slice(i, i + 100);
+
+      const messages = batch.map(to => ({
+        to,
+        title,
+        body,
+        sound: 'default',
+        channelId: 'default',
+        data: { url }
+      }));
+
+      try {
+        const response = await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(messages)
+        });
+
+        const result = await response.json();
+        const tickets = Array.isArray(result.data) ? result.data : [];
+
+        tickets.forEach((ticket, index) => {
+          if (ticket.status === 'ok') {
+            sent++;
+          } else {
+            failed++;
+            // Phone deleted the app or turned notifications off
+            if (ticket.details?.error === 'DeviceNotRegistered') {
+              deadTokens.push(batch[index]);
+            }
+          }
+        });
+
+        if (!tickets.length) failed += batch.length;
+      } catch (batchErr) {
+        console.error('Push batch error:', batchErr);
+        failed += batch.length;
+      }
+    }
+
+    if (deadTokens.length) {
+      await pushTokensCollection.deleteMany({ token: { $in: deadTokens } });
+    }
+
+    res.json({ success: true, sent, failed, removed: deadTokens.length });
+  } catch (err) {
+    console.error('Push send error:', err);
+    res.status(500).json({ error: 'Failed to send notification' });
+  }
+});
+
 // ───── START SERVER ─────
 async function startServer() {
   try {

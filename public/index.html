@@ -32,7 +32,17 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-9BQZHCCJHE');
+
+    // Inside the TRULY BLISSFUL mobile app: analytics only, no ad tracking
+    // (required by Apple's App Tracking rules)
+    if (navigator.userAgent.indexOf('TrulyBlissfulApp') !== -1) {
+      gtag('config', 'G-9BQZHCCJHE', {
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false
+      });
+    } else {
+      gtag('config', 'G-9BQZHCCJHE');
+    }
   </script>
 
   <style>

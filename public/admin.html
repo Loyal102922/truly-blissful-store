@@ -9,6 +9,47 @@
 
   <h1>Admin Panel</h1>
 
+<!-- ───── PUSH NOTIFICATIONS (MOBILE APP) ───── -->
+<div id="pushSection" style="background:#111;border:1px solid #f97316;border-radius:16px;padding:20px;margin:20px 0 40px;max-width:500px;">
+  <h2 style="margin-top:0;">📲 Send App Notification</h2>
+  <p style="color:#9ca3af;margin-top:0;">Goes to every customer who allowed notifications in the TRULY BLISSFUL app.</p>
+
+  <p id="pushCount" style="color:#f97316;font-weight:bold;">Subscribers: tap "Check Subscribers"</p>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <input id="pushTitle" maxlength="65" placeholder="Title e.g. New Drop 🔥" style="padding:10px;">
+    <textarea id="pushBody" maxlength="178" rows="3" placeholder="Message e.g. The Kingdom Come hoodie is live. Get yours now." style="padding:10px;"></textarea>
+
+    <label style="color:white;">Opens this page when tapped:</label>
+    <select id="pushUrl" style="padding:10px;">
+      <option value="/">Home</option>
+      <option value="/shirts.html">Shirts</option>
+      <option value="/hoodies.html">Hoodies</option>
+      <option value="/headwear.html">Headwear</option>
+      <option value="/kids.html">Kids</option>
+      <option value="/custom-order.html">Custom Order</option>
+      <option value="/reviews.html">Reviews</option>
+    </select>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button
+        type="button"
+        onclick="sendPushNotification()"
+        style="background:orange;color:black;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;"
+      >
+        Send Notification
+      </button>
+      <button
+        type="button"
+        onclick="loadPushCount()"
+        style="background:white;color:black;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;"
+      >
+        Check Subscribers
+      </button>
+    </div>
+  </div>
+</div>
+
 <form id="productForm" style="display: flex; flex-direction: column; gap: 12px; max-width: 350px;">
 <input name="name" placeholder="Product Name" required style="padding: 10px;">
 <input name="price" placeholder="Price" required style="padding: 10px;">
@@ -33,6 +74,78 @@
 </form>
 
   <script>
+    // ───── PUSH NOTIFICATIONS ─────
+    async function getPushAuth() {
+      if (window._pushAuth) return window._pushAuth;
+      const password = prompt('Admin Password');
+      if (!password) return null;
+      window._pushAuth = btoa('admin:' + password);
+      return window._pushAuth;
+    }
+
+    async function loadPushCount() {
+      const auth = await getPushAuth();
+      if (!auth) return;
+
+      const res = await fetch('/api/push/count', {
+        headers: { 'Authorization': 'Basic ' + auth }
+      });
+
+      if (!res.ok) {
+        window._pushAuth = null;
+        alert('Wrong admin password.');
+        return;
+      }
+
+      const data = await res.json();
+      document.getElementById('pushCount').textContent =
+        `Subscribers: ${data.total} (iPhone ${data.ios} · Android ${data.android})`;
+    }
+
+    async function sendPushNotification() {
+      const title = document.getElementById('pushTitle').value.trim();
+      const body = document.getElementById('pushBody').value.trim();
+      const url = document.getElementById('pushUrl').value;
+
+      if (!title || !body) {
+        alert('Enter a title and a message.');
+        return;
+      }
+
+      if (!confirm(`Send this to every app subscriber?\n\n${title}\n${body}`)) return;
+
+      const auth = await getPushAuth();
+      if (!auth) return;
+
+      const res = await fetch('/api/push/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + auth
+        },
+        body: JSON.stringify({ title, body, url })
+      });
+
+      if (res.status === 401) {
+        window._pushAuth = null;
+        alert('Wrong admin password.');
+        return;
+      }
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(`Sent to ${data.sent} phone(s).` +
+          (data.failed ? `\nFailed: ${data.failed}` : '') +
+          (data.removed ? `\nRemoved ${data.removed} phone(s) that deleted the app.` : ''));
+        document.getElementById('pushTitle').value = '';
+        document.getElementById('pushBody').value = '';
+        loadPushCount();
+      } else {
+        alert(data.error || 'Failed to send notification');
+      }
+    }
+
     document.getElementById('productForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -364,11 +477,16 @@ analyticsDashboard.innerHTML = `
 document.body.insertBefore(analyticsDashboard, document.body.children[1]);
 async function loadAnalytics() {
   try {
-  const res = await fetch('/admin/analytics');
+  const res = await fetch('/admin/analytics', {
+    headers: { 'Authorization': 'Basic ' + window._adminAuth }
+  });
+  if (!res.ok) return;
 const data = await res.json();
 
-const behaviorRes = await fetch('/admin/behavior-analytics');
-const behaviorData = await behaviorRes.json();
+const behaviorRes = await fetch('/admin/behavior-analytics', {
+  headers: { 'Authorization': 'Basic ' + window._adminAuth }
+});
+const behaviorData = behaviorRes.ok ? await behaviorRes.json() : [];
 
     document.getElementById('analyticsCards').innerHTML = `
       <div style="padding:20px;border:1px solid white;border-radius:12px;">
@@ -568,7 +686,15 @@ new Chart(monthlyCtx, {
   }
 }
 async function loadOrders() {
-  const res = await fetch('/orders');
+  const res = await fetch('/orders', {
+    headers: { 'Authorization': 'Basic ' + window._adminAuth }
+  });
+
+  if (!res.ok) {
+    alert('Wrong admin password. Reload the page and try again.');
+    return;
+  }
+
   const orders = await res.json();
 
   const ordersContainer = document.createElement('div');
@@ -611,13 +737,12 @@ async function loadOrders() {
         <strong>Total:</strong> $${order.total || 0}
       </div>
       <div style="margin-top:10px;">
-  <a
-    href="/invoice/${order._id}"
-    target="_blank"
-    style="display:inline-block;padding:8px 14px;background:white;color:black;border-radius:8px;font-weight:bold;text-decoration:none;"
+  <button
+    onclick="openInvoice('${order._id}')"
+    style="display:inline-block;padding:8px 14px;background:white;color:black;border:none;border-radius:8px;font-weight:bold;cursor:pointer;"
   >
     View Invoice PDF
-  </a>
+  </button>
 </div>
       <div style="margin-top:15px;">
   <select id="status-${order._id}" style="padding:8px;border-radius:8px;">
@@ -835,11 +960,31 @@ async function deleteReview(reviewId) {
     alert('Failed to delete review');
   }
 }
-async function loadInventory() {
-  const password = prompt('Admin Password (needed to view inventory)');
-  if (!password) return;
+// Invoices are password-protected, so the PDF is fetched with the
+// admin password and then opened in a new tab
+async function openInvoice(orderId) {
+  const tab = window.open('', '_blank');
 
-  const auth = btoa('admin:' + password);
+  const res = await fetch('/invoice/' + orderId, {
+    headers: { 'Authorization': 'Basic ' + window._adminAuth }
+  });
+
+  if (!res.ok) {
+    if (tab) tab.close();
+    alert('Could not open invoice. Check admin password.');
+    return;
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+
+  if (tab) tab.location = url;
+  else window.location = url;
+}
+
+async function loadInventory() {
+  const auth = window._adminAuth;
+  if (!auth) return;
 
   const res = await fetch('/inventory', {
     headers: { 'Authorization': 'Basic ' + auth }
@@ -1203,15 +1348,26 @@ async function deleteNewArrival(id) {
     alert('Failed to remove -- check your admin password and try again.');
   }
 }
-loadOrders();
-loadProducts();
-loadAnalytics();
-loadReviewsAdmin();
-loadNewArrivalsAdmin();
-// Inventory now requires a password to even view (matching the new
-// server-side protection), so it's no longer auto-loaded on page load
-// like the others -- click "Add Inventory Row" or reload manually.
-loadInventory();
+// Ask for the admin password ONCE when the page opens. Orders,
+// analytics, invoices, inventory and notifications all reuse it.
+(function startAdmin() {
+  const password = prompt('Admin Password');
+  if (!password) {
+    document.body.innerHTML = '<h1 style="color:white;">Admin password required. Reload the page.</h1>';
+    return;
+  }
+
+  window._adminAuth = btoa('admin:' + password);
+  window._inventoryAuth = window._adminAuth;
+  window._pushAuth = window._adminAuth;
+
+  loadOrders();
+  loadProducts();
+  loadAnalytics();
+  loadReviewsAdmin();
+  loadNewArrivalsAdmin();
+  loadInventory();
+})();
 </script>
 </body>
 </html>
