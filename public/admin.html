@@ -821,7 +821,10 @@ async function removeProductImage(productId, imageUrl) {
   }
 }
 async function loadReviewsAdmin() {
-  const res = await fetch('/reviews');
+  const res = await fetch('/admin/reviews', {
+    headers: { 'Authorization': 'Basic ' + window._adminAuth }
+  });
+  if (!res.ok) return;
   const reviews = await res.json();
 
   const reviewsContainer = document.createElement('div');
@@ -837,7 +840,18 @@ async function loadReviewsAdmin() {
     div.style.marginTop = '15px';
     div.style.borderRadius = '10px';
 
+    if (review.reported) {
+      div.style.border = '2px solid #dc2626';
+    }
+
     div.innerHTML = `
+      ${
+        review.reported
+          ? `<div style="background:#dc2626;color:white;padding:8px 12px;border-radius:8px;font-weight:bold;margin-bottom:10px;">
+               🚩 REPORTED — hidden from store${review.reportReason ? ` · Reason: ${review.reportReason}` : ''}
+             </div>`
+          : ''
+      }
       <strong>${review.name}</strong>
       <br>
 
@@ -896,6 +910,16 @@ async function loadReviewsAdmin() {
 >
   Delete Review
 </button>
+      ${
+        review.reported
+          ? `<button
+               onclick="restoreReview('${review._id}')"
+               style="background:#22c55e;color:black;padding:10px;border:none;border-radius:8px;font-weight:bold;margin-left:10px;"
+             >
+               Restore Review
+             </button>`
+          : ''
+      }
     `;
 
     reviewsContainer.appendChild(div);
@@ -980,6 +1004,22 @@ async function openInvoice(orderId) {
 
   if (tab) tab.location = url;
   else window.location = url;
+}
+
+async function restoreReview(reviewId) {
+  if (!confirm('Restore this review? It will show on the store again.')) return;
+
+  const res = await fetch(`/reviews/${reviewId}/restore`, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Basic ' + window._adminAuth }
+  });
+
+  if (res.ok) {
+    alert('Review restored');
+    location.reload();
+  } else {
+    alert('Failed to restore review');
+  }
 }
 
 async function loadInventory() {

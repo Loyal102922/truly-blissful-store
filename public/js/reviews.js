@@ -62,8 +62,46 @@ function renderReviews() {
       card.appendChild(replyDiv);
     }
 
+    // Report button (required by Apple for user-generated content)
+    const reportBtn = document.createElement('button');
+    reportBtn.type = 'button';
+    reportBtn.className = 'mt-3 text-xs text-gray-500 hover:text-red-400 underline transition';
+    reportBtn.textContent = '🚩 Report';
+    reportBtn.setAttribute('aria-label', 'Report this review');
+    reportBtn.addEventListener('click', () => reportReview(review._id));
+    card.appendChild(reportBtn);
+
     wrap.appendChild(card);
   });
+}
+
+async function reportReview(reviewId) {
+  if (!reviewId) return;
+
+  const ok = confirm(
+    'Report this review as offensive, fake, or inappropriate?\n\nIt will be hidden right away and sent to TRULY BLISSFUL for review.'
+  );
+  if (!ok) return;
+
+  try {
+    const res = await fetch('/reviews/' + reviewId + '/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason: 'Reported by customer' })
+    });
+
+    if (!res.ok) {
+      alert('Could not report this review. Please try again.');
+      return;
+    }
+
+    // Remove it from the page immediately
+    reviews = reviews.filter(r => r._id !== reviewId);
+    renderReviews();
+    alert('Thank you. This review has been hidden and sent to our team.');
+  } catch (err) {
+    alert('Could not report this review. Please try again.');
+  }
 }
 
 function scrollToReviewForm() {

@@ -350,8 +350,9 @@ app.get('/', (req, res) => {
 });
 app.get('/reviews', async (req, res) => {
   try {
+    // Reported reviews stay hidden from customers until the owner restores them
     const reviews = await reviewsCollection
-      .find({})
+      .find({ hidden: { $ne: true } })
       .sort({ date: -1 })
       .toArray();
 
@@ -359,6 +360,103 @@ app.get('/reviews', async (req, res) => {
   } catch (err) {
     console.error('Load reviews error:', err);
     res.json([]);
+  }
+});
+
+// Admin: every review, including hidden/reported ones
+app.get('/admin/reviews', requireAdmin, async (req, res) => {
+  try {
+    const reviews = await reviewsCollection
+      .find({})
+      .sort({ reported: -1, date: -1 })
+      .toArray();
+
+    res.json(reviews);
+  } catch (err) {
+    console.error('Admin load reviews error:', err);
+    res.status(500).json({ error: 'Failed to load reviews' });
+  }
+});
+
+// Customer reports a review -> hidden immediately + owner emailed
+app.post('/reviews/:id/report', async (req, res) => {
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid review' });
+    }
+
+    const reason = String(req.body.reason || '').trim().slice(0, 300);
+
+    const review = await reviewsCollection.findOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (!review) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    await reviewsCollection.updateOne(
+      { _id: review._id },
+      {
+        $set: {
+          hidden: true,
+          reported: true,
+          reportedAt: new Date(),
+          reportReason: reason
+        }
+      }
+    );
+
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: 'support@trulyblissfulshop.com',
+        subject: '🚩 Review Reported - TRULY BLISSFUL',
+        html: `
+          <h2>A customer reported a review</h2>
+          <p>The review is now <strong>hidden</strong> from the store.
+          Open your admin panel to <strong>Restore</strong> or <strong>Delete</strong> it.</p>
+
+          <hr>
+
+          <p><strong>Name:</strong> ${review.name}</p>
+          <p><strong>Rating:</strong> ${review.rating}/5</p>
+          <p><strong>Review:</strong></p>
+          <p>${review.text}</p>
+          ${review.image ? `<img src="${review.image}" width="300" />` : ''}
+
+          <hr>
+
+          <p><strong>Report reason:</strong> ${reason || 'Not given'}</p>
+          <p>Reported on: ${new Date().toLocaleString()}</p>
+        `
+      });
+    } catch (mailErr) {
+      console.error('Report email error:', mailErr);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Report review error:', err);
+    res.status(500).json({ error: 'Failed to report review' });
+  }
+});
+
+// Admin restores a reported review
+app.put('/reviews/:id/restore', requireAdmin, async (req, res) => {
+  try {
+    await reviewsCollection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      {
+        $set: { hidden: false, reported: false },
+        $unset: { reportedAt: '', reportReason: '' }
+      }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Restore review error:', err);
+    res.status(500).json({ error: 'Failed to restore review' });
   }
 });
 
