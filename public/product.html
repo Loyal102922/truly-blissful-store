@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Product Details | TRULY BLISSFUL</title>
   <link rel="stylesheet" href="/css/tb.css">
+  <script>
+    // Inside the TRULY BLISSFUL app, the app has its own Cart tab, so hide this page's cart button
+    if (/TrulyBlissfulApp/.test(navigator.userAgent)) document.documentElement.classList.add('in-app');
+  </script>
+  <style>.in-app #product-cart-btn{display:none!important}</style>
 </head>
 
 <body class="bg-black text-white min-h-screen">
@@ -20,6 +25,7 @@
 </a>
 
   <button
+   id="product-cart-btn"
    onclick="window.location.href='/?openCart=true'"
     class="relative bg-neutral-900 border border-white/10 px-4 py-3 rounded-xl"
   >
