@@ -772,6 +772,73 @@ async function loadOrders() {
 
   document.body.appendChild(ordersContainer);
 }
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+async function loadCustomRequests() {
+  const res = await fetch('/admin/custom-requests', {
+    headers: { 'Authorization': 'Basic ' + window._adminAuth }
+  });
+
+  if (!res.ok) return;
+
+  const requests = await res.json();
+
+  const container = document.createElement('div');
+  container.innerHTML = '<h2 style="margin-top:40px;">Custom Requests</h2>';
+
+  if (!requests.length) {
+    const empty = document.createElement('div');
+    empty.style.marginTop = '15px';
+    empty.textContent = 'No custom requests yet.';
+    container.appendChild(empty);
+  }
+
+  requests.forEach(r => {
+    const div = document.createElement('div');
+
+    div.style.border = '1px solid white';
+    div.style.padding = '15px';
+    div.style.marginTop = '15px';
+    div.style.borderRadius = '10px';
+
+    const when = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
+    const safeEmail = escapeHtml(r.email);
+    const hasImage = /^https?:\/\//i.test(r.imageUrl || '');
+
+    div.innerHTML = `
+      <div><strong>Received:</strong> ${escapeHtml(when)}</div>
+      <div><strong>Name:</strong> ${escapeHtml(r.name)}</div>
+      <div><strong>Email:</strong> <a href="mailto:${safeEmail}" style="color:orange;">${safeEmail}</a></div>
+      <div style="margin-top:10px;">
+        <strong>Product Type:</strong> ${escapeHtml(r.productType)}<br>
+        <strong>Size:</strong> ${escapeHtml(r.size)}<br>
+        <strong>Color:</strong> ${escapeHtml(r.color)}
+      </div>
+      <div style="margin-top:10px;">
+        <strong>Customer Notes:</strong><br>
+        ${escapeHtml(r.notes)}
+      </div>
+      ${hasImage ? `
+      <div style="margin-top:10px;">
+        <strong>Uploaded Design:</strong><br>
+        <a href="${escapeHtml(r.imageUrl)}" target="_blank" rel="noopener">
+          <img src="${escapeHtml(r.imageUrl)}" style="max-width:220px;max-height:220px;border-radius:8px;margin-top:6px;">
+        </a>
+      </div>` : ''}
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.body.appendChild(container);
+}
 async function updateOrderStatus(orderId) {
   const status = document.getElementById(`status-${orderId}`).value;
   const tracking = document.getElementById(`tracking-${orderId}`).value;
@@ -1402,6 +1469,7 @@ async function deleteNewArrival(id) {
   window._pushAuth = window._adminAuth;
 
   loadOrders();
+  loadCustomRequests();
   loadProducts();
   loadAnalytics();
   loadReviewsAdmin();
@@ -1410,4 +1478,4 @@ async function deleteNewArrival(id) {
 })();
 </script>
 </body>
-</html>
+</html>

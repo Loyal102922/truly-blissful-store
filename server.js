@@ -216,6 +216,23 @@ app.post('/custom-order', upload.single('designImage'), async (req, res) => {
 
     const imageUrl = req.file ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` : '';
 
+    // Save the request so it shows in the admin. If saving fails the
+    // email below still goes out, so a request is never lost.
+    try {
+      await customRequestsCollection.insertOne({
+        name: name || '',
+        email: email || '',
+        productType: productType || '',
+        size: size || '',
+        color: color || '',
+        notes: notes || '',
+        imageUrl,
+        createdAt: new Date()
+      });
+    } catch (saveErr) {
+      console.error('Custom request save error:', saveErr);
+    }
+
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: 'support@trulyblissfulshop.com',
@@ -258,6 +275,19 @@ app.post('/custom-order', upload.single('designImage'), async (req, res) => {
     });
   }
 });
+app.get('/admin/custom-requests', requireAdmin, async (req, res) => {
+  try {
+    const requests = await customRequestsCollection
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    res.json(requests);
+  } catch (err) {
+    console.error('Admin load custom requests error:', err);
+    res.status(500).json({ error: 'Failed to load custom requests' });
+  }
+});
 // ───── STRIPE ─────
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
@@ -275,6 +305,7 @@ let reviewsCollection;
 let inventoryCollection;
 let newArrivalsCollection;
 let pushTokensCollection;
+let customRequestsCollection;
 async function connectMongo() {
   await mongoClient.connect();
   const database = mongoClient.db('store');
@@ -285,6 +316,7 @@ async function connectMongo() {
   inventoryCollection = database.collection('inventory');
 newArrivalsCollection = database.collection('newArrivals');
   pushTokensCollection = database.collection('pushTokens');
+  customRequestsCollection = database.collection('customRequests');
 
   // One row per phone -- stops the same phone being saved twice
   await pushTokensCollection.createIndex({ token: 1 }, { unique: true });
@@ -1687,4 +1719,4 @@ app.delete('/inventory/:id', requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete inventory row' });
   }
 });
-startServer();
+startServer();
