@@ -318,6 +318,30 @@ newArrivalsCollection = database.collection('newArrivals');
   pushTokensCollection = database.collection('pushTokens');
   customRequestsCollection = database.collection('customRequests');
 
+  // One-time add of the Nov 19 request that was only ever emailed
+  // (Glennis Roberts, SmartSteps logo sweatshirt). Safe to run on every
+  // start: it only inserts if that design image isn't saved yet.
+  try {
+    await customRequestsCollection.updateOne(
+      { imageUrl: 'https://pub-ff533b072cc548c6a7314abfafcf576e.r2.dev/products/1795077043747-image.jpg' },
+      {
+        $setOnInsert: {
+          name: 'Glennis Roberts',
+          email: 'glennismcleodroberts@gmail.com',
+          productType: 'Sweatshirt',
+          size: 'XL',
+          color: 'Black',
+          notes: 'SmartSteps logo',
+          imageUrl: 'https://pub-ff533b072cc548c6a7314abfafcf576e.r2.dev/products/1795077043747-image.jpg',
+          createdAt: new Date(1795077043747)
+        }
+      },
+      { upsert: true }
+    );
+  } catch (seedErr) {
+    console.error('Custom request seed error:', seedErr);
+  }
+
   // One row per phone -- stops the same phone being saved twice
   await pushTokensCollection.createIndex({ token: 1 }, { unique: true });
 
